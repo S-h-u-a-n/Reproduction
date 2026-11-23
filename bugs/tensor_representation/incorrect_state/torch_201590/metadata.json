@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_201590",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/201590",
+  "target_api": "torch.cond / torch.Tensor.copy_",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "tensor_representation",
+    "aliasing",
+    "control_flow"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "torch.cond branches must either reject input-aliasing returns consistently or genuinely support the documented output contract.",
+  "bug_signature": "Mutation and aliasing in the same branch bypass the check, returning storage shared with input.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

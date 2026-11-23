@@ -16,19 +16,19 @@ Observation 定義：forward 或一般數值運算回傳錯誤值，包含 NaN�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**20**（不重複 Issue ID）。
+Issue 數量：**22**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `wrong_forward_value` | 20 |
+| `wrong_forward_value` | 22 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：24；Issue/API 配對數：34。
+唯一 API 數：27；Issue/API 配對數：38。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
-| `torch.compile` | 9 |
+| `torch.compile` | 10 |
 | `torch.add` | 2 |
 | `torch.linalg.lu_solve` | 2 |
 | `torch.SymInt.__round__` | 1 |
@@ -52,11 +52,17 @@ Issue 數量：**20**（不重複 Issue ID）。
 | `torch.sparse_coo_tensor` | 1 |
 | `torch.sparse_csr_tensor` | 1 |
 | `torch.utils._python_dispatch.TorchDispatchMode` | 1 |
+| `torch.Tensor.expand` | 1 |
+| `torch.Tensor.fill_` | 1 |
+| `torch.cummax(out=...)` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
 | Issue | API 與作用 | 觀察／範圍 | 分類依據 | GitHub |
 | --- | --- | --- | --- | --- |
+| [#197448](torch_197448/README.md) | `torch.Tensor.expand`：主要受測 API | 以 Inductor 編譯後，對 expand 視圖執行 fill_ 的 base 值為 [8, 7, 6, 5]，eager 為 [2, 2, 2, 2]。 | 本地測試對照同一 base 的 eager 與 Inductor 結果，分類依展開視圖的原地寫入。 Root cause not confirmed。 | [原文](https://github.com/pytorch/pytorch/issues/197448) |
+| [#197448](torch_197448/README.md) | `torch.Tensor.fill_`：共同觸發的原地寫入操作 | 以 Inductor 編譯後，對 expand 視圖執行 fill_ 的 base 值為 [8, 7, 6, 5]，eager 為 [2, 2, 2, 2]。 | 本地測試對照同一 base 的 eager 與 Inductor 結果，分類依展開視圖的原地寫入。 Root cause not confirmed。 | [原文](https://github.com/pytorch/pytorch/issues/197448) |
+| [#197448](torch_197448/README.md) | `torch.compile`：觸發編譯路徑的入口 | 以 Inductor 編譯後，對 expand 視圖執行 fill_ 的 base 值為 [8, 7, 6, 5]，eager 為 [2, 2, 2, 2]。 | 本地測試對照同一 base 的 eager 與 Inductor 結果，分類依展開視圖的原地寫入。 Root cause not confirmed。 | [原文](https://github.com/pytorch/pytorch/issues/197448) |
 | [#198064](torch_198064/README.md) | `torch.SymInt.__round__`：主要受測 API | dynamic shape 長度使用 round(n,-1)時，忽略負 ndigits，使用原 n。 | Issue 指出 symbolic size 的 SymInt.__round__ 表示遺失 ndigits，與具體整數語意不同。 | [原文](https://github.com/pytorch/pytorch/issues/198064) |
 | [#198064](torch_198064/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | dynamic shape 長度使用 round(n,-1)時，忽略負 ndigits，使用原 n。 | Issue 指出 symbolic size 的 SymInt.__round__ 表示遺失 ndigits，與具體整數語意不同。 | [原文](https://github.com/pytorch/pytorch/issues/198064) |
 | [#198071](torch_198071/README.md) | `torch.clamp`：主要受測 API | int8 輸入與超出範圍的 Python max=300時，bound 轉成 int8 的 44，127 被截到 44。 | 上游指出 scalar bound 過早縮窄到 tensor dtype。 | [原文](https://github.com/pytorch/pytorch/issues/198071) |
@@ -66,6 +72,7 @@ Issue 數量：**20**（不重複 Issue ID）。
 | [#198102](torch_198102/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 不重疊 unfold view 的寫入，base 中間有未覆蓋位置時，未覆蓋的位置被歸零。 | functionalization 的 unfold inverse 使用 backward scatter 的歸零邏輯，破壞 view 寫回。 | [原文](https://github.com/pytorch/pytorch/issues/198102) |
 | [#198118](torch_198118/README.md) | `torch.linalg.pinv`：主要受測 API | complex128 pinv 經 pass-through TorchDispatchMode時，符合缺少 conjugation 的完整 SVD 公式。 | 上游指出內部 lazy conjugate view 在 Python dispatch 路徑未正確物化；與 #197084 相關。 | [原文](https://github.com/pytorch/pytorch/issues/198118) |
 | [#198118](torch_198118/README.md) | `torch.utils._python_dispatch.TorchDispatchMode`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | complex128 pinv 經 pass-through TorchDispatchMode時，符合缺少 conjugation 的完整 SVD 公式。 | 上游指出內部 lazy conjugate view 在 Python dispatch 路徑未正確物化；與 #197084 相關。 | [原文](https://github.com/pytorch/pytorch/issues/198118) |
+| [#199020](torch_199020/README.md) | `torch.cummax(out=...)`：主要受測 API | cummax 的 values 與 indices 使用同一個 out tensor 時，回傳的 values 被 indices 覆寫。 | 本地測試比較獨立輸出和共享 out tensor，並檢查 storage 指標，範圍限於 int64 cummax。 Root cause not confirmed。 | [原文](https://github.com/pytorch/pytorch/issues/199020) |
 | [#199229](torch_199229/README.md) | `torch.Tensor.set_`：Rebinds the destination tensor storage | Compiled output is 10.0 instead of the eager 7.0 after Tensor.set_ then mutation of old storage. | Compiled Tensor.set_ storage rebinding incorrectly retains a dependency on mutated old storage. | [原文](https://github.com/pytorch/pytorch/issues/199229) |
 | [#199229](torch_199229/README.md) | `torch.compile`：Exercises the compiled storage-rebinding path | Compiled output is 10.0 instead of the eager 7.0 after Tensor.set_ then mutation of old storage. | Compiled Tensor.set_ storage rebinding incorrectly retains a dependency on mutated old storage. | [原文](https://github.com/pytorch/pytorch/issues/199229) |
 | [#199644](torch_199644/README.md) | `torch.Tensor.item`：主要受測 API | 擷取 float64 scalar 16777219 再傳入 CPU 編譯 kernel時，兩者皆變成 16777220。 | 上游定位 C++ kernel scalar 參數宣告為 const float，縮窄原本的 float64 表示。 | [原文](https://github.com/pytorch/pytorch/issues/199644) |

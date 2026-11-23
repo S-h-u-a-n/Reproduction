@@ -16,15 +16,15 @@ Observation 定義：alias 寫入後的可觀察狀態、Python 容器副作用�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**3**（不重複 Issue ID）。
+Issue 數量：**4**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `incorrect_state` | 3 |
+| `incorrect_state` | 4 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：5；Issue/API 配對數：7。
+唯一 API 數：7；Issue/API 配對數：9。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
@@ -33,6 +33,8 @@ Issue 數量：**3**（不重複 Issue ID）。
 | `torch.cat` | 1 |
 | `torch.compile` | 3 |
 | `torch.slice_scatter` | 1 |
+| `torch.Tensor.copy_` | 1 |
+| `torch.cond` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
@@ -42,6 +44,8 @@ Issue 數量：**3**（不重複 Issue ID）。
 | [#195451](torch_195451/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | functional scatter、輸入 mutation 與回傳結果時，回傳結果 alias 輸入，修改結果連帶改變輸入。 | 上游 reinplace／copy-back 分析指出 fresh output 被當成 input alias。 | [原文](https://github.com/pytorch/pytorch/issues/195451) |
 | [#197893](torch_197893/README.md) | `torch.Tensor.div`：主要受測 API | 編譯 x/1 後修改回傳 tensor時，結果與 input 共用 storage，修改相互影響。 | remove_no_ops 把圖輸出替換為 input，改變 alias 契約。 | [原文](https://github.com/pytorch/pytorch/issues/197893) |
 | [#197893](torch_197893/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 編譯 x/1 後修改回傳 tensor時，結果與 input 共用 storage，修改相互影響。 | remove_no_ops 把圖輸出替換為 input，改變 alias 契約。 | [原文](https://github.com/pytorch/pytorch/issues/197893) |
+| [#201590](torch_201590/README.md) | `torch.cond`：主要受測 API | aot_eager 接受同時執行 copy_ 並回傳輸入 alias 的 cond 分支，無 mutation 的 alias 控制組被拒絕。 | 本地測試比較 mutation 與非 mutation 分支，並檢查回傳值和輸入的 storage 指標。 Root cause not confirmed。 | [原文](https://github.com/pytorch/pytorch/issues/201590) |
+| [#201590](torch_201590/README.md) | `torch.Tensor.copy_`：共同觸發的原地寫入操作 | aot_eager 接受同時執行 copy_ 並回傳輸入 alias 的 cond 分支，無 mutation 的 alias 控制組被拒絕。 | 本地測試比較 mutation 與非 mutation 分支，並檢查回傳值和輸入的 storage 指標。 Root cause not confirmed。 | [原文](https://github.com/pytorch/pytorch/issues/201590) |
 | [#205682](torch_205682/README.md) | `torch.cat`：主要受測 API | 同正軸 cat 後按原長度 split，另有 mixed dtype 控制時，寫 split 修改 input；第一份 mixed output 留在 int32。 | 上游 ablation 指向 cat_splitwithsizes_replace 重寫，丟失新 storage 與 dtype promotion。 | [原文](https://github.com/pytorch/pytorch/issues/205682) |
 | [#205682](torch_205682/README.md) | `torch.Tensor.split`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 同正軸 cat 後按原長度 split，另有 mixed dtype 控制時，寫 split 修改 input；第一份 mixed output 留在 int32。 | 上游 ablation 指向 cat_splitwithsizes_replace 重寫，丟失新 storage 與 dtype promotion。 | [原文](https://github.com/pytorch/pytorch/issues/205682) |
 | [#205682](torch_205682/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 同正軸 cat 後按原長度 split，另有 mixed dtype 控制時，寫 split 修改 input；第一份 mixed output 留在 int32。 | 上游 ablation 指向 cat_splitwithsizes_replace 重寫，丟失新 storage 與 dtype promotion。 | [原文](https://github.com/pytorch/pytorch/issues/205682) |

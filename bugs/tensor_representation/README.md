@@ -14,25 +14,25 @@ Primary Cause 必須符合本類機制；觀察錯誤可以屬於不同 Observat
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**55**（不重複 Issue ID）。
+Issue 數量：**58**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
 | `wrong_gradient` | 8 |
-| `wrong_forward_value` | 20 |
+| `wrong_forward_value` | 22 |
 | `wrong_optimizer_update` | 1 |
-| `incorrect_state` | 3 |
+| `incorrect_state` | 4 |
 | `wrong_metadata` | 8 |
 | `unexpected_exception` | 13 |
 | `missing_exception` | 2 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：70；Issue/API 配對數：111。
+唯一 API 數：75；Issue/API 配對數：117。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
-| `torch.compile` | 34 |
+| `torch.compile` | 35 |
 | `torch.cat` | 3 |
 | `torch.Tensor.set_` | 2 |
 | `torch.add` | 2 |
@@ -102,6 +102,11 @@ Issue 數量：**55**（不重複 Issue ID）。
 | `torch.sparse_csr_tensor` | 1 |
 | `torch.utils._python_dispatch.TorchDispatchMode` | 1 |
 | `torch.view_as_complex_copy` | 1 |
+| `torch.Tensor.copy_` | 1 |
+| `torch.Tensor.expand` | 1 |
+| `torch.Tensor.fill_` | 1 |
+| `torch.cond` | 1 |
+| `torch.cummax(out=...)` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
@@ -117,6 +122,9 @@ Issue 數量：**55**（不重複 Issue ID）。
 | [#197097](unexpected_exception/torch_197097/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | shape=(0,5)、ord=inf、dim=-1時，錯判 reduction 維度為空並拋例外。 | 上游指出負維度未正規化，導致空 batch 與 reduction 維度混淆。 | [原文](https://github.com/pytorch/pytorch/issues/197097) |
 | [#197399](unexpected_exception/torch_197399/README.md) | `torch.Tensor.set_`：主要受測 API | 把空 tensor 的 storage 重綁成長度一後讀 x[0]時，仍以舊空 shape 追蹤並拋 IndexError。 | 上游指出 functional tensor 內層已更新，但 wrapper TensorImpl metadata 未同步。 | [原文](https://github.com/pytorch/pytorch/issues/197399) |
 | [#197399](unexpected_exception/torch_197399/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 把空 tensor 的 storage 重綁成長度一後讀 x[0]時，仍以舊空 shape 追蹤並拋 IndexError。 | 上游指出 functional tensor 內層已更新，但 wrapper TensorImpl metadata 未同步。 | [原文](https://github.com/pytorch/pytorch/issues/197399) |
+| [#197448](wrong_forward_value/torch_197448/README.md) | `torch.Tensor.expand`：主要受測 API | 以 Inductor 編譯後，對 expand 視圖執行 fill_ 的 base 值為 [8, 7, 6, 5]，eager 為 [2, 2, 2, 2]。 | 本地測試對照同一 base 的 eager 與 Inductor 結果，分類依展開視圖的原地寫入。 Root cause not confirmed。 | [原文](https://github.com/pytorch/pytorch/issues/197448) |
+| [#197448](wrong_forward_value/torch_197448/README.md) | `torch.Tensor.fill_`：共同觸發的原地寫入操作 | 以 Inductor 編譯後，對 expand 視圖執行 fill_ 的 base 值為 [8, 7, 6, 5]，eager 為 [2, 2, 2, 2]。 | 本地測試對照同一 base 的 eager 與 Inductor 結果，分類依展開視圖的原地寫入。 Root cause not confirmed。 | [原文](https://github.com/pytorch/pytorch/issues/197448) |
+| [#197448](wrong_forward_value/torch_197448/README.md) | `torch.compile`：觸發編譯路徑的入口 | 以 Inductor 編譯後，對 expand 視圖執行 fill_ 的 base 值為 [8, 7, 6, 5]，eager 為 [2, 2, 2, 2]。 | 本地測試對照同一 base 的 eager 與 Inductor 結果，分類依展開視圖的原地寫入。 Root cause not confirmed。 | [原文](https://github.com/pytorch/pytorch/issues/197448) |
 | [#197888](wrong_gradient/torch_197888/README.md) | `torch.ops.aten.adaptive_max_pool3d_backward`：CPU backward kernel | CPU adaptive max pool backward scatters gradients to the wrong input elements when it reads channels_last_3d indices in storage order. | The CPU backward kernel ignores the strides of noncontiguous channels_last_3d indices. | [原文](https://github.com/pytorch/pytorch/issues/197888) |
 | [#197888](wrong_gradient/torch_197888/README.md) | `torch.nn.functional.adaptive_max_pool3d`：Produces pooling indices | CPU adaptive max pool backward scatters gradients to the wrong input elements when it reads channels_last_3d indices in storage order. | The CPU backward kernel ignores the strides of noncontiguous channels_last_3d indices. | [原文](https://github.com/pytorch/pytorch/issues/197888) |
 | [#197893](incorrect_state/torch_197893/README.md) | `torch.Tensor.div`：主要受測 API | 編譯 x/1 後修改回傳 tensor時，結果與 input 共用 storage，修改相互影響。 | remove_no_ops 把圖輸出替換為 input，改變 alias 契約。 | [原文](https://github.com/pytorch/pytorch/issues/197893) |
@@ -149,6 +157,7 @@ Issue 數量：**55**（不重複 Issue ID）。
 | [#198868](wrong_metadata/torch_198868/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | scalar input 與 empty index時，shape 變成 (1,)。 | scalar／空 index 的 tensor rank 表示不一致；上游未確認完整內部根因。 | [原文](https://github.com/pytorch/pytorch/issues/198868) |
 | [#198994](wrong_metadata/torch_198994/README.md) | `torch.nn.functional.soft_margin_loss`：主要受測 API | input float32、target float64時，Inductor 回傳 float64。 | 上游修補討論指出 opmath promotion 後應 cast 回 input dtype。 | [原文](https://github.com/pytorch/pytorch/issues/198994) |
 | [#198994](wrong_metadata/torch_198994/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | input float32、target float64時，Inductor 回傳 float64。 | 上游修補討論指出 opmath promotion 後應 cast 回 input dtype。 | [原文](https://github.com/pytorch/pytorch/issues/198994) |
+| [#199020](wrong_forward_value/torch_199020/README.md) | `torch.cummax(out=...)`：主要受測 API | cummax 的 values 與 indices 使用同一個 out tensor 時，回傳的 values 被 indices 覆寫。 | 本地測試比較獨立輸出和共享 out tensor，並檢查 storage 指標，範圍限於 int64 cummax。 Root cause not confirmed。 | [原文](https://github.com/pytorch/pytorch/issues/199020) |
 | [#199211](unexpected_exception/torch_199211/README.md) | `torch.isin`：主要受測 API | test_elements 為無法直接 flatten 的非連續多維 tensor時，view-size compatibility RuntimeError。 | 上游定位 isin CPU kernel 使用 view(-1) 而不是可複製的 reshape。 | [原文](https://github.com/pytorch/pytorch/issues/199211) |
 | [#199214](unexpected_exception/torch_199214/README.md) | `torch.dequantize`：主要受測 API | 普通 float input 先 dequantize 再原地 trunc_時，functionalization 拋 copy_／dequantize assertion。 | 上游指出非量化 dequantize 的 input alias 語意使 mutation copy-back 目標追蹤錯誤。 | [原文](https://github.com/pytorch/pytorch/issues/199214) |
 | [#199214](unexpected_exception/torch_199214/README.md) | `torch.Tensor.trunc_`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 普通 float input 先 dequantize 再原地 trunc_時，functionalization 拋 copy_／dequantize assertion。 | 上游指出非量化 dequantize 的 input alias 語意使 mutation copy-back 目標追蹤錯誤。 | [原文](https://github.com/pytorch/pytorch/issues/199214) |
@@ -172,6 +181,8 @@ Issue 數量：**55**（不重複 Issue ID）。
 | [#200925](wrong_forward_value/torch_200925/README.md) | `torch.compile`：主要受測 API | 先以不同 offset 的重疊 views 暖機，再傳同 offset aliases時，沿用第一次 synthetic-base offset，寫錯位置。 | 上游 synthetic-base cache guard 未完整描述 storage partition／view offset；必須保留前置呼叫。 | [原文](https://github.com/pytorch/pytorch/issues/200925) |
 | [#201268](wrong_forward_value/torch_201268/README.md) | `torch.add`：主要受測 API | CSR out.values() 為合法 stride=2 view時，values 為 [11,-99]，寫入相鄰 storage 而非第二個 logical element。 | 上游定位 mkl_result_copy_ 線性複製 nnz，忽略 destination values stride。 | [原文](https://github.com/pytorch/pytorch/issues/201268) |
 | [#201268](wrong_forward_value/torch_201268/README.md) | `torch.sparse_csr_tensor`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | CSR out.values() 為合法 stride=2 view時，values 為 [11,-99]，寫入相鄰 storage 而非第二個 logical element。 | 上游定位 mkl_result_copy_ 線性複製 nnz，忽略 destination values stride。 | [原文](https://github.com/pytorch/pytorch/issues/201268) |
+| [#201590](incorrect_state/torch_201590/README.md) | `torch.cond`：主要受測 API | aot_eager 接受同時執行 copy_ 並回傳輸入 alias 的 cond 分支，無 mutation 的 alias 控制組被拒絕。 | 本地測試比較 mutation 與非 mutation 分支，並檢查回傳值和輸入的 storage 指標。 Root cause not confirmed。 | [原文](https://github.com/pytorch/pytorch/issues/201590) |
+| [#201590](incorrect_state/torch_201590/README.md) | `torch.Tensor.copy_`：共同觸發的原地寫入操作 | aot_eager 接受同時執行 copy_ 並回傳輸入 alias 的 cond 分支，無 mutation 的 alias 控制組被拒絕。 | 本地測試比較 mutation 與非 mutation 分支，並檢查回傳值和輸入的 storage 指標。 Root cause not confirmed。 | [原文](https://github.com/pytorch/pytorch/issues/201590) |
 | [#201649](wrong_gradient/torch_201649/README.md) | `torch.compiler.nested_compile_region`：主要受測 API | 連續呼叫 nested region，forward 保存 region input 供 backward時，第一個梯度錯誤依賴 y。 | 上游指出 InvokeSubgraph MultiOutput 缺少 input-output alias 資訊，scheduler 重用仍被保存的 storage。 | [原文](https://github.com/pytorch/pytorch/issues/201649) |
 | [#201649](wrong_gradient/torch_201649/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 連續呼叫 nested region，forward 保存 region input 供 backward時，第一個梯度錯誤依賴 y。 | 上游指出 InvokeSubgraph MultiOutput 缺少 input-output alias 資訊，scheduler 重用仍被保存的 storage。 | [原文](https://github.com/pytorch/pytorch/issues/201649) |
 | [#202364](wrong_gradient/torch_202364/README.md) | `torch.Tensor.as_strided_`：主要受測 API | view 的 shape/stride 原地變更後 mul_，再 compiled backward時，forward 正確、gradient=[2,6,6,6]。 | 原文確認 view metadata mutation 是觸發條件；未確認錯誤 backward 的完整內部根因。 | [原文](https://github.com/pytorch/pytorch/issues/202364) |
