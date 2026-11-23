@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_200925",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/200925",
+  "target_api": "torch.compile / AOTAutograd",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "tensor_representation",
+    "alias_storage_offset_cache"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Caching an AOTAutograd graph must respect alias topology and view storage offsets after input layouts change.",
+  "bug_signature": "AOTAutograd synthetic base cache incorrectly reuses a prior view offset and mutation layout.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204339",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204339",
+  "target_api": "torch.compile / torch._dynamo.graph_break / torch.optim.Adam",
+  "primary_category": "graph_lifecycle",
+  "tags": [
+    "training_state",
+    "optimizer_ownership",
+    "tensor_lifetime"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Dynamo must not retain optimizer-owned Parameter tensors after the optimizer is destroyed solely because the graph was resumed after a graph break.",
+  "bug_signature": "Only the resumed graph retains parameter params___0 and keeps the parameter alive even though the optimizer has been released.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}
