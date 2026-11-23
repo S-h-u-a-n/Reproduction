@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_192202",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/192202",
+  "target_api": "get_optimizer_state_dict / set_optimizer_state_dict",
+  "primary_category": "checkpoint/frozen-optimizer-state",
+  "tags": [
+    "training_state",
+    "checkpoint",
+    "frozen-optimizer-state"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Checkpoint optimizer state load drops state owned by frozen parameters.",
+  "bug_signature": "An optimizer that originally had two initialized states loads only one state when one parameter is frozen.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

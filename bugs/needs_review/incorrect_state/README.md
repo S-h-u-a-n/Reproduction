@@ -16,32 +16,28 @@ Observation 定義：alias 寫入後的可觀察狀態、Python 容器副作用�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**1**（不重複 Issue ID）。
+Issue 數量：**0**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `incorrect_state` | 1 |
+| `incorrect_state` | 0 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：2；Issue/API 配對數：2。
+唯一 API 數：0；Issue/API 配對數：0。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
-| `collections.OrderedDict.move_to_end` | 1 |
-| `torch.compile` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
 | Issue | API 與作用 | 觀察／範圍 | 分類依據 | GitHub |
 | --- | --- | --- | --- | --- |
-| [#198189](torch_198189/README.md) | `collections.OrderedDict.move_to_end`：主要受測 API | compiled function 重排傳入的 OrderedDict時，重排副作用被省略。 | 上游指出 should_reconstruct_all 未設定；屬 Python 容器狀態而非訓練狀態。 | [原文](https://github.com/pytorch/pytorch/issues/198189) |
-| [#198189](torch_198189/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | compiled function 重排傳入的 OrderedDict時，重排副作用被省略。 | 上游指出 should_reconstruct_all 未設定；屬 Python 容器狀態而非訓練狀態。 | [原文](https://github.com/pytorch/pytorch/issues/198189) |
+
+目前沒有案例。
 
 ## 已知限制（Known Limitations）
 
 歷史搬移驗證：原始整批 100 passed；暫存新結構整批 100 passed；正式搬移後 100 passed, 7 warnings。每階段一次，沿用 compiler cache，非十次隔離／冷編譯。
 
 high／medium 為分類信心，不是上游根因獨立認證。原始 metadata 可能仍標記 pending；第一個修復版本未追查。數值或 ISA 相關簽名不得外推至其他環境。
-
-- [#198189](torch_198189/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 

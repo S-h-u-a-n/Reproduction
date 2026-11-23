@@ -14,12 +14,12 @@ Primary Cause 必須符合本類機制；觀察錯誤可以屬於不同 Observat
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**58**（不重複 Issue ID）。
+Issue 數量：**59**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
 | `wrong_gradient` | 8 |
-| `wrong_forward_value` | 22 |
+| `wrong_forward_value` | 23 |
 | `wrong_optimizer_update` | 1 |
 | `incorrect_state` | 4 |
 | `wrong_metadata` | 8 |
@@ -28,11 +28,11 @@ Issue 數量：**58**（不重複 Issue ID）。
 
 ## API 摘要（API Summary）
 
-唯一 API 數：75；Issue/API 配對數：117。
+唯一 API 數：76；Issue/API 配對數：120。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
-| `torch.compile` | 35 |
+| `torch.compile` | 36 |
 | `torch.cat` | 3 |
 | `torch.Tensor.set_` | 2 |
 | `torch.add` | 2 |
@@ -44,7 +44,7 @@ Issue 數量：**58**（不重複 Issue ID）。
 | `numpy.cumsum` | 1 |
 | `torch.SymInt.__round__` | 1 |
 | `torch.Tensor.__torch_function__` | 1 |
-| `torch.Tensor.add_` | 1 |
+| `torch.Tensor.add_` | 2 |
 | `torch.Tensor.as_strided_` | 1 |
 | `torch.Tensor.conj` | 1 |
 | `torch.Tensor.detach` | 1 |
@@ -107,6 +107,7 @@ Issue 數量：**58**（不重複 Issue ID）。
 | `torch.Tensor.fill_` | 1 |
 | `torch.cond` | 1 |
 | `torch.cummax(out=...)` | 1 |
+| `StorageOverlapPartition` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
@@ -220,6 +221,9 @@ Issue 數量：**58**（不重複 Issue ID）。
 | [#204446](wrong_forward_value/torch_204446/README.md) | `torch.sparse_coo_tensor`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 對 base[1] 的 contiguous 非零 offset view 加 COO時，錯改 row 2。 | 上游定位 sparse CPU kernel 重複套用 storage_offset；本地刻意只測 allocation 內的錯位寫入。 | [原文](https://github.com/pytorch/pytorch/issues/204446) |
 | [#205112](wrong_gradient/torch_205112/README.md) | `torch.func.jacrev`：主要受測 API | cdist(p=1) 的 jacrev 使用 batched cotangents時，各 Jacobian slice 重複第一個 cotangent 的結果。 | 上游指出 cdist_backward batching rule 沒有傳遞僅 grad 被 vmap 的 batch 維；主要為 tensor batching 表示。 | [原文](https://github.com/pytorch/pytorch/issues/205112) |
 | [#205112](wrong_gradient/torch_205112/README.md) | `torch.cdist`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | cdist(p=1) 的 jacrev 使用 batched cotangents時，各 Jacobian slice 重複第一個 cotangent 的結果。 | 上游指出 cdist_backward batching rule 沒有傳遞僅 grad 被 vmap 的 batch 維；主要為 tensor batching 表示。 | [原文](https://github.com/pytorch/pytorch/issues/205112) |
+| [#205404](wrong_forward_value/torch_205404/README.md) | `torch.compile` | 完整重疊輸入暖機後，編譯的部分重疊結果符合完整重疊結果，與 eager 參考不符。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/205404) |
+| [#205404](wrong_forward_value/torch_205404/README.md) | `torch.Tensor.add_` | 完整重疊輸入暖機後，編譯的部分重疊結果符合完整重疊結果，與 eager 參考不符。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/205404) |
+| [#205404](wrong_forward_value/torch_205404/README.md) | `StorageOverlapPartition` | 完整重疊輸入暖機後，編譯的部分重疊結果符合完整重疊結果，與 eager 參考不符。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/205404) |
 | [#205497](wrong_optimizer_update/torch_205497/README.md) | `torch.optim.SGD`：主要受測 API | CPU fused=True，parameter 與 transposed gradient 的 stride 不同時，依 memory order 配對，形成置換的錯誤更新。 | 上游指出 fused CPU kernel 忽略各 tensor stride；optimizer 是症狀場景，主要機制是 layout。 | [原文](https://github.com/pytorch/pytorch/issues/205497) |
 | [#205616](wrong_forward_value/torch_205616/README.md) | `torch.amax`：主要受測 API | 零維 CPU tensor x=3，out=x時，輸出與 input 都被改為 -inf。 | 上游定位 reduction 先把 out 初始化為 identity，覆蓋尚未讀取的 aliased input；是否應明確拒絕 overlap 待上游決策。 | [原文](https://github.com/pytorch/pytorch/issues/205616) |
 | [#205620](wrong_forward_value/torch_205620/README.md) | `torch.linalg.solve_triangular`：主要受測 API | A=diag(2,4)、B=diag(6,20)，out=A時，回傳 identity。 | 上游 source inspection 指出先把 B 複製到 out，因 out=A 覆蓋係數矩陣。 | [原文](https://github.com/pytorch/pytorch/issues/205620) |

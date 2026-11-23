@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_205404",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/205404",
+  "target_api": "torch.compile / Tensor.add_ / StorageOverlapPartition",
+  "primary_category": "aliasing/partial-overlap-cache",
+  "tags": [
+    "tensor_representation",
+    "aliasing",
+    "partial-overlap-cache"
+  ],
+  "bug_type": "wrong_forward_value",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Cached graph specialized to full storage overlap is reused for partial overlap.",
+  "bug_signature": "After warmup with fully overlapping inputs the partial-overlap compiled result matches full-overlap result instead of the eager partial-overlap reference.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

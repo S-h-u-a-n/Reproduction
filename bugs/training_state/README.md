@@ -14,25 +14,25 @@ Primary Cause 必須符合本類機制；觀察錯誤可以屬於不同 Observat
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**31**（不重複 Issue ID）。
+Issue 數量：**35**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
 | `wrong_gradient` | 12 |
-| `incorrect_state` | 9 |
+| `incorrect_state` | 12 |
 | `wrong_metadata` | 1 |
-| `unexpected_exception` | 5 |
+| `unexpected_exception` | 6 |
 | `missing_exception` | 4 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：41；Issue/API 配對數：56。
+唯一 API 數：46；Issue/API 配對數：64。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
-| `torch.compile` | 13 |
+| `torch.compile` | 14 |
 | `torch.Tensor.backward` | 2 |
-| `torch.Tensor.detach` | 2 |
+| `torch.Tensor.detach` | 3 |
 | `torch.autograd.grad` | 2 |
 | `torch.Tensor.apply_` | 1 |
 | `torch._dynamo.compiled_autograd._enable` | 1 |
@@ -71,11 +71,18 @@ Issue 數量：**31**（不重複 Issue ID）。
 | `torch.utils.checkpoint.checkpoint` | 1 |
 | `torch.utils.checkpoint.create_selective_checkpoint_contexts` | 1 |
 | `torch.vander` | 1 |
+| `torch.Tensor.add_` | 1 |
+| `torch.distributed.checkpoint.state_dict.get_optimizer_state_dict` | 2 |
+| `torch.distributed.checkpoint.state_dict.set_optimizer_state_dict` | 1 |
+| `torch.distributed.fsdp.fully_shard` | 1 |
+| `torch.optim.swa_utils.AveragedModel` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
 | Issue | API 與作用 | 觀察／範圍 | 分類依據 | GitHub |
 | --- | --- | --- | --- | --- |
+| [#192202](incorrect_state/torch_192202/README.md) | `torch.distributed.checkpoint.state_dict.get_optimizer_state_dict` | 載入 optimizer checkpoint 時，凍結其中一個參數使還原的狀態由兩組減為一組。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/192202) |
+| [#192202](incorrect_state/torch_192202/README.md) | `torch.distributed.checkpoint.state_dict.set_optimizer_state_dict` | 載入 optimizer checkpoint 時，凍結其中一個參數使還原的狀態由兩組減為一組。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/192202) |
 | [#195488](incorrect_state/torch_195488/README.md) | `torch.amp.autocast` | index_select throws IndexError, compiled context retains the nesting count while eager would restore it. | 編譯區域發生例外時 autocast nesting 未正常清理，造成後續訓練狀態洩漏。 | [原文](https://github.com/pytorch/pytorch/issues/195488) |
 | [#195488](incorrect_state/torch_195488/README.md) | `torch.compile` | index_select throws IndexError, compiled context retains the nesting count while eager would restore it. | 編譯區域發生例外時 autocast nesting 未正常清理，造成後續訓練狀態洩漏。 | [原文](https://github.com/pytorch/pytorch/issues/195488) |
 | [#196083](incorrect_state/torch_196083/README.md) | `torch.optim.Optimizer.state_dict`：Exports optimizer state | SGD momentum_buffer shares data_ptr across optimizers and a destination step modifies the source buffer. | In-process optimizer state transfer aliases SGD momentum buffers; updating the new optimizer mutates the original optimizer state. | [原文](https://github.com/pytorch/pytorch/issues/196083) |
@@ -87,6 +94,9 @@ Issue 數量：**31**（不重複 Issue ID）。
 | [#197887](missing_exception/torch_197887/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | forward 保存 input view 後，原地修改 input 再 backward時，沒有例外，使用已修改資料計算梯度。 | 上游指出 reinterpret_tensor 建立獨立 version counter，破壞 saved tensor 的版本一致性。 | [原文](https://github.com/pytorch/pytorch/issues/197887) |
 | [#198119](wrong_gradient/torch_198119/README.md) | `torch.nn.functional.avg_pool1d`：主要受測 API | ceil_mode=True，最後 pooling window 只有兩個有效元素時，完整梯度 [1/3,1/3,2/3,1/3,2/3,1/3]。 | 上游明確定位 avg_pool backward lowering 的 divisor，forward 正常；以 backward 規則錯誤分類。 | [原文](https://github.com/pytorch/pytorch/issues/198119) |
 | [#198119](wrong_gradient/torch_198119/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | ceil_mode=True，最後 pooling window 只有兩個有效元素時，完整梯度 [1/3,1/3,2/3,1/3,2/3,1/3]。 | 上游明確定位 avg_pool backward lowering 的 divisor，forward 正常；以 backward 規則錯誤分類。 | [原文](https://github.com/pytorch/pytorch/issues/198119) |
+| [#198624](incorrect_state/torch_198624/README.md) | `torch.Tensor.detach` | Detached alias 的原地加法在 eager 保留 autograd history，編譯後回傳值失去梯度歷史。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/198624) |
+| [#198624](incorrect_state/torch_198624/README.md) | `torch.Tensor.add_` | Detached alias 的原地加法在 eager 保留 autograd history，編譯後回傳值失去梯度歷史。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/198624) |
+| [#198624](incorrect_state/torch_198624/README.md) | `torch.compile` | Detached alias 的原地加法在 eager 保留 autograd history，編譯後回傳值失去梯度歷史。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/198624) |
 | [#199151](incorrect_state/torch_199151/README.md) | `torch.ao.quantization.observer.PerChannelMinMaxObserver` | PerChannelMinMaxObserver loses float64 on reset, unlike MinMaxObserver. | PerChannelMinMaxObserver 在 reset 後丟失 float64 dtype 設定，導致狀態 dtype 回退。 | [原文](https://github.com/pytorch/pytorch/issues/199151) |
 | [#199215](unexpected_exception/torch_199215/README.md) | `torch.nn.Parameter`：主要受測 API | 整數 Parameter(requires_grad=False)，freezing 且 discard_parameters時，內層 RuntimeError 指出僅浮點 dtype 可要求梯度。 | freezing 丟棄 parameter 時建立 ErasedTensor 並無條件 requires_grad_(True)，屬 parameter lifecycle。 | [原文](https://github.com/pytorch/pytorch/issues/199215) |
 | [#199215](unexpected_exception/torch_199215/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 整數 Parameter(requires_grad=False)，freezing 且 discard_parameters時，內層 RuntimeError 指出僅浮點 dtype 可要求梯度。 | freezing 丟棄 parameter 時建立 ErasedTensor 並無條件 requires_grad_(True)，屬 parameter lifecycle。 | [原文](https://github.com/pytorch/pytorch/issues/199215) |
@@ -113,6 +123,9 @@ Issue 數量：**31**（不重複 Issue ID）。
 | [#202806](missing_exception/torch_202806/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | eager 已保存 weight，再透過 compiled detached alias 修改時，沒有版本遞增，backward 靜默使用新 weight。 | 上游明確將此歸為漏掉 version check；不存在合法的「修改後仍應得到舊梯度」契約。 | [原文](https://github.com/pytorch/pytorch/issues/202806) |
 | [#202965](wrong_gradient/torch_202965/README.md) | `torch.distributions.kl_divergence`：主要受測 API | p logits 含 -inf，對其求 KL gradient時，loss 正確但整列梯度 NaN。 | 上游定位 forward masking 未移除 multiplication backward 中的 0*(-inf)，再經 softmax backward 擴散。 | [原文](https://github.com/pytorch/pytorch/issues/202965) |
 | [#202965](wrong_gradient/torch_202965/README.md) | `torch.distributions.Categorical`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | p logits 含 -inf，對其求 KL gradient時，loss 正確但整列梯度 NaN。 | 上游定位 forward masking 未移除 multiplication backward 中的 0*(-inf)，再經 softmax backward 擴散。 | [原文](https://github.com/pytorch/pytorch/issues/202965) |
+| [#203487](unexpected_exception/torch_203487/README.md) | `torch.distributed.fsdp.fully_shard` | 兩個 CPU Gloo rank 在 optimizer step 後可讀取狀態，但 no-grad forward 後皆拋出 KeyError(0)。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/203487) |
+| [#203487](unexpected_exception/torch_203487/README.md) | `torch.distributed.checkpoint.state_dict.get_optimizer_state_dict` | 兩個 CPU Gloo rank 在 optimizer step 後可讀取狀態，但 no-grad forward 後皆拋出 KeyError(0)。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/203487) |
+| [#203921](incorrect_state/torch_203921/README.md) | `torch.optim.swa_utils.AveragedModel` | 兩次 EMA 更新後，浮點參數已更新，int64 buffer 仍為 1，預期為 2。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/203921) |
 | [#203946](wrong_gradient/torch_203946/README.md) | `torch.nn.functional.cosine_similarity`：主要受測 API | norm(x1)<eps<norm(x2)，float64 固定向量時，第一分量只有一半，第二分量正確。 | 上游指出 norm clamp 在 no-grad guard 下原地執行，使 autograd 圖保留應被截斷的導數項。 | [原文](https://github.com/pytorch/pytorch/issues/203946) |
 | [#204188](wrong_metadata/torch_204188/README.md) | `torch.distributed.checkpoint.save`：主要受測 API | enable_plan_caching=True，兩次 save 只有 dtype 由 bf16 變 fp16時，仍記錄 bf16，無 cache 控制組正確。 | 上游定位 class-level save plan cache 比較沒有 tensor_data.properties，屬 checkpoint state lifecycle。 | [原文](https://github.com/pytorch/pytorch/issues/204188) |
 | [#204188](wrong_metadata/torch_204188/README.md) | `torch.distributed.checkpoint.DefaultSavePlanner`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | enable_plan_caching=True，兩次 save 只有 dtype 由 bf16 變 fp16時，仍記錄 bf16，無 cache 控制組正確。 | 上游定位 class-level save plan cache 比較沒有 tensor_data.properties，屬 checkpoint state lifecycle。 | [原文](https://github.com/pytorch/pytorch/issues/204188) |

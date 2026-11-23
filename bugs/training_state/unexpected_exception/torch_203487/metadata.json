@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_203487",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/203487",
+  "target_api": "torch.distributed.fsdp.fully_shard / get_optimizer_state_dict",
+  "primary_category": "fsdp2/optimizer-state-lifecycle",
+  "tags": [
+    "training_state",
+    "fsdp2",
+    "optimizer_state",
+    "no_grad"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A no-grad forward should not break FSDP2 optimizer state retrieval; correct resharding avoids this failure.",
+  "bug_signature": "On two CPU Gloo ranks get_optimizer_state_dict succeeds after the optimizer step but raises KeyError(0) after a no-grad forward.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -16,23 +16,23 @@ Observation 定義：forward 或一般數值運算回傳錯誤值，包含 NaN�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**22**（不重複 Issue ID）。
+Issue 數量：**23**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `wrong_forward_value` | 22 |
+| `wrong_forward_value` | 23 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：27；Issue/API 配對數：38。
+唯一 API 數：28；Issue/API 配對數：41。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
-| `torch.compile` | 10 |
+| `torch.compile` | 11 |
 | `torch.add` | 2 |
 | `torch.linalg.lu_solve` | 2 |
 | `torch.SymInt.__round__` | 1 |
-| `torch.Tensor.add_` | 1 |
+| `torch.Tensor.add_` | 2 |
 | `torch.Tensor.fill_diagonal_` | 1 |
 | `torch.Tensor.index_put_` | 1 |
 | `torch.Tensor.item` | 1 |
@@ -55,6 +55,7 @@ Issue 數量：**22**（不重複 Issue ID）。
 | `torch.Tensor.expand` | 1 |
 | `torch.Tensor.fill_` | 1 |
 | `torch.cummax(out=...)` | 1 |
+| `StorageOverlapPartition` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
@@ -95,6 +96,9 @@ Issue 數量：**22**（不重複 Issue ID）。
 | [#204442](torch_204442/README.md) | `torch.add` | CSR out control equals 2*A, while CSC out equals (2*A).T instead of 2*A. | CSR 輸入搭配 CSC out 的 layout 未檢查，回傳轉置的錯誤結果。 | [原文](https://github.com/pytorch/pytorch/issues/204442) |
 | [#204446](torch_204446/README.md) | `torch.Tensor.add_`：主要受測 API | 對 base[1] 的 contiguous 非零 offset view 加 COO時，錯改 row 2。 | 上游定位 sparse CPU kernel 重複套用 storage_offset；本地刻意只測 allocation 內的錯位寫入。 | [原文](https://github.com/pytorch/pytorch/issues/204446) |
 | [#204446](torch_204446/README.md) | `torch.sparse_coo_tensor`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 對 base[1] 的 contiguous 非零 offset view 加 COO時，錯改 row 2。 | 上游定位 sparse CPU kernel 重複套用 storage_offset；本地刻意只測 allocation 內的錯位寫入。 | [原文](https://github.com/pytorch/pytorch/issues/204446) |
+| [#205404](torch_205404/README.md) | `torch.compile` | 完整重疊輸入暖機後，編譯的部分重疊結果符合完整重疊結果，與 eager 參考不符。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/205404) |
+| [#205404](torch_205404/README.md) | `torch.Tensor.add_` | 完整重疊輸入暖機後，編譯的部分重疊結果符合完整重疊結果，與 eager 參考不符。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/205404) |
+| [#205404](torch_205404/README.md) | `StorageOverlapPartition` | 完整重疊輸入暖機後，編譯的部分重疊結果符合完整重疊結果，與 eager 參考不符。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/205404) |
 | [#205616](torch_205616/README.md) | `torch.amax`：主要受測 API | 零維 CPU tensor x=3，out=x時，輸出與 input 都被改為 -inf。 | 上游定位 reduction 先把 out 初始化為 identity，覆蓋尚未讀取的 aliased input；是否應明確拒絕 overlap 待上游決策。 | [原文](https://github.com/pytorch/pytorch/issues/205616) |
 | [#205620](torch_205620/README.md) | `torch.linalg.solve_triangular`：主要受測 API | A=diag(2,4)、B=diag(6,20)，out=A時，回傳 identity。 | 上游 source inspection 指出先把 B 複製到 out，因 out=A 覆蓋係數矩陣。 | [原文](https://github.com/pytorch/pytorch/issues/205620) |
 | [#206126](torch_206126/README.md) | `torch.linalg.lu_solve`：Solves with an output that aliases the LU factor | LU factor aliases the out argument and yields a large residual while independent/rhs output are correct. | Output aliases LU factor, overwriting data required for the solve. | [原文](https://github.com/pytorch/pytorch/issues/206126) |

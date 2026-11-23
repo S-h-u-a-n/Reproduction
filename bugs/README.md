@@ -25,16 +25,16 @@
 
 | Primary Cause | Issue 數 |
 | --- | ---: |
-| [tensor_representation](tensor_representation/README.md) | 58 |
-| [training_state](training_state/README.md) | 31 |
-| [needs_review](needs_review/README.md) | 11 |
+| [tensor_representation](tensor_representation/README.md) | 59 |
+| [training_state](training_state/README.md) | 35 |
+| [needs_review](needs_review/README.md) | 6 |
 
 | Observation | Issue 數 | 定義 |
 | --- | ---: | --- |
 | `wrong_gradient` | 20 | 第一階／高階導數、Jacobian 或 tangent 與正確參考不符。 |
-| `wrong_forward_value` | 28 | forward 或一般數值運算回傳錯誤值，包含 NaN／Inf／signed zero 模式；不把梯度或 optimizer 更新混入。 |
+| `wrong_forward_value` | 26 | forward 或一般數值運算回傳錯誤值，包含 NaN／Inf／signed zero 模式；不把梯度或 optimizer 更新混入。 |
 | `wrong_optimizer_update` | 1 | optimizer step 對 parameter 產生錯誤數值更新。 |
-| `incorrect_state` | 14 | alias 寫入後的可觀察狀態、Python 容器副作用、物件／parameter 存活等狀態不符；不代表 Primary Cause 必為 training_state。 |
+| `incorrect_state` | 16 | alias 寫入後的可觀察狀態、Python 容器副作用、物件／parameter 存活等狀態不符；不代表 Primary Cause 必為 training_state。 |
 | `wrong_metadata` | 9 | shape、dtype、rank、tangent 表示或 checkpoint tensor metadata 錯誤。 |
 | `unexpected_exception` | 21 | 本應成功或可由使用者 handler 處理的操作，拋出非預期 Python／編譯例外；不等同 process crash。 |
 | `missing_exception` | 6 | 必要的輸入驗證、dtype 契約或 autograd version conflict 沒有拋出應有例外。 |
@@ -46,18 +46,18 @@
 
 ## API 摘要
 
-唯一 API **120**；Issue/API 配對 **194**。配對數不當作 Issue 數；每個分類 README 列出各 API 的案例數與作用。
+唯一 API **119**；Issue/API 配對 **195**。配對數不當作 Issue 數；每個分類 README 列出各 API 的案例數與作用。
 
 ## 全部 Issue／API 說明與來源
 
 | Issue／路徑 | API | 說明 | Primary Cause / Observation | 來源 |
 | --- | --- | --- | --- | --- |
+| [#192202](training_state/incorrect_state/torch_192202/README.md) | `torch.distributed.checkpoint.state_dict.get_optimizer_state_dict`<br>`torch.distributed.checkpoint.state_dict.set_optimizer_state_dict` | 載入 optimizer checkpoint 時，凍結其中一個參數使還原的狀態由兩組減為一組。 | `training_state` / `incorrect_state` | [GitHub](https://github.com/pytorch/pytorch/issues/192202) |
 | [#192639](tensor_representation/wrong_metadata/torch_192639/README.md) | `torch.autograd.forward_ad.unpack_dual`<br>`torch._subclasses.functional_tensor.dispatch_functionalize` | dual tensor 經 dispatch_functionalize 包裝時，tangent 變成 None。 | `tensor_representation` / `wrong_metadata` | [GitHub](https://github.com/pytorch/pytorch/issues/192639) |
 | [#195451](tensor_representation/incorrect_state/torch_195451/README.md) | `torch.slice_scatter`<br>`torch.compile` | functional scatter、輸入 mutation 與回傳結果時，回傳結果 alias 輸入，修改結果連帶改變輸入。 | `tensor_representation` / `incorrect_state` | [GitHub](https://github.com/pytorch/pytorch/issues/195451) |
 | [#195488](training_state/incorrect_state/torch_195488/README.md) | `torch.amp.autocast`<br>`torch.compile` | 編譯區域發生例外時 autocast nesting 未正常清理，造成後續訓練狀態洩漏。 | `training_state` / `incorrect_state` | [GitHub](https://github.com/pytorch/pytorch/issues/195488) |
 | [#196083](training_state/incorrect_state/torch_196083/README.md) | `torch.optim.Optimizer.state_dict`<br>`torch.optim.Optimizer.load_state_dict` | In-process optimizer state transfer aliases SGD momentum buffers; updating the new optimizer mutates the original optimizer state. | `training_state` / `incorrect_state` | [GitHub](https://github.com/pytorch/pytorch/issues/196083) |
 | [#197084](tensor_representation/wrong_gradient/torch_197084/README.md) | `torch.linalg.pinv`<br>`torch.compile` | 固定 full-column-rank complex64 矩陣、編譯後反向時，完整梯度符合缺少 conjugation 的 SVD 結果所導出的錯誤 VJP。 | `tensor_representation` / `wrong_gradient` | [GitHub](https://github.com/pytorch/pytorch/issues/197084) |
-| [#197087](needs_review/unexpected_exception/torch_197087/README.md) | `torch.argmin`<br>`torch.compile` | dynamic=True、相等內維度的 broadcast argmin時，生成 C++ 含 Python ** 而編譯失敗。 | `needs_review` / `unexpected_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/197087) |
 | [#197092](training_state/unexpected_exception/torch_197092/README.md) | `torch.nn.functional.interpolate`<br>`torch._dynamo.compiled_autograd._enable`<br>`torch.compile` | compiled autograd、bilinear interpolation backward時，fake-tensor propagation 出現 isIntList INTERNAL ASSERT。 | `training_state` / `unexpected_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/197092) |
 | [#197097](tensor_representation/unexpected_exception/torch_197097/README.md) | `torch.linalg.vector_norm`<br>`torch.compile` | shape=(0,5)、ord=inf、dim=-1時，錯判 reduction 維度為空並拋例外。 | `tensor_representation` / `unexpected_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/197097) |
 | [#197399](tensor_representation/unexpected_exception/torch_197399/README.md) | `torch.Tensor.set_`<br>`torch.compile` | 把空 tensor 的 storage 重綁成長度一後讀 x[0]時，仍以舊空 shape 追蹤並拋 IndexError。 | `tensor_representation` / `unexpected_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/197399) |
@@ -65,7 +65,6 @@
 | [#197887](training_state/missing_exception/torch_197887/README.md) | `torch.matmul`<br>`torch.compile` | forward 保存 input view 後，原地修改 input 再 backward時，沒有例外，使用已修改資料計算梯度。 | `training_state` / `missing_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/197887) |
 | [#197888](tensor_representation/wrong_gradient/torch_197888/README.md) | `torch.ops.aten.adaptive_max_pool3d_backward`<br>`torch.nn.functional.adaptive_max_pool3d` | CPU adaptive max pool backward scatters gradients to the wrong input elements when it reads channels_last_3d indices in storage order. | `tensor_representation` / `wrong_gradient` | [GitHub](https://github.com/pytorch/pytorch/issues/197888) |
 | [#197893](tensor_representation/incorrect_state/torch_197893/README.md) | `torch.Tensor.div`<br>`torch.compile` | 編譯 x/1 後修改回傳 tensor時，結果與 input 共用 storage，修改相互影響。 | `tensor_representation` / `incorrect_state` | [GitHub](https://github.com/pytorch/pytorch/issues/197893) |
-| [#197894](needs_review/wrong_forward_value/torch_197894/README.md) | `torch.fx.GraphModule` | FX graph 的 operator.pow(-2,x)，x=2時，回傳 -4。 | `needs_review` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/197894) |
 | [#198056](tensor_representation/wrong_metadata/torch_198056/README.md) | `numpy.cumsum`<br>`torch.compile` | 編譯 int8 NumPy 累加時，維持 int8 dtype 並發生 wraparound。 | `tensor_representation` / `wrong_metadata` | [GitHub](https://github.com/pytorch/pytorch/issues/198056) |
 | [#198064](tensor_representation/wrong_forward_value/torch_198064/README.md) | `torch.SymInt.__round__`<br>`torch.compile` | dynamic shape 長度使用 round(n,-1)時，忽略負 ndigits，使用原 n。 | `tensor_representation` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/198064) |
 | [#198071](tensor_representation/wrong_forward_value/torch_198071/README.md) | `torch.clamp`<br>`torch.compile` | int8 輸入與超出範圍的 Python max=300時，bound 轉成 int8 的 44，127 被截到 44。 | `tensor_representation` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/198071) |
@@ -75,9 +74,8 @@
 | [#198118](tensor_representation/wrong_forward_value/torch_198118/README.md) | `torch.linalg.pinv`<br>`torch.utils._python_dispatch.TorchDispatchMode` | complex128 pinv 經 pass-through TorchDispatchMode時，符合缺少 conjugation 的完整 SVD 公式。 | `tensor_representation` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/198118) |
 | [#198119](training_state/wrong_gradient/torch_198119/README.md) | `torch.nn.functional.avg_pool1d`<br>`torch.compile` | ceil_mode=True，最後 pooling window 只有兩個有效元素時，完整梯度 [1/3,1/3,2/3,1/3,2/3,1/3]。 | `training_state` / `wrong_gradient` | [GitHub](https://github.com/pytorch/pytorch/issues/198119) |
 | [#198155](tensor_representation/missing_exception/torch_198155/README.md) | `torch.softmax`<br>`torch.compile` | int64 輸入的 softmax 經 Inductor時，回傳整數 tensor 而不報錯。 | `tensor_representation` / `missing_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/198155) |
-| [#198189](needs_review/incorrect_state/torch_198189/README.md) | `collections.OrderedDict.move_to_end`<br>`torch.compile` | compiled function 重排傳入的 OrderedDict時，重排副作用被省略。 | `needs_review` / `incorrect_state` | [GitHub](https://github.com/pytorch/pytorch/issues/198189) |
 | [#198190](needs_review/other/torch_198190/README.md) | `torch.compile` | compiled function 回傳仍存活的 generator時，回傳 tuple_iterator 並丟失 return value。 | `needs_review` / `other` | [GitHub](https://github.com/pytorch/pytorch/issues/198190) |
-| [#198484](needs_review/wrong_forward_value/torch_198484/README.md) | `torch.isin`<br>`torch.compile` | test set 同時含 +inf 與 NaN時，回傳 False。 | `needs_review` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/198484) |
+| [#198624](training_state/incorrect_state/torch_198624/README.md) | `torch.Tensor.detach`<br>`torch.Tensor.add_`<br>`torch.compile` | Detached alias 的原地加法在 eager 保留 autograd history，編譯後回傳值失去梯度歷史。 | `training_state` / `incorrect_state` | [GitHub](https://github.com/pytorch/pytorch/issues/198624) |
 | [#198669](tensor_representation/unexpected_exception/torch_198669/README.md) | `torch.softmax`<br>`torch.eq`<br>`torch.div`<br>`torch.compile` | eq 產生 bool，除法升成 floating 後 softmax時，rewrite 嘗試對 bool 做 negation 而拋例外。 | `tensor_representation` / `unexpected_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/198669) |
 | [#198851](tensor_representation/wrong_metadata/torch_198851/README.md) | `torch.any`<br>`torch.all`<br>`torch.compile` | reduction 指定 dim=()時，編譯後回傳 scalar。 | `tensor_representation` / `wrong_metadata` | [GitHub](https://github.com/pytorch/pytorch/issues/198851) |
 | [#198852](tensor_representation/wrong_metadata/torch_198852/README.md) | `torch.cat`<br>`torch.compile` | 空 float64 tensor 與多個非空 float32 tensor 串接時，輸出 float32。 | `tensor_representation` / `wrong_metadata` | [GitHub](https://github.com/pytorch/pytorch/issues/198852) |
@@ -114,7 +112,6 @@
 | [#202364](tensor_representation/wrong_gradient/torch_202364/README.md) | `torch.Tensor.as_strided_`<br>`torch.compile` | view 的 shape/stride 原地變更後 mul_，再 compiled backward時，forward 正確、gradient=[2,6,6,6]。 | `tensor_representation` / `wrong_gradient` | [GitHub](https://github.com/pytorch/pytorch/issues/202364) |
 | [#202416](tensor_representation/unexpected_exception/torch_202416/README.md) | `torch.compile`<br>`torch.Tensor.detach` | Inductor raises a ViewMeta output-shape assertion while eager works. | `tensor_representation` / `unexpected_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/202416) |
 | [#202482](tensor_representation/wrong_forward_value/torch_202482/README.md) | `torch.cat`<br>`torch.nn.functional.linear`<br>`torch.Tensor.index_put_`<br>`torch.compile` | Linear 輸出參與 cat，按固定索引順序修改 cat 後再讀 Linear時，符合讀到已被覆寫 cat storage 的完整錯誤模式。 | `tensor_representation` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/202482) |
-| [#202526](needs_review/wrong_forward_value/torch_202526/README.md) | `torch.jit.freeze`<br>`torch.nn.Linear`<br>`torch.nn.BatchNorm1d` | eval 模式，Linear 結果同時供 BatchNorm 與 residual時，凍結後符合 2*BN(h)。 | `needs_review` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/202526) |
 | [#202706](training_state/incorrect_state/torch_202706/README.md) | `torch.autocast` | Nested calls of an autocast decorator accidentally reuse context state, leaving autocast enabled after exit. | `training_state` / `incorrect_state` | [GitHub](https://github.com/pytorch/pytorch/issues/202706) |
 | [#202726](tensor_representation/unexpected_exception/torch_202726/README.md) | `torch.Tensor.real`<br>`torch.Tensor.__torch_function__`<br>`torch.compile` | real dtype 的 __torch_function__ subclass 在 compiled 中取 .real時，source must be None 的 AssertionError。 | `tensor_representation` / `unexpected_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/202726) |
 | [#202806](training_state/missing_exception/torch_202806/README.md) | `torch.Tensor.detach`<br>`torch.compile` | eager 已保存 weight，再透過 compiled detached alias 修改時，沒有版本遞增，backward 靜默使用新 weight。 | `training_state` / `missing_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/202806) |
@@ -124,9 +121,11 @@
 | [#202967](needs_review/wrong_forward_value/torch_202967/README.md) | `torch.distributions.kl_divergence`<br>`torch.distributions.TransformedDistribution`<br>`torch.distributions.transforms.AbsTransform` | 相同 AbsTransform 作用於 N(-1,1) 與 N(1,1)時，回傳 base Normal KL=2。 | `needs_review` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/202967) |
 | [#203078](tensor_representation/wrong_forward_value/torch_203078/README.md) | `torch.Tensor.scatter_add`<br>`torch.Tensor.scatter_reduce` | expanded index stride=(1,0)，self 比 index 更寬時，寫入 row 0、1，row sums=[16,16,0]。 | `tensor_representation` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/203078) |
 | [#203485](tensor_representation/unexpected_exception/torch_203485/README.md) | `torch.nn.functional.grouped_mm` | sum().backward() 傳入 stride=[0,0] 的 broadcast gradient時，Invalid strides/sizes RuntimeError。 | `tensor_representation` / `unexpected_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/203485) |
+| [#203487](training_state/unexpected_exception/torch_203487/README.md) | `torch.distributed.fsdp.fully_shard`<br>`torch.distributed.checkpoint.state_dict.get_optimizer_state_dict` | 兩個 CPU Gloo rank 在 optimizer step 後可讀取狀態，但 no-grad forward 後皆拋出 KeyError(0)。 | `training_state` / `unexpected_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/203487) |
 | [#203806](tensor_representation/wrong_forward_value/torch_203806/README.md) | `torch._foreach_copy_`<br>`torch.compile` | 以 [b.clone(),a.clone()] 複製回 [a,b]時，兩個 tensor 都得到原 b 的值。 | `tensor_representation` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/203806) |
 | [#203852](tensor_representation/missing_exception/torch_203852/README.md) | `torch.Tensor.index_add` | 整數 tensor 配 floating alpha=2.5 或 0.5時，alpha 靜默截為 2 或 0。 | `tensor_representation` / `missing_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/203852) |
 | [#203866](tensor_representation/unexpected_exception/torch_203866/README.md) | `DTensor.from_local`<br>`torch.save` | torch.save raises an invalid-storage RuntimeError for a DTensor with a nonzero storage offset while the zero-offset control serializes. | `tensor_representation` / `unexpected_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/203866) |
+| [#203921](training_state/incorrect_state/torch_203921/README.md) | `torch.optim.swa_utils.AveragedModel` | 兩次 EMA 更新後，浮點參數已更新，int64 buffer 仍為 1，預期為 2。 | `training_state` / `incorrect_state` | [GitHub](https://github.com/pytorch/pytorch/issues/203921) |
 | [#203946](training_state/wrong_gradient/torch_203946/README.md) | `torch.nn.functional.cosine_similarity` | norm(x1)<eps<norm(x2)，float64 固定向量時，第一分量只有一半，第二分量正確。 | `training_state` / `wrong_gradient` | [GitHub](https://github.com/pytorch/pytorch/issues/203946) |
 | [#204181](tensor_representation/wrong_forward_value/torch_204181/README.md) | `torch.Tensor.fill_diagonal_` | 非連續 7x2 column view，wrap=True時，寫入 view 外的第三欄，漏掉 wrapped cell。 | `tensor_representation` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/204181) |
 | [#204188](training_state/wrong_metadata/torch_204188/README.md) | `torch.distributed.checkpoint.save`<br>`torch.distributed.checkpoint.DefaultSavePlanner` | enable_plan_caching=True，兩次 save 只有 dtype 由 bf16 變 fp16時，仍記錄 bf16，無 cache 控制組正確。 | `training_state` / `wrong_metadata` | [GitHub](https://github.com/pytorch/pytorch/issues/204188) |
@@ -143,6 +142,7 @@
 | [#204945](needs_review/unexpected_exception/torch_204945/README.md) | `torch.nn.Parameter`<br>`torch.compile` | compiled function 內建立 Parameter 後檢查 type(p)時，SYNTHETIC_LOCAL NameError／InternalTorchDynamoError。 | `needs_review` / `unexpected_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/204945) |
 | [#205112](tensor_representation/wrong_gradient/torch_205112/README.md) | `torch.func.jacrev`<br>`torch.cdist` | cdist(p=1) 的 jacrev 使用 batched cotangents時，各 Jacobian slice 重複第一個 cotangent 的結果。 | `tensor_representation` / `wrong_gradient` | [GitHub](https://github.com/pytorch/pytorch/issues/205112) |
 | [#205134](training_state/missing_exception/torch_205134/README.md) | `torch.Tensor.apply_`<br>`torch.Tensor.detach` | 保存 x 後，對 detach alias 執行 apply_ 乘十時，版本不變，backward 靜默回傳 [20,40]。 | `training_state` / `missing_exception` | [GitHub](https://github.com/pytorch/pytorch/issues/205134) |
+| [#205404](tensor_representation/wrong_forward_value/torch_205404/README.md) | `torch.compile`<br>`torch.Tensor.add_`<br>`StorageOverlapPartition` | 完整重疊輸入暖機後，編譯的部分重疊結果符合完整重疊結果，與 eager 參考不符。 | `tensor_representation` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/205404) |
 | [#205497](tensor_representation/wrong_optimizer_update/torch_205497/README.md) | `torch.optim.SGD` | CPU fused=True，parameter 與 transposed gradient 的 stride 不同時，依 memory order 配對，形成置換的錯誤更新。 | `tensor_representation` / `wrong_optimizer_update` | [GitHub](https://github.com/pytorch/pytorch/issues/205497) |
 | [#205616](tensor_representation/wrong_forward_value/torch_205616/README.md) | `torch.amax` | 零維 CPU tensor x=3，out=x時，輸出與 input 都被改為 -inf。 | `tensor_representation` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/205616) |
 | [#205620](tensor_representation/wrong_forward_value/torch_205620/README.md) | `torch.linalg.solve_triangular` | A=diag(2,4)、B=diag(6,20)，out=A時，回傳 identity。 | `tensor_representation` / `wrong_forward_value` | [GitHub](https://github.com/pytorch/pytorch/issues/205620) |
@@ -155,7 +155,7 @@
 
 ## 來源與目前版本
 
-Batch 03 與 Batch 04 新案的技術說明依本地逐案 README 與 metadata。
+Batch 03 至 Batch 05 新案的技術說明依本地逐案 README 與 metadata。
 
 原始批次於 2026-11-23 取得並讀取 100 個 Issue 內文與頁面載入的討論；不是只存 URL，也不聲稱完整讀取所有分頁或獨立驗證上游修補。 來源核對沒有聲稱已驗證上游 patch；沒有完整根因說明時在各案標示 `Root cause not confirmed`。
 
@@ -194,6 +194,10 @@ Batch 04 安裝記錄：3 個替換案各通過十次獨立程序驗證，5 個�
 
 Batch 04 目錄同步全套驗證：99 passed、1 failed、6 warnings。#203866 在 Gloo 初始化時無法解析本機 loopback 位址。
 
+Batch 05 安裝記錄：5 個替換案各通過十次獨立執行，3 個舊案保留於 needs_review；安裝時全套 100 passed。
+
+Batch 05 目錄同步全套驗證：98 passed、2 failed、4 warnings。#203866 的 Gloo 初始化無法解析本機 loopback 位址；#203487 的 TCP rendezvous 遭環境拒絕。
+
 ### 歷史搬移相容性驗證
 
 原始整批 100 passed；暫存新結構整批 100 passed；正式搬移後 100 passed, 7 warnings。每階段一次，沿用 compiler cache，非十次隔離／冷編譯。
@@ -230,7 +234,7 @@ PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider --im
 
 ## 已知限制與人工決策
 
-- 11 個 needs_review 多為已知數值／Python／一般 compiler 機制，需決定是否納入 Mirage 的兩個主要研究範圍；不等於未復現。
+- 6 個 needs_review 多為已知數值／Python／一般 compiler 機制，需決定是否納入 Mirage 的兩個主要研究範圍；不等於未復現。
 - #197084 與 #198118 有共根因線索；#202966 在同一 Issue 包含兩個機制。保留一 Issue 一 Case，獨立根因計數另待政策。
 - #198669 與外部 #196743、#201947 與 umbrella #203520、#204446 與 #59101 的關係均保留在各案限制；沒有把關聯全部當成確定重複。
 - #197092、#198851、#198868、#202364、#202726、#204181、#204339 缺完整根因確認；分類依已知觸發機制，標為 medium。

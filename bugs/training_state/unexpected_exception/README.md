@@ -16,15 +16,15 @@ Observation 定義：本應成功或可由使用者 handler 處理的操作，�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**5**（不重複 Issue ID）。
+Issue 數量：**6**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `unexpected_exception` | 5 |
+| `unexpected_exception` | 6 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：8；Issue/API 配對數：11。
+唯一 API 數：10；Issue/API 配對數：13。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
@@ -36,6 +36,8 @@ Issue 數量：**5**（不重複 Issue ID）。
 | `torch.nn.functional.interpolate` | 1 |
 | `torch.utils.checkpoint.checkpoint` | 1 |
 | `torch.vander` | 1 |
+| `torch.distributed.checkpoint.state_dict.get_optimizer_state_dict` | 1 |
+| `torch.distributed.fsdp.fully_shard` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
@@ -50,6 +52,8 @@ Issue 數量：**5**（不重複 Issue ID）。
 | [#199258](torch_199258/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | use_reentrant=False，區域中含 x*1.0時，NetworkXError: node source not in graph。 | 上游 min-cut 分析指出 identity elimination 與 checkpoint recomputation tags 使分割圖退化。 | [原文](https://github.com/pytorch/pytorch/issues/199258) |
 | [#199941](torch_199941/README.md) | `torch.vander`：主要受測 API | vander 輸出求和後 backward時，saved-variable inplace-modification RuntimeError。 | 上游指出建立 Vandermonde 的 inplace slice 寫入破壞 autograd 保存版本。 | [原文](https://github.com/pytorch/pytorch/issues/199941) |
 | [#199941](torch_199941/README.md) | `torch.linalg.vander`：建立正確參考的控制 API | vander 輸出求和後 backward時，saved-variable inplace-modification RuntimeError。 | 上游指出建立 Vandermonde 的 inplace slice 寫入破壞 autograd 保存版本。 | [原文](https://github.com/pytorch/pytorch/issues/199941) |
+| [#203487](torch_203487/README.md) | `torch.distributed.fsdp.fully_shard` | 兩個 CPU Gloo rank 在 optimizer step 後可讀取狀態，但 no-grad forward 後皆拋出 KeyError(0)。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/203487) |
+| [#203487](torch_203487/README.md) | `torch.distributed.checkpoint.state_dict.get_optimizer_state_dict` | 兩個 CPU Gloo rank 在 optimizer step 後可讀取狀態，但 no-grad forward 後皆拋出 KeyError(0)。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/203487) |
 | [#204544](torch_204544/README.md) | `torch.compile` | Static backward twice succeeds, dynamic retained backward raises donated buffers error. | 動態維度編譯後的 retained backward 誤判 donated buffer 不可重複使用。 | [原文](https://github.com/pytorch/pytorch/issues/204544) |
 | [#204544](torch_204544/README.md) | `torch.Tensor.backward` | Static backward twice succeeds, dynamic retained backward raises donated buffers error. | 動態維度編譯後的 retained backward 誤判 donated buffer 不可重複使用。 | [原文](https://github.com/pytorch/pytorch/issues/204544) |
 
