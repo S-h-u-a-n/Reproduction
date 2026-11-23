@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_197448",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/197448",
+  "target_api": "torch.Tensor.expand / fill_ / torch.compile",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "tensor_representation",
+    "expand",
+    "inplace"
+  ],
+  "bug_type": "wrong_forward_value",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "In-place fill through an expanded view must update its base consistently with eager.",
+  "bug_signature": "Compiled values differ from eager [2,2,2,2], with observed pattern [8,7,6,5] on the smoke build.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

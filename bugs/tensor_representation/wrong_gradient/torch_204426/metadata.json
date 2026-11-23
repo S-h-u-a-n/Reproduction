@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204426",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204426",
+  "target_api": "torch.compile / torch.no_grad / Tensor view",
+  "primary_category": "autograd",
+  "tags": [
+    "tensor_layout",
+    "storage_aliasing"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A view created under no_grad must not acquire an autograd connection to its source.",
+  "bug_signature": "Eager gradient is [2,2,2,2], compiled gradient is [2,3,3,3].",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_203921",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/203921",
+  "target_api": "torch.optim.swa_utils.AveragedModel",
+  "primary_category": "optim/ema-discrete-buffer",
+  "tags": [
+    "training_state",
+    "optim",
+    "ema-discrete-buffer"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "EMA on integer buffers silently preserves obsolete counters instead of copying current discrete state.",
+  "bug_signature": "Two EMA updates leave int64 state at 1 instead of latest integer state 2, whereas float parameters are updated.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

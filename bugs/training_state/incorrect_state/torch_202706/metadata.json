@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_202706",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/202706",
+  "target_api": "torch.autocast",
+  "primary_category": "graph_lifecycle",
+  "tags": [
+    "training_state",
+    "autocast",
+    "context_state"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Autocast state after recursive decorated calls should equal its state before entry.",
+  "bug_signature": "Autocast starts disabled but is left enabled after a recursive call of the same decorated function.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198624",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198624",
+  "target_api": "torch.Tensor.detach / add_ / torch.compile",
+  "primary_category": "autograd/detach-alias-history",
+  "tags": [
+    "training_state",
+    "autograd",
+    "detach-alias-history"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Detached alias updated with differentiable value loses its grad_fn under AOTAutograd replay.",
+  "bug_signature": "Eager return requires grad and has AddBackward; compiled return has requires_grad=False and grad_fn=None.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

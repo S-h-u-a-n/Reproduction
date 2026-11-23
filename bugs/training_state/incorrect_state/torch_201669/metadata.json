@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_201669",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/201669",
+  "target_api": "torch.optim.SGD.load_state_dict",
+  "primary_category": "optimizer_state",
+  "tags": [
+    "training_state",
+    "optimizer_state",
+    "dtype"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Reloading optimizer training state should preserve serialized momentum-buffer dtype and values.",
+  "bug_signature": "FP32 momentum buffer [1025,1.00390625] is narrowed to bfloat16 [1024,1.0] after load_state_dict.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

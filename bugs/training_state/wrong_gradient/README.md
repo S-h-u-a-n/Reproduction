@@ -16,33 +16,38 @@ Observation 定義：第一階／高階導數、Jacobian 或 tangent 與正確�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**11**（不重複 Issue ID）。
+Issue 數量：**14**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `wrong_gradient` | 11 |
+| `wrong_gradient` | 14 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：15；Issue/API 配對數：18。
+唯一 API 數：20；Issue/API 配對數：25。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
-| `torch.Tensor.backward` | 1 |
+| `torch.compile` | 4 |
+| `torch.autograd.forward_ad` | 2 |
+| `torch.autograd.grad` | 2 |
 | `torch.acosh` | 1 |
 | `torch.asinh` | 1 |
 | `torch.autograd.Function` | 1 |
-| `torch.autograd.forward_ad` | 1 |
-| `torch.autograd.grad` | 1 |
-| `torch.compile` | 4 |
 | `torch.distributions.Categorical` | 1 |
 | `torch.distributions.kl_divergence` | 1 |
+| `torch.func.jvp` | 1 |
+| `torch.func.vjp` | 1 |
 | `torch.hypot` | 1 |
+| `torch.linalg.det` | 1 |
 | `torch.linalg.solve` | 1 |
 | `torch.nn.functional.avg_pool1d` | 1 |
 | `torch.nn.functional.cosine_similarity` | 1 |
+| `torch.nn.functional.embedding` | 1 |
+| `torch.nn.functional.layer_norm` | 1 |
 | `torch.segment_reduce` | 1 |
 | `torch.special.log_ndtr` | 1 |
+| `torch.Tensor.backward` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
@@ -58,9 +63,16 @@ Issue 數量：**11**（不重複 Issue ID）。
 | [#201947](torch_201947/README.md) | `torch.acosh`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | float16 x=1000 的 backward時，導數為零。 | 上游明確定位 backward 公式先平方 x，half 中間值溢位；歸在 backward 規則，非僅因症狀是梯度。 | [原文](https://github.com/pytorch/pytorch/issues/201947) |
 | [#201970](torch_201970/README.md) | `torch.compile`：主要受測 API | 先普通 backward 編譯暖機，再相同 graph 以 retain_graph=True 重複 backward時，第二次梯度變成 8。 | 上游指出 FX cache key 沒有 donation 資訊，重用會覆寫 saved buffer 的 backward。 | [原文](https://github.com/pytorch/pytorch/issues/201970) |
 | [#201970](torch_201970/README.md) | `torch.Tensor.backward`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 先普通 backward 編譯暖機，再相同 graph 以 retain_graph=True 重複 backward時，第二次梯度變成 8。 | 上游指出 FX cache key 沒有 donation 資訊，重用會覆寫 saved buffer 的 backward。 | [原文](https://github.com/pytorch/pytorch/issues/201970) |
+| [#202956](torch_202956/README.md) | `torch.func.jvp`：Computes the forward-mode derivative under test | JVP for padding_idx=0 copies the nonzero tangent at row 0 into two padding outputs, while VJP masks that row. | Root cause not confirmed. The padding row contributes to the forward-mode tangent but is masked by reverse-mode AD. | [原文](https://github.com/pytorch/pytorch/issues/202956) |
+| [#202956](torch_202956/README.md) | `torch.func.vjp`：Computes the reverse-mode control | JVP for padding_idx=0 copies the nonzero tangent at row 0 into two padding outputs, while VJP masks that row. | Root cause not confirmed. The padding row contributes to the forward-mode tangent but is masked by reverse-mode AD. | [原文](https://github.com/pytorch/pytorch/issues/202956) |
+| [#202956](torch_202956/README.md) | `torch.nn.functional.embedding`：Applies embedding with padding_idx=0 | JVP for padding_idx=0 copies the nonzero tangent at row 0 into two padding outputs, while VJP masks that row. | Root cause not confirmed. The padding row contributes to the forward-mode tangent but is masked by reverse-mode AD. | [原文](https://github.com/pytorch/pytorch/issues/202956) |
 | [#202965](torch_202965/README.md) | `torch.distributions.kl_divergence`：主要受測 API | p logits 含 -inf，對其求 KL gradient時，loss 正確但整列梯度 NaN。 | 上游定位 forward masking 未移除 multiplication backward 中的 0*(-inf)，再經 softmax backward 擴散。 | [原文](https://github.com/pytorch/pytorch/issues/202965) |
 | [#202965](torch_202965/README.md) | `torch.distributions.Categorical`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | p logits 含 -inf，對其求 KL gradient時，loss 正確但整列梯度 NaN。 | 上游定位 forward masking 未移除 multiplication backward 中的 0*(-inf)，再經 softmax backward 擴散。 | [原文](https://github.com/pytorch/pytorch/issues/202965) |
 | [#203946](torch_203946/README.md) | `torch.nn.functional.cosine_similarity`：主要受測 API | norm(x1)<eps<norm(x2)，float64 固定向量時，第一分量只有一半，第二分量正確。 | 上游指出 norm clamp 在 no-grad guard 下原地執行，使 autograd 圖保留應被截斷的導數項。 | [原文](https://github.com/pytorch/pytorch/issues/203946) |
+| [#204024](torch_204024/README.md) | `torch.linalg.det`：Determinant differentiated at a singular matrix | Forward-mode AD returns scalar tangent 0 for det([[0]]) along [[1]]. An independent analytic oracle gives 1. | Root cause not confirmed. The forward-mode rule returns zero at the singular input. The test uses det([[x]]) = x as its analytic oracle and a nonsingular forward-mode control. | [原文](https://github.com/pytorch/pytorch/issues/204024) |
+| [#204024](torch_204024/README.md) | `torch.autograd.forward_ad`：Constructs and unpacks the dual tensors | Forward-mode AD returns scalar tangent 0 for det([[0]]) along [[1]]. An independent analytic oracle gives 1. | Root cause not confirmed. The forward-mode rule returns zero at the singular input. The test uses det([[x]]) = x as its analytic oracle and a nonsingular forward-mode control. | [原文](https://github.com/pytorch/pytorch/issues/204024) |
+| [#204478](torch_204478/README.md) | `torch.nn.functional.layer_norm`：Layer normalization under test | A parameter gradient of a loss involving second input derivatives differs from an independent formula. | Built-in layer normalization has incorrect reverse-mode third derivatives. | [原文](https://github.com/pytorch/pytorch/issues/204478) |
+| [#204478](torch_204478/README.md) | `torch.autograd.grad`：Computes higher-order derivatives | A parameter gradient of a loss involving second input derivatives differs from an independent formula. | Built-in layer normalization has incorrect reverse-mode third derivatives. | [原文](https://github.com/pytorch/pytorch/issues/204478) |
 | [#204825](torch_204825/README.md) | `torch.autograd.Function`：主要受測 API | compiled custom Function 的可微 backward，再求二階導數時，只剩普通路徑的 1。 | 上游定位 custom backward 以 grad mode 關閉追蹤，導致高階圖丟失 Function 貢獻。 | [原文](https://github.com/pytorch/pytorch/issues/204825) |
 | [#204825](torch_204825/README.md) | `torch.autograd.grad`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | compiled custom Function 的可微 backward，再求二階導數時，只剩普通路徑的 1。 | 上游定位 custom backward 以 grad mode 關閉追蹤，導致高階圖丟失 Function 貢獻。 | [原文](https://github.com/pytorch/pytorch/issues/204825) |
 | [#204825](torch_204825/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | compiled custom Function 的可微 backward，再求二階導數時，只剩普通路徑的 1。 | 上游定位 custom backward 以 grad mode 關閉追蹤，導致高階圖丟失 Function 貢獻。 | [原文](https://github.com/pytorch/pytorch/issues/204825) |
@@ -69,7 +81,7 @@ Issue 數量：**11**（不重複 Issue ID）。
 
 ## 已知限制（Known Limitations）
 
-原始整批 100 passed；暫存新結構整批 100 passed；正式搬移後 100 passed, 7 warnings。每階段一次，沿用 compiler cache，非十次隔離／冷編譯。
+歷史搬移驗證：原始整批 100 passed；暫存新結構整批 100 passed；正式搬移後 100 passed, 7 warnings。每階段一次，沿用 compiler cache，非十次隔離／冷編譯。
 
 high／medium 為分類信心，不是上游根因獨立認證。原始 metadata 可能仍標記 pending；第一個修復版本未追查。數值或 ISA 相關簽名不得外推至其他環境。
 

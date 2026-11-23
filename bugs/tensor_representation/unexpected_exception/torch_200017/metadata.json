@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_200017",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/200017",
+  "target_api": "torch.autograd.functional.jacobian / torch.func.jacfwd",
+  "primary_category": "tangent-shape/matmul-vectorized-jacobian",
+  "tags": [
+    "tensor_representation",
+    "tangent_shape",
+    "vectorized_jacobian",
+    "matmul"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "The forward-mode Jacobian of exp(x @ W.T) has shape (3,2) and equals reverse Jacobian and jacfwd.",
+  "bug_signature": "strategy=forward-mode, vectorize=True raises a RuntimeError about a forward gradient having different size for a 1-D input to matmul.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

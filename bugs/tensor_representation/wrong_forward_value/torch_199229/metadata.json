@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_199229",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/199229",
+  "target_api": "torch.Tensor.set_ / torch.compile",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "tensor_representation",
+    "storage_aliasing",
+    "inplace"
+  ],
+  "bug_type": "wrong_forward_value",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Rebinding dest to a distinct source must isolate it from later changes to the original backing storage.",
+  "bug_signature": "Compiled output is 10.0 instead of the eager 7.0 after Tensor.set_ then mutation of old storage.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

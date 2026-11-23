@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204024",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204024",
+  "target_api": "torch.linalg.det / torch.autograd.forward_ad",
+  "primary_category": "autograd/singular-determinant-jvp",
+  "tags": [
+    "training_state",
+    "forward_ad",
+    "determinant",
+    "singular_matrix"
+  ],
+  "bug_type": "wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "The derivative of det([[x]]) at x=0 is 1 in both forward and reverse mode.",
+  "bug_signature": "Forward JVP of det([[0]]) along [[1]] returns scalar 0 while reverse-mode derivative is 1.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

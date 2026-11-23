@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204033",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204033",
+  "target_api": "torch.Tensor.conj / torch.Tensor.imag / torch.compile",
+  "primary_category": "alias-replay/conjugate-imaginary-view",
+  "tags": [
+    "tensor_representation",
+    "conjugate_view",
+    "aliasing",
+    "storage",
+    "compile"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Post-return mutation of the conjugate imaginary view must update the imaginary component of the returned complex base.",
+  "bug_signature": "Eager view.add_(100) updates base.imag from [-1,0,1,2] to [-101,-100,-99,-98]; under Inductor, returned view has separate storage and base.imag stays [-1,0,1,2].",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

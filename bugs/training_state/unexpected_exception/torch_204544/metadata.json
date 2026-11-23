@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204544",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204544",
+  "target_api": "torch.compile / Tensor.backward(retain_graph=True)",
+  "primary_category": "graph_lifecycle",
+  "tags": [
+    "training_state",
+    "graph_lifecycle"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Compiled backward with retain_graph=True should be usable under dynamic shapes as in static shapes.",
+  "bug_signature": "Dynamic compiled backward incorrectly raises a donated-buffer restriction exception.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

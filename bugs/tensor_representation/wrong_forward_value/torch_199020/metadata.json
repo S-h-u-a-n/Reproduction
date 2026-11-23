@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_199020",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/199020",
+  "target_api": "torch.cummax(out=...)",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "tensor_representation",
+    "overlapping_storage",
+    "out"
+  ],
+  "bug_type": "wrong_forward_value",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "An out tuple must not silently corrupt two independent outputs sharing storage.",
+  "bug_signature": "cummax with a shared out tensor writes indices over the expected values.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

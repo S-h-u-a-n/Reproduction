@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_202416",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/202416",
+  "target_api": "torch.compile / torch.Tensor.detach",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "tensor_layout",
+    "storage_aliasing"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A view and detached alias retain consistent shapes and work under Inductor.",
+  "bug_signature": "Inductor raises a ViewMeta output-shape assertion while eager works.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

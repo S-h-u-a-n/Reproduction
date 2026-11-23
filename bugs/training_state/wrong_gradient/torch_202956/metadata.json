@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_202956",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/202956",
+  "target_api": "torch.func.jvp / torch.func.vjp / torch.nn.functional.embedding",
+  "primary_category": "autograd/embedding-padding-forward-ad",
+  "tags": [
+    "training_state",
+    "forward_ad",
+    "padding_idx",
+    "jvp-vjp"
+  ],
+  "bug_type": "wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "The padding row contributes zero to forward- and reverse-mode derivatives; dot product adjoint identity holds.",
+  "bug_signature": "JVP for padding_idx=0 copies the nonzero tangent at row 0 into two padding outputs, while VJP masks that row.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

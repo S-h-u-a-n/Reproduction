@@ -62,12 +62,12 @@ done
 
 測試的設計用途是辨識已知錯誤：PASS 代表既有斷言通過，不代表 PyTorch 正確、根因已獨立確認、每個上游變體都已測過或 Mirage 已接入。metadata 的歷史 10/10 與 review=pending 不等於新的品質認證；Issue 數也不等於獨立根因數。
 
-本次整理前後都執行指定 importlib 全套，結果均為 **100 passed、7 warnings**。100 個案例、整個 bugs 目錄的 416 個既有檔案路徑及 SHA-256 保持不變；沒有重新做全案十次復現。
+Batch 01 v4 全套驗證：99 passed、1 failed、7 warnings；#203866 在 Gloo 初始化時無法解析本機 loopback 位址。 目前仍有 100 個唯一案例。
 
 ## 特殊條件
 
 - 不更動 module name、import path 或 rootdir。歷史 #205991 曾因匯入命名空間改變而改變結果，目前不在這 100 案中；其教訓仍適用。
-- #198057、#198134、#198183、#204679 有 CPU 向量化限制；尤其 #204679 的精確錯值不能外推到其他 ISA、CSR 或 float16。
+- #198057、#198134、#198183 有 CPU 向量化限制。
 - #197889、#200925、#201970、#204188 依賴案例內呼叫／cache／saved-state 歷史，不可只抽出最後一個操作或任意清 cache。
 - #205134 修改 saved tensor 後的正確契約是 version counter 衝突報錯；未修改控制的 [2,4] 不是修改後的合法梯度。
 - #204407 必須保留 negative view、stride、offset 及鏈式法則；#199350 依賴指定 build 的內部 operator identity。

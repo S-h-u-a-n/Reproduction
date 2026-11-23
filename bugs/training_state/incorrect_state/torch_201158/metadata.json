@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_201158",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/201158",
+  "target_api": "torch.utils.checkpoint.create_selective_checkpoint_contexts",
+  "primary_category": "checkpointing",
+  "tags": [
+    "training_state",
+    "checkpointing"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Selective checkpoint cache must retain the original activation values after compilation.",
+  "bug_signature": "An Inductor memory-planning buffer reuse overwrites a tensor stored by selective checkpointing.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204442",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204442",
+  "target_api": "torch.add / sparse CSR, CSC",
+  "primary_category": "tensor_layout",
+  "tags": [
+    "tensor_representation",
+    "tensor_layout"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Sparse CSR addition should either give the correct values in compatible output layouts or reject incompatible out layouts.",
+  "bug_signature": "Sparse CSR addition into CSC out yields transposed wrong values.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204478",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204478",
+  "target_api": "F.layer_norm / torch.autograd.grad",
+  "primary_category": "autograd",
+  "tags": [
+    "autograd",
+    "training_state"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "LayerNorm third-order parameter gradients must match an algebraically equivalent reference.",
+  "bug_signature": "A parameter gradient of a loss involving second input derivatives differs from an independent formula.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}
