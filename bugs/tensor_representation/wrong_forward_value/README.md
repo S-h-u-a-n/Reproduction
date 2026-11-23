@@ -16,19 +16,19 @@ Observation 定義：forward 或一般數值運算回傳錯誤值，包含 NaN�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**19**（不重複 Issue ID）。
+Issue 數量：**20**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `wrong_forward_value` | 19 |
+| `wrong_forward_value` | 20 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：23；Issue/API 配對數：32。
+唯一 API 數：24；Issue/API 配對數：34。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
-| `torch.compile` | 8 |
+| `torch.compile` | 9 |
 | `torch.add` | 2 |
 | `torch.linalg.lu_solve` | 2 |
 | `torch.SymInt.__round__` | 1 |
@@ -38,6 +38,7 @@ Issue 數量：**19**（不重複 Issue ID）。
 | `torch.Tensor.item` | 1 |
 | `torch.Tensor.scatter_add` | 1 |
 | `torch.Tensor.scatter_reduce` | 1 |
+| `torch.Tensor.set_` | 1 |
 | `torch.Tensor.unfold` | 1 |
 | `torch._foreach_copy_` | 1 |
 | `torch.amax` | 1 |
@@ -65,6 +66,8 @@ Issue 數量：**19**（不重複 Issue ID）。
 | [#198102](torch_198102/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 不重疊 unfold view 的寫入，base 中間有未覆蓋位置時，未覆蓋的位置被歸零。 | functionalization 的 unfold inverse 使用 backward scatter 的歸零邏輯，破壞 view 寫回。 | [原文](https://github.com/pytorch/pytorch/issues/198102) |
 | [#198118](torch_198118/README.md) | `torch.linalg.pinv`：主要受測 API | complex128 pinv 經 pass-through TorchDispatchMode時，符合缺少 conjugation 的完整 SVD 公式。 | 上游指出內部 lazy conjugate view 在 Python dispatch 路徑未正確物化；與 #197084 相關。 | [原文](https://github.com/pytorch/pytorch/issues/198118) |
 | [#198118](torch_198118/README.md) | `torch.utils._python_dispatch.TorchDispatchMode`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | complex128 pinv 經 pass-through TorchDispatchMode時，符合缺少 conjugation 的完整 SVD 公式。 | 上游指出內部 lazy conjugate view 在 Python dispatch 路徑未正確物化；與 #197084 相關。 | [原文](https://github.com/pytorch/pytorch/issues/198118) |
+| [#199229](torch_199229/README.md) | `torch.Tensor.set_`：Rebinds the destination tensor storage | Compiled output is 10.0 instead of the eager 7.0 after Tensor.set_ then mutation of old storage. | Compiled Tensor.set_ storage rebinding incorrectly retains a dependency on mutated old storage. | [原文](https://github.com/pytorch/pytorch/issues/199229) |
+| [#199229](torch_199229/README.md) | `torch.compile`：Exercises the compiled storage-rebinding path | Compiled output is 10.0 instead of the eager 7.0 after Tensor.set_ then mutation of old storage. | Compiled Tensor.set_ storage rebinding incorrectly retains a dependency on mutated old storage. | [原文](https://github.com/pytorch/pytorch/issues/199229) |
 | [#199644](torch_199644/README.md) | `torch.Tensor.item`：主要受測 API | 擷取 float64 scalar 16777219 再傳入 CPU 編譯 kernel時，兩者皆變成 16777220。 | 上游定位 C++ kernel scalar 參數宣告為 const float，縮窄原本的 float64 表示。 | [原文](https://github.com/pytorch/pytorch/issues/199644) |
 | [#199644](torch_199644/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 擷取 float64 scalar 16777219 再傳入 CPU 編譯 kernel時，兩者皆變成 16777220。 | 上游定位 C++ kernel scalar 參數宣告為 const float，縮窄原本的 float64 表示。 | [原文](https://github.com/pytorch/pytorch/issues/199644) |
 | [#200599](torch_200599/README.md) | `torch.linalg.lu_solve`：主要受測 API | LU[:,None] 的 singleton batch stride 非標準時，解為 [0.2,0.6,5,-1]。 | CPU kernel 用 singleton 維度 stride 當作相鄰矩陣距離。 | [原文](https://github.com/pytorch/pytorch/issues/200599) |

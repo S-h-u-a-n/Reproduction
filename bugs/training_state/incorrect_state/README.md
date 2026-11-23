@@ -16,25 +16,31 @@ Observation 定義：alias 寫入後的可觀察狀態、Python 容器副作用�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**5**（不重複 Issue ID）。
+Issue 數量：**9**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `incorrect_state` | 5 |
+| `incorrect_state` | 9 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：8；Issue/API 配對數：9。
+唯一 API 數：14；Issue/API 配對數：15。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
 | `torch.compile` | 2 |
 | `torch._dynamo.graph_break` | 1 |
+| `torch.amp.GradScaler` | 1 |
 | `torch.amp.autocast` | 1 |
 | `torch.ao.quantization.observer.PerChannelMinMaxObserver` | 1 |
+| `torch.autocast` | 1 |
 | `torch.nn.utils.clip_grad_norm_` | 1 |
 | `torch.nn.utils.get_total_norm` | 1 |
 | `torch.optim.Adam` | 1 |
+| `torch.optim.Optimizer.load_state_dict` | 1 |
+| `torch.optim.Optimizer.state_dict` | 1 |
+| `torch.optim.SGD` | 1 |
+| `torch.optim.SGD.load_state_dict` | 1 |
 | `torch.utils.checkpoint.create_selective_checkpoint_contexts` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
@@ -43,8 +49,14 @@ Issue 數量：**5**（不重複 Issue ID）。
 | --- | --- | --- | --- | --- |
 | [#195488](torch_195488/README.md) | `torch.amp.autocast` | index_select throws IndexError, compiled context retains the nesting count while eager would restore it. | 編譯區域發生例外時 autocast nesting 未正常清理，造成後續訓練狀態洩漏。 | [原文](https://github.com/pytorch/pytorch/issues/195488) |
 | [#195488](torch_195488/README.md) | `torch.compile` | index_select throws IndexError, compiled context retains the nesting count while eager would restore it. | 編譯區域發生例外時 autocast nesting 未正常清理，造成後續訓練狀態洩漏。 | [原文](https://github.com/pytorch/pytorch/issues/195488) |
+| [#196083](torch_196083/README.md) | `torch.optim.Optimizer.state_dict`：Exports optimizer state | SGD momentum_buffer shares data_ptr across optimizers and a destination step modifies the source buffer. | In-process optimizer state transfer aliases SGD momentum buffers; updating the new optimizer mutates the original optimizer state. | [原文](https://github.com/pytorch/pytorch/issues/196083) |
+| [#196083](torch_196083/README.md) | `torch.optim.Optimizer.load_state_dict`：Loads momentum state into the destination optimizer | SGD momentum_buffer shares data_ptr across optimizers and a destination step modifies the source buffer. | In-process optimizer state transfer aliases SGD momentum buffers; updating the new optimizer mutates the original optimizer state. | [原文](https://github.com/pytorch/pytorch/issues/196083) |
 | [#199151](torch_199151/README.md) | `torch.ao.quantization.observer.PerChannelMinMaxObserver` | PerChannelMinMaxObserver loses float64 on reset, unlike MinMaxObserver. | PerChannelMinMaxObserver 在 reset 後丟失 float64 dtype 設定，導致狀態 dtype 回退。 | [原文](https://github.com/pytorch/pytorch/issues/199151) |
 | [#201158](torch_201158/README.md) | `torch.utils.checkpoint.create_selective_checkpoint_contexts` | Forward output matches eager but forward.storage contains different activation values. | Selective checkpointing 快取持有 Inductor 之後重用的 buffer，導致已儲存的中間 Tensor 被覆寫。 | [原文](https://github.com/pytorch/pytorch/issues/201158) |
+| [#201615](torch_201615/README.md) | `torch.optim.SGD`：Exercises the fused optimizer step | Fused SGD has a NaN momentum_buffer after a skipped first step and corrupts its first actual update. | A skipped fused-SGD step creates uninitialized momentum state, making the next valid optimizer update NaN. | [原文](https://github.com/pytorch/pytorch/issues/201615) |
+| [#201615](torch_201615/README.md) | `torch.amp.GradScaler`：Skips the first optimizer step on nonfinite gradients | Fused SGD has a NaN momentum_buffer after a skipped first step and corrupts its first actual update. | A skipped fused-SGD step creates uninitialized momentum state, making the next valid optimizer update NaN. | [原文](https://github.com/pytorch/pytorch/issues/201615) |
+| [#201669](torch_201669/README.md) | `torch.optim.SGD.load_state_dict`：Reloads FP32 momentum for bfloat16 parameters | FP32 momentum buffer [1025,1.00390625] is narrowed to bfloat16 [1024,1.0] after load_state_dict. | Optimizer state reload silently narrows FP32 momentum buffers to bfloat16 because the parameter dtype is bfloat16. | [原文](https://github.com/pytorch/pytorch/issues/201669) |
+| [#202706](torch_202706/README.md) | `torch.autocast`：Decorates the recursively called function | Autocast starts disabled but is left enabled after a recursive call of the same decorated function. | Nested calls of an autocast decorator accidentally reuse context state, leaving autocast enabled after exit. | [原文](https://github.com/pytorch/pytorch/issues/202706) |
 | [#204269](torch_204269/README.md) | `torch.nn.utils.clip_grad_norm_`：Public gradient-clipping entry point | A pair of gradient tensors with three nonzero elements returns a total 0-norm of two. | The 0-norm of gradients counts nonzero tensors instead of nonzero gradient elements. | [原文](https://github.com/pytorch/pytorch/issues/204269) |
 | [#204269](torch_204269/README.md) | `torch.nn.utils.get_total_norm`：Computes the total gradient norm | A pair of gradient tensors with three nonzero elements returns a total 0-norm of two. | The 0-norm of gradients counts nonzero tensors instead of nonzero gradient elements. | [原文](https://github.com/pytorch/pytorch/issues/204269) |
 | [#204339](torch_204339/README.md) | `torch.optim.Adam`：主要受測 API | optimizer 初始化後 graph break，保留 GraphModules 再銷毀 optimizer時，optimizer 已釋放但 Parameter 被 resumed graph 保留。 | 原文指出 optimizer-owned parameter lifetime 與 resumed graph capture 有關；完整 reference-management 根因未確認。 | [原文](https://github.com/pytorch/pytorch/issues/204339) |

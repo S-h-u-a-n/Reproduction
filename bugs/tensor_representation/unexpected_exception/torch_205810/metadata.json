@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_205810",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/205810",
+  "target_api": "torch.compile / torch.nn.Conv2d",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "tensor_representation",
+    "layout",
+    "autograd"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Compiled Conv2d backward should agree with eager/aot_eager gradients instead of asserting output stride metadata.",
+  "bug_signature": "Inductor backward fails on replication_pad2d_backward with stride/size metadata mismatch for channels-last CPU tensor.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

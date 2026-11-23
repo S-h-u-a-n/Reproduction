@@ -14,26 +14,27 @@ Primary Cause 必須符合本類機制；觀察錯誤可以屬於不同 Observat
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**53**（不重複 Issue ID）。
+Issue 數量：**55**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
 | `wrong_gradient` | 8 |
-| `wrong_forward_value` | 19 |
+| `wrong_forward_value` | 20 |
 | `wrong_optimizer_update` | 1 |
 | `incorrect_state` | 3 |
 | `wrong_metadata` | 8 |
-| `unexpected_exception` | 12 |
+| `unexpected_exception` | 13 |
 | `missing_exception` | 2 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：69；Issue/API 配對數：107。
+唯一 API 數：70；Issue/API 配對數：111。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
-| `torch.compile` | 32 |
+| `torch.compile` | 34 |
 | `torch.cat` | 3 |
+| `torch.Tensor.set_` | 2 |
 | `torch.add` | 2 |
 | `torch.any` | 2 |
 | `torch.linalg.lu_solve` | 2 |
@@ -56,7 +57,6 @@ Issue 數量：**53**（不重複 Issue ID）。
 | `torch.Tensor.real` | 1 |
 | `torch.Tensor.scatter_add` | 1 |
 | `torch.Tensor.scatter_reduce` | 1 |
-| `torch.Tensor.set_` | 1 |
 | `torch.Tensor.split` | 1 |
 | `torch.Tensor.trunc_` | 1 |
 | `torch.Tensor.unfold` | 1 |
@@ -84,6 +84,7 @@ Issue 數量：**53**（不重複 Issue ID）。
 | `torch.linalg.solve` | 1 |
 | `torch.linalg.solve_triangular` | 1 |
 | `torch.linalg.vector_norm` | 1 |
+| `torch.nn.Conv2d` | 1 |
 | `torch.nn.functional.adaptive_max_pool2d` | 1 |
 | `torch.nn.functional.adaptive_max_pool3d` | 1 |
 | `torch.nn.functional.grouped_mm` | 1 |
@@ -152,6 +153,8 @@ Issue 數量：**53**（不重複 Issue ID）。
 | [#199214](unexpected_exception/torch_199214/README.md) | `torch.dequantize`：主要受測 API | 普通 float input 先 dequantize 再原地 trunc_時，functionalization 拋 copy_／dequantize assertion。 | 上游指出非量化 dequantize 的 input alias 語意使 mutation copy-back 目標追蹤錯誤。 | [原文](https://github.com/pytorch/pytorch/issues/199214) |
 | [#199214](unexpected_exception/torch_199214/README.md) | `torch.Tensor.trunc_`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 普通 float input 先 dequantize 再原地 trunc_時，functionalization 拋 copy_／dequantize assertion。 | 上游指出非量化 dequantize 的 input alias 語意使 mutation copy-back 目標追蹤錯誤。 | [原文](https://github.com/pytorch/pytorch/issues/199214) |
 | [#199214](unexpected_exception/torch_199214/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 普通 float input 先 dequantize 再原地 trunc_時，functionalization 拋 copy_／dequantize assertion。 | 上游指出非量化 dequantize 的 input alias 語意使 mutation copy-back 目標追蹤錯誤。 | [原文](https://github.com/pytorch/pytorch/issues/199214) |
+| [#199229](wrong_forward_value/torch_199229/README.md) | `torch.Tensor.set_`：Rebinds the destination tensor storage | Compiled output is 10.0 instead of the eager 7.0 after Tensor.set_ then mutation of old storage. | Compiled Tensor.set_ storage rebinding incorrectly retains a dependency on mutated old storage. | [原文](https://github.com/pytorch/pytorch/issues/199229) |
+| [#199229](wrong_forward_value/torch_199229/README.md) | `torch.compile`：Exercises the compiled storage-rebinding path | Compiled output is 10.0 instead of the eager 7.0 after Tensor.set_ then mutation of old storage. | Compiled Tensor.set_ storage rebinding incorrectly retains a dependency on mutated old storage. | [原文](https://github.com/pytorch/pytorch/issues/199229) |
 | [#199350](unexpected_exception/torch_199350/README.md) | `torch.view_as_complex_copy`：主要受測 API | pooling 後接 view_as_complex_copy，Inductor 選擇 layout時，fallback 拋 last dimension stride 1 RuntimeError。 | 上游指出 view_as_complex_copy 缺少 require_contiguous fallback 約束。 | [原文](https://github.com/pytorch/pytorch/issues/199350) |
 | [#199350](unexpected_exception/torch_199350/README.md) | `torch.nn.functional.adaptive_max_pool2d`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | pooling 後接 view_as_complex_copy，Inductor 選擇 layout時，fallback 拋 last dimension stride 1 RuntimeError。 | 上游指出 view_as_complex_copy 缺少 require_contiguous fallback 約束。 | [原文](https://github.com/pytorch/pytorch/issues/199350) |
 | [#199350](unexpected_exception/torch_199350/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | pooling 後接 view_as_complex_copy，Inductor 選擇 layout時，fallback 拋 last dimension stride 1 RuntimeError。 | 上游指出 view_as_complex_copy 缺少 require_contiguous fallback 約束。 | [原文](https://github.com/pytorch/pytorch/issues/199350) |
@@ -212,6 +215,8 @@ Issue 數量：**53**（不重複 Issue ID）。
 | [#205682](incorrect_state/torch_205682/README.md) | `torch.cat`：主要受測 API | 同正軸 cat 後按原長度 split，另有 mixed dtype 控制時，寫 split 修改 input；第一份 mixed output 留在 int32。 | 上游 ablation 指向 cat_splitwithsizes_replace 重寫，丟失新 storage 與 dtype promotion。 | [原文](https://github.com/pytorch/pytorch/issues/205682) |
 | [#205682](incorrect_state/torch_205682/README.md) | `torch.Tensor.split`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 同正軸 cat 後按原長度 split，另有 mixed dtype 控制時，寫 split 修改 input；第一份 mixed output 留在 int32。 | 上游 ablation 指向 cat_splitwithsizes_replace 重寫，丟失新 storage 與 dtype promotion。 | [原文](https://github.com/pytorch/pytorch/issues/205682) |
 | [#205682](incorrect_state/torch_205682/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 同正軸 cat 後按原長度 split，另有 mixed dtype 控制時，寫 split 修改 input；第一份 mixed output 留在 int32。 | 上游 ablation 指向 cat_splitwithsizes_replace 重寫，丟失新 storage 與 dtype promotion。 | [原文](https://github.com/pytorch/pytorch/issues/205682) |
+| [#205810](unexpected_exception/torch_205810/README.md) | `torch.compile`：Exercises the Inductor backward path | Inductor backward fails on replication_pad2d_backward with stride/size metadata mismatch for channels-last CPU tensor. | Compiled Conv2d with replicate padding fails in backward because FakeTensor/meta strides differ from actual channels-last CPU output. | [原文](https://github.com/pytorch/pytorch/issues/205810) |
+| [#205810](unexpected_exception/torch_205810/README.md) | `torch.nn.Conv2d`：Applies replicate padding to channels-last CPU input | Inductor backward fails on replication_pad2d_backward with stride/size metadata mismatch for channels-last CPU tensor. | Compiled Conv2d with replicate padding fails in backward because FakeTensor/meta strides differ from actual channels-last CPU output. | [原文](https://github.com/pytorch/pytorch/issues/205810) |
 | [#206126](wrong_forward_value/torch_206126/README.md) | `torch.linalg.lu_solve`：Solves with an output that aliases the LU factor | LU factor aliases the out argument and yields a large residual while independent/rhs output are correct. | Output aliases LU factor, overwriting data required for the solve. | [原文](https://github.com/pytorch/pytorch/issues/206126) |
 
 ## 已知限制（Known Limitations）

@@ -14,19 +14,19 @@ Primary Cause 必須符合本類機制；觀察錯誤可以屬於不同 Observat
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**27**（不重複 Issue ID）。
+Issue 數量：**31**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
 | `wrong_gradient` | 12 |
-| `incorrect_state` | 5 |
+| `incorrect_state` | 9 |
 | `wrong_metadata` | 1 |
 | `unexpected_exception` | 5 |
 | `missing_exception` | 4 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：35；Issue/API 配對數：50。
+唯一 API 數：41；Issue/API 配對數：56。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
@@ -38,9 +38,11 @@ Issue 數量：**27**（不重複 Issue ID）。
 | `torch._dynamo.compiled_autograd._enable` | 1 |
 | `torch._dynamo.graph_break` | 1 |
 | `torch.acosh` | 1 |
+| `torch.amp.GradScaler` | 1 |
 | `torch.amp.autocast` | 1 |
 | `torch.ao.quantization.observer.PerChannelMinMaxObserver` | 1 |
 | `torch.asinh` | 1 |
+| `torch.autocast` | 1 |
 | `torch.autograd.Function` | 1 |
 | `torch.autograd.forward_ad` | 1 |
 | `torch.distributed.checkpoint.DefaultSavePlanner` | 1 |
@@ -60,6 +62,10 @@ Issue 數量：**27**（不重複 Issue ID）。
 | `torch.nn.utils.clip_grad_norm_` | 1 |
 | `torch.nn.utils.get_total_norm` | 1 |
 | `torch.optim.Adam` | 1 |
+| `torch.optim.Optimizer.load_state_dict` | 1 |
+| `torch.optim.Optimizer.state_dict` | 1 |
+| `torch.optim.SGD` | 1 |
+| `torch.optim.SGD.load_state_dict` | 1 |
 | `torch.segment_reduce` | 1 |
 | `torch.special.log_ndtr` | 1 |
 | `torch.utils.checkpoint.checkpoint` | 1 |
@@ -72,6 +78,8 @@ Issue 數量：**27**（不重複 Issue ID）。
 | --- | --- | --- | --- | --- |
 | [#195488](incorrect_state/torch_195488/README.md) | `torch.amp.autocast` | index_select throws IndexError, compiled context retains the nesting count while eager would restore it. | 編譯區域發生例外時 autocast nesting 未正常清理，造成後續訓練狀態洩漏。 | [原文](https://github.com/pytorch/pytorch/issues/195488) |
 | [#195488](incorrect_state/torch_195488/README.md) | `torch.compile` | index_select throws IndexError, compiled context retains the nesting count while eager would restore it. | 編譯區域發生例外時 autocast nesting 未正常清理，造成後續訓練狀態洩漏。 | [原文](https://github.com/pytorch/pytorch/issues/195488) |
+| [#196083](incorrect_state/torch_196083/README.md) | `torch.optim.Optimizer.state_dict`：Exports optimizer state | SGD momentum_buffer shares data_ptr across optimizers and a destination step modifies the source buffer. | In-process optimizer state transfer aliases SGD momentum buffers; updating the new optimizer mutates the original optimizer state. | [原文](https://github.com/pytorch/pytorch/issues/196083) |
+| [#196083](incorrect_state/torch_196083/README.md) | `torch.optim.Optimizer.load_state_dict`：Loads momentum state into the destination optimizer | SGD momentum_buffer shares data_ptr across optimizers and a destination step modifies the source buffer. | In-process optimizer state transfer aliases SGD momentum buffers; updating the new optimizer mutates the original optimizer state. | [原文](https://github.com/pytorch/pytorch/issues/196083) |
 | [#197092](unexpected_exception/torch_197092/README.md) | `torch.nn.functional.interpolate`：主要受測 API | compiled autograd、bilinear interpolation backward時，fake-tensor propagation 出現 isIntList INTERNAL ASSERT。 | 問題位於 backward node 的參數傳遞；上游僅提出 int-list／scalar packing 的疑似原因，未確認完整根因。 | [原文](https://github.com/pytorch/pytorch/issues/197092) |
 | [#197092](unexpected_exception/torch_197092/README.md) | `torch._dynamo.compiled_autograd._enable`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | compiled autograd、bilinear interpolation backward時，fake-tensor propagation 出現 isIntList INTERNAL ASSERT。 | 問題位於 backward node 的參數傳遞；上游僅提出 int-list／scalar packing 的疑似原因，未確認完整根因。 | [原文](https://github.com/pytorch/pytorch/issues/197092) |
 | [#197092](unexpected_exception/torch_197092/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | compiled autograd、bilinear interpolation backward時，fake-tensor propagation 出現 isIntList INTERNAL ASSERT。 | 問題位於 backward node 的參數傳遞；上游僅提出 int-list／scalar packing 的疑似原因，未確認完整根因。 | [原文](https://github.com/pytorch/pytorch/issues/197092) |
@@ -92,11 +100,15 @@ Issue 數量：**27**（不重複 Issue ID）。
 | [#200600](wrong_gradient/torch_200600/README.md) | `torch.autograd.forward_ad`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | forward-over-reverse，backward 的 create_graph=False時，一個 tangent 消失、另一個只剩一半。 | backward 因 GradMode 關閉改讀沒有 fw tangent 的 saved LU，破壞混合 AD 的狀態傳遞。 | [原文](https://github.com/pytorch/pytorch/issues/200600) |
 | [#201089](wrong_gradient/torch_201089/README.md) | `torch.compile`：主要受測 API | forward 原地增加 counter buffer，再以其算出的 scale 作用在 Linear時，forward 正確但 weight gradient 為 0.3。 | 上游指出 min-cut 保存已會被 copy_ 改寫的 buffer，backward 重新計算時讀到新值。 | [原文](https://github.com/pytorch/pytorch/issues/201089) |
 | [#201158](incorrect_state/torch_201158/README.md) | `torch.utils.checkpoint.create_selective_checkpoint_contexts` | Forward output matches eager but forward.storage contains different activation values. | Selective checkpointing 快取持有 Inductor 之後重用的 buffer，導致已儲存的中間 Tensor 被覆寫。 | [原文](https://github.com/pytorch/pytorch/issues/201158) |
+| [#201615](incorrect_state/torch_201615/README.md) | `torch.optim.SGD`：Exercises the fused optimizer step | Fused SGD has a NaN momentum_buffer after a skipped first step and corrupts its first actual update. | A skipped fused-SGD step creates uninitialized momentum state, making the next valid optimizer update NaN. | [原文](https://github.com/pytorch/pytorch/issues/201615) |
+| [#201615](incorrect_state/torch_201615/README.md) | `torch.amp.GradScaler`：Skips the first optimizer step on nonfinite gradients | Fused SGD has a NaN momentum_buffer after a skipped first step and corrupts its first actual update. | A skipped fused-SGD step creates uninitialized momentum state, making the next valid optimizer update NaN. | [原文](https://github.com/pytorch/pytorch/issues/201615) |
 | [#201633](wrong_gradient/torch_201633/README.md) | `torch.segment_reduce`：主要受測 API | max/min 有兩個相同 extrema，incoming gradient 為負時，回傳 [-1,-1,0]，正梯度控制正常。 | 上游定位 backward 分配 tied extrema 梯度時對負值處理錯誤。 | [原文](https://github.com/pytorch/pytorch/issues/201633) |
+| [#201669](incorrect_state/torch_201669/README.md) | `torch.optim.SGD.load_state_dict`：Reloads FP32 momentum for bfloat16 parameters | FP32 momentum buffer [1025,1.00390625] is narrowed to bfloat16 [1024,1.0] after load_state_dict. | Optimizer state reload silently narrows FP32 momentum buffers to bfloat16 because the parameter dtype is bfloat16. | [原文](https://github.com/pytorch/pytorch/issues/201669) |
 | [#201947](wrong_gradient/torch_201947/README.md) | `torch.asinh`：主要受測 API | float16 x=1000 的 backward時，導數為零。 | 上游明確定位 backward 公式先平方 x，half 中間值溢位；歸在 backward 規則，非僅因症狀是梯度。 | [原文](https://github.com/pytorch/pytorch/issues/201947) |
 | [#201947](wrong_gradient/torch_201947/README.md) | `torch.acosh`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | float16 x=1000 的 backward時，導數為零。 | 上游明確定位 backward 公式先平方 x，half 中間值溢位；歸在 backward 規則，非僅因症狀是梯度。 | [原文](https://github.com/pytorch/pytorch/issues/201947) |
 | [#201970](wrong_gradient/torch_201970/README.md) | `torch.compile`：主要受測 API | 先普通 backward 編譯暖機，再相同 graph 以 retain_graph=True 重複 backward時，第二次梯度變成 8。 | 上游指出 FX cache key 沒有 donation 資訊，重用會覆寫 saved buffer 的 backward。 | [原文](https://github.com/pytorch/pytorch/issues/201970) |
 | [#201970](wrong_gradient/torch_201970/README.md) | `torch.Tensor.backward`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 先普通 backward 編譯暖機，再相同 graph 以 retain_graph=True 重複 backward時，第二次梯度變成 8。 | 上游指出 FX cache key 沒有 donation 資訊，重用會覆寫 saved buffer 的 backward。 | [原文](https://github.com/pytorch/pytorch/issues/201970) |
+| [#202706](incorrect_state/torch_202706/README.md) | `torch.autocast`：Decorates the recursively called function | Autocast starts disabled but is left enabled after a recursive call of the same decorated function. | Nested calls of an autocast decorator accidentally reuse context state, leaving autocast enabled after exit. | [原文](https://github.com/pytorch/pytorch/issues/202706) |
 | [#202806](missing_exception/torch_202806/README.md) | `torch.Tensor.detach`：主要受測 API | eager 已保存 weight，再透過 compiled detached alias 修改時，沒有版本遞增，backward 靜默使用新 weight。 | 上游明確將此歸為漏掉 version check；不存在合法的「修改後仍應得到舊梯度」契約。 | [原文](https://github.com/pytorch/pytorch/issues/202806) |
 | [#202806](missing_exception/torch_202806/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | eager 已保存 weight，再透過 compiled detached alias 修改時，沒有版本遞增，backward 靜默使用新 weight。 | 上游明確將此歸為漏掉 version check；不存在合法的「修改後仍應得到舊梯度」契約。 | [原文](https://github.com/pytorch/pytorch/issues/202806) |
 | [#202965](wrong_gradient/torch_202965/README.md) | `torch.distributions.kl_divergence`：主要受測 API | p logits 含 -inf，對其求 KL gradient時，loss 正確但整列梯度 NaN。 | 上游定位 forward masking 未移除 multiplication backward 中的 0*(-inf)，再經 softmax backward 擴散。 | [原文](https://github.com/pytorch/pytorch/issues/202965) |

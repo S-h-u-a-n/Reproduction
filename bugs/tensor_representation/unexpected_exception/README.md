@@ -16,25 +16,25 @@ Observation 定義：本應成功或可由使用者 handler 處理的操作，�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**12**（不重複 Issue ID）。
+Issue 數量：**13**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `unexpected_exception` | 12 |
+| `unexpected_exception` | 13 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：20；Issue/API 配對數：28。
+唯一 API 數：21；Issue/API 配對數：30。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
+| `torch.compile` | 10 |
 | `DTensor.from_local` | 1 |
 | `torch.Tensor.__torch_function__` | 1 |
 | `torch.Tensor.detach` | 1 |
 | `torch.Tensor.real` | 1 |
 | `torch.Tensor.set_` | 1 |
 | `torch.Tensor.trunc_` | 1 |
-| `torch.compile` | 9 |
 | `torch.dequantize` | 1 |
 | `torch.div` | 1 |
 | `torch.eq` | 1 |
@@ -42,6 +42,7 @@ Issue 數量：**12**（不重複 Issue ID）。
 | `torch.isin` | 1 |
 | `torch.linalg.solve` | 1 |
 | `torch.linalg.vector_norm` | 1 |
+| `torch.nn.Conv2d` | 1 |
 | `torch.nn.functional.adaptive_max_pool2d` | 1 |
 | `torch.nn.functional.grouped_mm` | 1 |
 | `torch.ops.aten.unsqueeze_.default` | 1 |
@@ -81,6 +82,8 @@ Issue 數量：**12**（不重複 Issue ID）。
 | [#203485](torch_203485/README.md) | `torch.nn.functional.grouped_mm`：主要受測 API | sum().backward() 傳入 stride=[0,0] 的 broadcast gradient時，Invalid strides/sizes RuntimeError。 | 上游確認零 stride gradient 未被 grouped_mm backward 適當 materialize；根因分類依 layout 觸發。 | [原文](https://github.com/pytorch/pytorch/issues/203485) |
 | [#203866](torch_203866/README.md) | `DTensor.from_local`：Wraps the local tensor as a DTensor | torch.save raises an invalid-storage RuntimeError for a DTensor with a nonzero storage offset while the zero-offset control serializes. | A nonzero storage offset makes the DTensor placeholder pointer appear nonzero during serialization. | [原文](https://github.com/pytorch/pytorch/issues/203866) |
 | [#203866](torch_203866/README.md) | `torch.save`：Serializes the wrapper | torch.save raises an invalid-storage RuntimeError for a DTensor with a nonzero storage offset while the zero-offset control serializes. | A nonzero storage offset makes the DTensor placeholder pointer appear nonzero during serialization. | [原文](https://github.com/pytorch/pytorch/issues/203866) |
+| [#205810](torch_205810/README.md) | `torch.compile`：Exercises the Inductor backward path | Inductor backward fails on replication_pad2d_backward with stride/size metadata mismatch for channels-last CPU tensor. | Compiled Conv2d with replicate padding fails in backward because FakeTensor/meta strides differ from actual channels-last CPU output. | [原文](https://github.com/pytorch/pytorch/issues/205810) |
+| [#205810](torch_205810/README.md) | `torch.nn.Conv2d`：Applies replicate padding to channels-last CPU input | Inductor backward fails on replication_pad2d_backward with stride/size metadata mismatch for channels-last CPU tensor. | Compiled Conv2d with replicate padding fails in backward because FakeTensor/meta strides differ from actual channels-last CPU output. | [原文](https://github.com/pytorch/pytorch/issues/205810) |
 
 ## 已知限制（Known Limitations）
 

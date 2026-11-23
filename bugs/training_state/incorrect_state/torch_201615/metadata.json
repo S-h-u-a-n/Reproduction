@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_201615",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/201615",
+  "target_api": "torch.optim.SGD / torch.amp.GradScaler",
+  "primary_category": "optimizer_state",
+  "tags": [
+    "training_state",
+    "optimizer_state",
+    "amp"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A skipped optimizer step must not initialize momentum; the next real step should produce p=0.75.",
+  "bug_signature": "Fused SGD has a NaN momentum_buffer after a skipped first step and corrupts its first actual update.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}
