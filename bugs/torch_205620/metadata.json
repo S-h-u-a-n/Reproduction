@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_205620",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/205620",
+  "target_api": "torch.linalg.solve_triangular",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "tensor_layout"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "For diagonal A=diag(2,4), B=diag(6,20), the solution must be diag(3,5) even when out aliases A.",
+  "bug_signature": "With out=A, the returned solution is identity rather than diag(3,5).",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

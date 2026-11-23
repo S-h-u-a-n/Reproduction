@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198183",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198183",
+  "target_api": "torch.erf / torch.compile",
+  "primary_category": "compilation",
+  "tags": [
+    "other"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "All eager float32 values agree with a math.erf reference at rtol=2e-6, atol=0, preserving small nonzero values.",
+  "bug_signature": "All eight repeated blocks have zero at both 1e-8 and 1e-7; shape/dtype/finiteness are checked. The other six magnitudes in each block are vectorization padding, not asserted exact wrong values. AVX512 CPU build observation; no universal ISA claim.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

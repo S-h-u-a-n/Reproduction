@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_199214",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/199214",
+  "target_api": "torch.dequantize / torch.trunc_ / torch.compile",
+  "primary_category": "compilation",
+  "tags": [
+    "storage_aliasing",
+    "materialization"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Dequantize a normal float tensor followed by in-place truncation should compile and run.",
+  "bug_signature": "AOTAutograd functionalization assertion when graph input is dequantized then mutated.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

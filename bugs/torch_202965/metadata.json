@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_202965",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/202965",
+  "target_api": "torch.distributions.kl_divergence",
+  "primary_category": "autograd",
+  "tags": [],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "KL loss and gradient should match the finite unmasked-class reference; the masked class gradient should be zero.",
+  "bug_signature": "Loss equals the finite reference, but every gradient entry is NaN for Categorical logits containing -inf.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

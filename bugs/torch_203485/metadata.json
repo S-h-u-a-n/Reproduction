@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_203485",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/203485",
+  "target_api": "torch.nn.functional.grouped_mm",
+  "primary_category": "tensor_layout",
+  "tags": [
+    "autograd"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "All-one dense upstream gradient gives forward all 16, a.grad all 32, and the two b.grad groups all 3 and all 5. sum backward should agree with that same gradient.",
+  "bug_signature": "Broadcasted upstream gradient raises RuntimeError identifying strides [0,0] and sizes [8,32]; dense-gradient controls are checked completely.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

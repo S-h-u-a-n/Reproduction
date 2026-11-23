@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_199941",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/199941",
+  "target_api": "torch.vander / torch.linalg.vander",
+  "primary_category": "autograd",
+  "tags": [],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "The sum of a degree-two Vandermonde matrix has derivative 2*x+1=[3,5,7], checked through torch.linalg.vander.",
+  "bug_signature": "torch.vander backward raises the specific saved-variable inplace-modification RuntimeError. The correct derivative is checked analytically, not only for successful backward.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

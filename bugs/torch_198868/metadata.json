@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198868",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198868",
+  "target_api": "torch.compile / scalar scatter with empty index",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Scatter with an empty index must preserve scalar shape ().",
+  "bug_signature": "Inductor changes a scalar tensor output into a one-element tensor with shape (1,).",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

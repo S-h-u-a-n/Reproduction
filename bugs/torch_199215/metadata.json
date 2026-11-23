@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_199215",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/199215",
+  "target_api": "torch.compile / freezing_discard_parameters",
+  "primary_category": "compilation",
+  "tags": [
+    "optimizer_state"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "An integer parameter with requires_grad=False can be read in an inference module.",
+  "bug_signature": "Freezing plus freezing_discard_parameters triggers BackendCompilerFailed with inner RuntimeError about only floating point dtype tensors requiring gradients. The integer parameter is non-differentiable; the full 3x2 eager index result is checked.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

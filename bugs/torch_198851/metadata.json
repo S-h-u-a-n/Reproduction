@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198851",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198851",
+  "target_api": "torch.any / torch.all with dim=()",
+  "primary_category": "compilation",
+  "tags": [],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "With dim=(), any/all should preserve input shape and values (perform no reduction).",
+  "bug_signature": "Compiled Inductor any/all returns a scalar instead of the input-shaped Boolean tensor.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

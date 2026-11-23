@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204679",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204679",
+  "target_api": "torch.prod",
+  "primary_category": "other",
+  "tags": [],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "For 1000 identical BF16 factors 129/128, a 60-digit Decimal product supplies the real reference (~2397.40083017649), which rounds to BF16 2400. A float64 prod control matches at rtol=1e-12.",
+  "bug_signature": "Dense BF16 CPU prod returns the upstream-reported 1632 on this AVX512 build. This exact wrong value is an environment-scoped signature, not a claim for every SIMD width, CSR path or float16 input; these variants remain outside validation.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

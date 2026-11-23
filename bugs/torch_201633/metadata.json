@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_201633",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/201633",
+  "target_api": "torch.segment_reduce",
+  "primary_category": "autograd",
+  "tags": [],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "For max/min with two tied extrema, incoming g splits into [g/2,g/2,0]; analytic and amax/amin references agree for both signs.",
+  "bug_signature": "Incoming -1 gives [-1,-1,0]; incoming +1 gives [0.5,0.5,0]. Fixed CPU float32; exact comparisons.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

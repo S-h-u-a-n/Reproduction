@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_200524",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/200524",
+  "target_api": "torch.compile / torch.full(fill_tensor_requires_grad)",
+  "primary_category": "autograd",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "missing_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "torch.full should reject an autograd-tracked 0-D tensor fill value as eager does.",
+  "bug_signature": "Dynamo accepts the invalid fill and permits backward through the fill tensor.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

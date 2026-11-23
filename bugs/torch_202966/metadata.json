@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_202966",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/202966",
+  "target_api": "torch.distributions.kl_divergence / Wishart",
+  "primary_category": "autograd",
+  "tags": [
+    "tensor_metadata"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "For W3(df,diag(v)) versus W3(5,I), the explicit Wishart KL formula gives the reference for each item. Nonzero p.df and p covariance gradients are independently established analytically and with a central finite difference for df.",
+  "bug_signature": "The complete batch vector matches subtracting the df term summed across the batch instead of per item. p.df and p covariance gradients are both None despite nonzero reference derivatives. Both manifestations are tested; the policy may split their root counts. float64 rtol/atol=1e-10 for KL; finite-difference h=1e-4 is diagnostic, not a wrong-value snapshot.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

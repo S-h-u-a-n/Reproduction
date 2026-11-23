@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_194347",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/194347",
+  "target_api": "torch.minimum / signed zero",
+  "primary_category": "compilation",
+  "tags": [],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "This testcase uses eager signed-zero semantics as the reference for minimum(-0,+0); it is not a claim of a universal cross-library tie rule.",
+  "bug_signature": "Compiled CPU minimum loses sign bit and returns positive zero.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

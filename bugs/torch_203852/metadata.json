@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_203852",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/203852",
+  "target_api": "torch.Tensor.index_add / float alpha on integer tensors",
+  "primary_category": "tensor_metadata",
+  "tags": [],
+  "bug_type": "missing_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "An integer-tensor index_add must reject a floating-point alpha just as torch.add does.",
+  "bug_signature": "index_add(alpha=2.5) truncates alpha to 2 silently; alpha=0.5 becomes zero.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

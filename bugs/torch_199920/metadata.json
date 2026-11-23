@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_199920",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/199920",
+  "target_api": "aten._fused_moving_avg_obs_fq_helper_functional / FakeTensorMode",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "The fake-tensor observer state shapes must match the real per-channel observer updates.",
+  "bug_signature": "The meta implementation leaves min/max buffers at size 0 and scale/zero-point at size 1 rather than 8.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

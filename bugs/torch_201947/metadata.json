@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_201947",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/201947",
+  "target_api": "torch.asinh / torch.acosh float16 backward",
+  "primary_category": "autograd",
+  "tags": [],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "For x=1000 the analytic derivative is finite and close to 0.001.",
+  "bug_signature": "The backward formula squares 1000 in float16, overflows, and returns zero gradient.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

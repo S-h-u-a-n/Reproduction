@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_197893",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/197893",
+  "target_api": "torch.compile / division by 1",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A division by 1 creates a new output tensor without sharing storage with its input.",
+  "bug_signature": "Inductor optimizes x / 1 into the same tensor; mutating the result also mutates the input.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

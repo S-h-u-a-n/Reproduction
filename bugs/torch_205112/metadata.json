@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_205112",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/205112",
+  "target_api": "torch.func.jacrev / torch.cdist",
+  "primary_category": "autograd",
+  "tags": [
+    "graph_lifecycle"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "jacrev(f) and autograd.functional.jacobian(f) must agree for cdist p=1.",
+  "bug_signature": "Every vmapped Jacobian slice repeats the first unbatched slice, with maximum absolute error 2.0. jacrev with chunk_size=1 matches the unbatched reference.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

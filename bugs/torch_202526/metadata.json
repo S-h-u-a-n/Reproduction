@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_202526",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/202526",
+  "target_api": "torch.jit.freeze / nn.Linear + nn.BatchNorm1d",
+  "primary_category": "compilation",
+  "tags": [
+    "graph_lifecycle"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Evaluation BatchNorm is affine: correct residual result is BN(h)+h, using original Linear h.",
+  "bug_signature": "Frozen output matches 2*BN(h) over the full tensor. rtol=1e-5, atol=2e-5 covers float32 length-64 products and fusion reordering, while retaining the separate residual-control check.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

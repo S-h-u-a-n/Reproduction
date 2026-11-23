@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_205134",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/205134",
+  "target_api": "torch.Tensor.apply_",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "storage_aliasing",
+    "autograd",
+    "version_counter"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "An unmodified x=[1,2] has gradient [2,4]. Mutating a saved detached alias must increment the shared version and cause backward to raise RuntimeError; there is no legitimate post-mutation gradient reference. A mul_ alias control verifies this version/error contract.",
+  "bug_signature": "detach().apply_(lambda v:v*10) changes values to [10,20] without increasing the version, then backward incorrectly succeeds with [20,40]. The unchanged control [2,4] is not presented as the correct gradient after mutation.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

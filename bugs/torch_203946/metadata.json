@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_203946",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/203946",
+  "target_api": "torch.nn.functional.cosine_similarity",
+  "primary_category": "autograd",
+  "tags": [],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "When norm(x1)<eps<norm(x2), the denominator is constant in x1. Gradient x2/(eps*norm(x2))=[629145.6,838860.8] for these float64 inputs.",
+  "bug_signature": "Forward 0.3; backward [314572.8,838860.8] halves the first component in the clamp region. atol=1e-9 covers float64 rounding.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

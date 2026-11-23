@@ -1,0 +1,150 @@
+{
+  "torch": "2.15.0+cpu",
+  "isolation": "bubblewrap; network disabled; read-only runtime and test; fresh tmpfs; OMP/MKL threads=1",
+  "runs": {
+    "203078": [
+      {
+        "run": 1,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 0.67s\n",
+        "stderr": ""
+      },
+      {
+        "run": 2,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 0.70s\n",
+        "stderr": ""
+      },
+      {
+        "run": 3,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 0.74s\n",
+        "stderr": ""
+      },
+      {
+        "run": 4,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 0.77s\n",
+        "stderr": ""
+      },
+      {
+        "run": 5,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 0.54s\n",
+        "stderr": ""
+      },
+      {
+        "run": 6,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 0.54s\n",
+        "stderr": ""
+      },
+      {
+        "run": 7,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 0.54s\n",
+        "stderr": ""
+      },
+      {
+        "run": 8,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 0.55s\n",
+        "stderr": ""
+      },
+      {
+        "run": 9,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 0.56s\n",
+        "stderr": ""
+      },
+      {
+        "run": 10,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 0.54s\n",
+        "stderr": ""
+      }
+    ],
+    "200599": [
+      {
+        "run": 1,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 1.67s\n",
+        "stderr": ""
+      },
+      {
+        "run": 2,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 1.69s\n",
+        "stderr": ""
+      },
+      {
+        "run": 3,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 1.68s\n",
+        "stderr": ""
+      },
+      {
+        "run": 4,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 1.68s\n",
+        "stderr": ""
+      },
+      {
+        "run": 5,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 1.68s\n",
+        "stderr": ""
+      },
+      {
+        "run": 6,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 1.69s\n",
+        "stderr": ""
+      },
+      {
+        "run": 7,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 1.68s\n",
+        "stderr": ""
+      },
+      {
+        "run": 8,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 1.69s\n",
+        "stderr": ""
+      },
+      {
+        "run": 9,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 1.68s\n",
+        "stderr": ""
+      },
+      {
+        "run": 10,
+        "exit_code": 0,
+        "passed": true,
+        "stdout": ".                                                                        [100%]\n1 passed in 1.69s\n",
+        "stderr": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198071",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198071",
+  "target_api": "torch.compile / torch.clamp int8 out-of-range Python bounds",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "On this recorded build eager clamp(int8,max=300) preserves [-128,-3,0,5,127]. Earlier-version eager overflow exceptions are not accepted by this test.",
+  "bug_signature": "Inductor wraps the upper bound to 44 and clamps valid 127 down to 44.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

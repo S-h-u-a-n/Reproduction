@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_192639",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/192639",
+  "target_api": "torch.autograd.forward_ad / dispatch_functionalize",
+  "primary_category": "autograd",
+  "tags": [
+    "tensor_metadata"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A dual tensor must expose its forward-mode tangent through a functionalization wrapper.",
+  "bug_signature": "dispatch_functionalize hides a present forward-mode tangent from unpack_dual.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

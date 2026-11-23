@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_197811",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/197811",
+  "target_api": "torch.compile / captured Tensor descriptors",
+  "primary_category": "compilation",
+  "tags": [
+    "graph_lifecycle"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Two closures capturing Tensor.__add__ and Tensor.__mul__ return 9 and 18 respectively for x=6, y=3.",
+  "bug_signature": "The cached compiled graph for multiplication reuses addition and incorrectly returns 9.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

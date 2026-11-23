@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_205616",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/205616",
+  "target_api": "torch.amax",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "tensor_metadata"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Reducing a scalar input of value 3 with a correctly shaped out tensor yields 3, even when out aliases input.",
+  "bug_signature": "CPU torch.amax(x, out=x) returns -inf and overwrites the scalar input.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

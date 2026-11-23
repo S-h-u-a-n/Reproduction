@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_202726",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/202726",
+  "target_api": "torch.compile / __torch_function__ / Tensor.real",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A real-valued tensor subclass should work with .real inside compiled execution.",
+  "bug_signature": "Dynamo assertion in __torch_function__ subclass handling of .real.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

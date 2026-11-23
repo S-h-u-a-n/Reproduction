@@ -1,0 +1,8 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+bugs/torch_198052/test_bug.py::test_known_bug_signature
+  /home/shuan/mirage-benchmark-playground/bugs/torch_198052/test_bug.py:11: DeprecationWarning: numpy.fix is deprecated. Use numpy.trunc instead, which is faster and follows the Array API standard.
+    return np.fix(x)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 1 warning in 1.62s

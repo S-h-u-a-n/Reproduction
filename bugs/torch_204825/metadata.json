@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204825",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204825",
+  "target_api": "torch.compile / custom autograd.Function",
+  "primary_category": "graph_lifecycle",
+  "tags": [
+    "autograd",
+    "compilation"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Compiled higher-order differentiation through a custom autograd.Function should agree with eager and analytic reference.",
+  "bug_signature": "Second derivative of compiled function returns 1 rather than cos(2)-2 sin(2)+1.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

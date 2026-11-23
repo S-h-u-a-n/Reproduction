@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_200572",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/200572",
+  "target_api": "torch.compile / torch.autograd.Function / view",
+  "primary_category": "graph_lifecycle",
+  "tags": [
+    "autograd",
+    "compilation"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A custom autograd.Function scaling its gradient by 2 must remain active when a view is returned from a compiled region.",
+  "bug_signature": "AOTAutograd drops custom backward after returning a view of the Function output.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_202806",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/202806",
+  "target_api": "torch.compile / Tensor.detach",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "tensor_metadata",
+    "autograd",
+    "compilation"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A mutation of a saved weight tensor must trigger Autograd version checking instead of silently changing a gradient.",
+  "bug_signature": "Compiled detached-alias update changes weight 1->2 but does not bump version counter and yields gradient 2 instead of 1.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

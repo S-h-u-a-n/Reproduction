@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198118",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198118",
+  "target_api": "torch.linalg.pinv / TorchDispatchMode",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "materialization",
+    "autograd"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "The pseudoinverse must be unchanged by a pass-through TorchDispatchMode and obey A @ pinv(A) @ A = A.",
+  "bug_signature": "Pass-through dispatch mode matches the full missing-conjugate SVD formula (Vh.T/s)@U.H rather than (Vh.H/s)@U.H. complex128 rtol=atol=1e-10 allows LAPACK roundoff. Related gradient manifestation: #197084.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

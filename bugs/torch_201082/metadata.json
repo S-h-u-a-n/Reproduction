@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_201082",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/201082",
+  "target_api": "torch.distributions.kl_divergence(Normal, Normal)",
+  "primary_category": "autograd",
+  "tags": [
+    "other"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "KL for Normal(scale≈1e-4) versus Normal(scale=1) and its gradient are finite and match a float64 reference.",
+  "bug_signature": "With a float16 scale the KL and gradient underflow/overflow to +inf and -inf.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

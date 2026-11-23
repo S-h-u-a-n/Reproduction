@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198070",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198070",
+  "target_api": "torch.compile / Tensor.item NaN guard",
+  "primary_category": "compilation",
+  "tags": [
+    "graph_lifecycle"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "The NaN guard based on v != v must skip the update and leave parameters equal to 1.",
+  "bug_signature": "Compiling Tensor.item with capture_scalar_outputs simplifies NaN check to false and emits NaN outputs.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

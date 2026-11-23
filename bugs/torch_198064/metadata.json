@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198064",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198064",
+  "target_api": "torch.compile(dynamic=True) / SymInt.__round__",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "round(n, -1) on symbolic sizes must perform the same decimal rounding as Python.",
+  "bug_signature": "Compiled dynamic-shape program drops negative ndigits and scales by n*5 rather than rounded value.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

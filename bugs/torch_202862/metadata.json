@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_202862",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/202862",
+  "target_api": "torch.ops.aten.unsqueeze_.default / torch.compile",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A supported tracing fallback or an explicit Dynamo graph break should occur, not an internal IndexError.",
+  "bug_signature": "OpOverload in-place view of input triggers guard creation IndexError.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

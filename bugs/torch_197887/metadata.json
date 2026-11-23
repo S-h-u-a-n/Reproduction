@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_197887",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/197887",
+  "target_api": "torch.compile / torch.matmul",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "storage_aliasing",
+    "compilation",
+    "autograd"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "After a saved input is modified in-place, backward must reject it; compiled execution must not silently use the modified input.",
+  "bug_signature": "Inductor backward returns gradient of modified input rather than raising the version-counter error.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

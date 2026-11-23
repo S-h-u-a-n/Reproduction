@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198056",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198056",
+  "target_api": "torch.compile / NumPy cumsum(int8)",
+  "primary_category": "compilation",
+  "tags": [
+    "tensor_metadata"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Compiling NumPy cumsum on int8 must preserve NumPy int64 accumulation semantics.",
+  "bug_signature": "Complete seven-element cumsum reference uses NumPy int64 accumulation; compiled int8 values follow wraparound. Full arrays and dtype are checked.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

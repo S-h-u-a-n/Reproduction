@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198852",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198852",
+  "target_api": "torch.compile / torch.cat empty higher-precision tensor",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Concatenating an empty float64 input with float32 nonempty inputs should preserve float64 promotion.",
+  "bug_signature": "Compiled cat silently drops the empty input contribution to output dtype.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_199350",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/199350",
+  "target_api": "torch.view_as_complex_copy / torch.compile",
+  "primary_category": "tensor_layout",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Inductor should satisfy input layout requirements of view_as_complex_copy when eager execution succeeds.",
+  "bug_signature": "InductorError wraps a last-dimension stride-1 RuntimeError; traceback frame operator identity must be aten.view_as_complex_copy.default. The independent eager result is a full complex64 zero tensor of shape (4,4,2). Traceback function/operator matching is specific to this build, without path/line/generated-name pinning.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

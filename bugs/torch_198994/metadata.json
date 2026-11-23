@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198994",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198994",
+  "target_api": "torch.compile / F.soft_margin_loss mixed input-target dtype",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "The compiled soft-margin-loss result should retain the eager float32 dtype.",
+  "bug_signature": "Inductor promotes float32 input and float64 target loss to float64 incorrectly.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_199258",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/199258",
+  "target_api": "torch.utils.checkpoint.checkpoint(use_reentrant=False) / torch.compile",
+  "primary_category": "checkpointing",
+  "tags": [
+    "graph_lifecycle",
+    "compilation"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A nonreentrant checkpoint containing x*1.0 is a valid identity and must preserve gradients.",
+  "bug_signature": "Inductor min-cut partitioner raises NetworkXError: node source not in graph.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

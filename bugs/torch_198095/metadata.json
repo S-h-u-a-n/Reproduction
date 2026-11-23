@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198095",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198095",
+  "target_api": "torch.compile / aliased input view",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "tensor_metadata",
+    "compilation"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "When returning a view of an aliased input after mutating the base, compiled output must be the corresponding subview of the base.",
+  "bug_signature": "AOTAutograd regenerates ta[0] from t0[0] instead of the first row of ta=t0[1:].",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_200053",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/200053",
+  "target_api": "torch.optim.RMSprop / alpha range validation",
+  "primary_category": "optimizer_state",
+  "tags": [],
+  "bug_type": "missing_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "If invalid-alpha validation is included in scope, RMSprop should reject alpha=1.5. The numerical update itself has v1=(1-alpha)*g^2=-0.5; it is not a valid-parameter optimizer counterexample.",
+  "bug_signature": "alpha=1.5 is accepted; square_avg is exactly [-0.5,-0.5] and parameters become NaN. Inclusion is a parameter-validation policy decision.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198155",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198155",
+  "target_api": "torch.compile / torch.softmax(int64)",
+  "primary_category": "compilation",
+  "tags": [
+    "tensor_metadata"
+  ],
+  "bug_type": "missing_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Eager rejects integer softmax; compiling it should not silently run an unsupported dtype kernel.",
+  "bug_signature": "Compiled softmax(int64) silently returns an integer tensor instead of raising.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

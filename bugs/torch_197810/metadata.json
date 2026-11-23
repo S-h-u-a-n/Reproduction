@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_197810",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/197810",
+  "target_api": "torch.compile(dynamic=True) / symbolic boolean modulo",
+  "primary_category": "compilation",
+  "tags": [
+    "tensor_metadata"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "float(shape[0] % 2 == 0) should compile and evaluate identically to eager.",
+  "bug_signature": "Inductor fails with ToFloat(False) for a symbolic modulo comparison.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204181",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204181",
+  "target_api": "torch.Tensor.fill_diagonal_",
+  "primary_category": "tensor_layout",
+  "tags": [
+    "storage_aliasing"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "fill_diagonal_(wrap=True) on a noncontiguous 7x2 view must match the contiguous result and not alter the third column of the base.",
+  "bug_signature": "Column-sliced view writes to base column 2 outside the view and misses a wrapped diagonal cell.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

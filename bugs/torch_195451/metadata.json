@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_195451",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/195451",
+  "target_api": "torch.slice_scatter / torch.compile",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Functional scatter result returned by a compiled program should not alias the mutated input, matching eager behavior.",
+  "bug_signature": "Inductor returns an output aliasing the input, so mutating returned output modifies original input.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

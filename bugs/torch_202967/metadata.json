@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_202967",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/202967",
+  "target_api": "torch.distributions.kl_divergence",
+  "primary_category": "autograd",
+  "tags": [
+    "other"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "The folded Normal distributions |N(-1,1)| and |N(1,1)| are identical; their KL divergence is zero.",
+  "bug_signature": "KL of two identically distributed AbsTransform pushforwards is returned as the base Normal KL of 2.0.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

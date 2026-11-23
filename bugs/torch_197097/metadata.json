@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_197097",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/197097",
+  "target_api": "torch.linalg.vector_norm / torch.compile",
+  "primary_category": "compilation",
+  "tags": [],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "vector_norm(ord=inf, dim=-1) on x.shape=(0,5) must return an empty (0,) result because the reduced dimension is non-empty.",
+  "bug_signature": "Compiling a negative dimension reduction raises a false empty-dimension inf-norm error.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

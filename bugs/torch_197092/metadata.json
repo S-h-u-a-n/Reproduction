@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_197092",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/197092",
+  "target_api": "torch._dynamo.compiled_autograd / F.interpolate",
+  "primary_category": "compilation",
+  "tags": [
+    "autograd"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Compiled Autograd should successfully differentiate bilinear interpolation or provide a supported fallback.",
+  "bug_signature": "Compiled backward fails fake tensor propagation with isIntList INTERNAL ASSERT.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

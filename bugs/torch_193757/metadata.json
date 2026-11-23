@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_193757",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/193757",
+  "target_api": "torch.compile / F.binary_cross_entropy target validation",
+  "primary_category": "compilation",
+  "tags": [],
+  "bug_type": "missing_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "BCE must reject targets outside [0,1] in eager and compiled modes.",
+  "bug_signature": "CPU Inductor calculates a finite value for target=1.5 instead of rejecting it.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

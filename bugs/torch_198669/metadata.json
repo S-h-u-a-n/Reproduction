@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198669",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198669",
+  "target_api": "torch.compile / torch.softmax / torch.eq",
+  "primary_category": "compilation",
+  "tags": [],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Softmax of a boolean-divided floating tensor should run under compile.",
+  "bug_signature": "Inductor attempts invalid boolean negation while lowering softmax.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

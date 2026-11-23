@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_197716",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/197716",
+  "target_api": "torch.compile(dynamic=True) / SymPy modulo",
+  "primary_category": "compilation",
+  "tags": [
+    "tensor_metadata"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Dynamic symbolic modulo in a valid function should compile like eager.",
+  "bug_signature": "TorchInductor/Dynamo crashes because TensorReferenceAnalysis lacks symbolic modulo handling.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

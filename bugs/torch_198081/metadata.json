@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198081",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198081",
+  "target_api": "torch.compile / torch.any uint8 dtype",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Reduction any() on uint8 input preserves uint8 dtype like eager, including uint8 arithmetic.",
+  "bug_signature": "Compiled reduction returns bool and subsequent arithmetic changes from uint8 wraparound to int64 300.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "batch": "09",
+  "target_torch": "2.15.0+cpu",
+  "case_count": 15,
+  "ids": [
+    202526,
+    198064,
+    198077,
+    197896,
+    205991,
+    203806,
+    200053,
+    203565,
+    201947,
+    193757,
+    199258,
+    200524,
+    198071,
+    199644,
+    200924
+  ],
+  "preexisting_issue_ids_checked": 85,
+  "tests_are_bug_signatures": true,
+  "all_metadata_verification": "pending"
+}

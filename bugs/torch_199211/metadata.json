@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_199211",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/199211",
+  "target_api": "torch.isin",
+  "primary_category": "tensor_layout",
+  "tags": [],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "torch.isin should accept a multi-dimensional non-contiguous test_elements tensor and return the same Boolean membership as a contiguous tensor.",
+  "bug_signature": "Non-contiguous test_elements causes a view-size compatibility RuntimeError, while contiguous test_elements succeeds.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

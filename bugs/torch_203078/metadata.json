@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_203078",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/203078",
+  "target_api": "torch.Tensor.scatter_add",
+  "primary_category": "tensor_layout",
+  "tags": [
+    "expanded_index",
+    "cpu",
+    "silent_wrong_result"
+  ],
+  "bug_type": "silent_wrong_result",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Both scatter_add and scatter_reduce(sum) must place 16 ones in rows 0 and 2, yielding row sums [16.0, 0.0, 16.0]. A contiguous-index control matches an explicitly constructed full reference tensor.",
+  "bug_signature": "Expanded-index stride (1,0) makes scatter_add and scatter_reduce(sum) write sixteen ones into rows 0 and 1 instead of rows 0 and 2. Full tensors, not only row sums, are checked; contiguous-index controls match the correct reference.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

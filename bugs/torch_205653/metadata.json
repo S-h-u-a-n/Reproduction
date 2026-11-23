@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_205653",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/205653",
+  "target_api": "torch.hypot",
+  "primary_category": "autograd",
+  "tags": [],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "For x=3s, y=4s, and upstream gradient=1.25s, the gradient with respect to y should be s.",
+  "bug_signature": "At float64 scales s=2**600 and s=2**-600, CPU backward yields inf and zero, respectively, although the expected gradients are finite nonzero.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

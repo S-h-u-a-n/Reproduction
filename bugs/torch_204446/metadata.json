@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204446",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204446",
+  "target_api": "torch.Tensor.add_ / sparse COO",
+  "primary_category": "storage_aliasing",
+  "tags": [],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Adding COO ones to base[1] of a zero 3x8 tensor must change only row 1, matching a dense-source control.",
+  "bug_signature": "Contiguous view with storage_offset=8 writes eight ones into row 2. Only the in-bounds numeric case is tested, not the heap-corruption variant.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198192",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198192",
+  "target_api": "torch.compile / Tensor.sum",
+  "primary_category": "compilation",
+  "tags": [
+    "tensor_metadata"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A user-defined except IndexError should catch tensor dimension errors in compiled code.",
+  "bug_signature": "Dynamo leaks IndexError out of compiled function instead of executing except fallback.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

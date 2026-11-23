@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204407",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204407",
+  "target_api": "torch.linalg.slogdet",
+  "primary_category": "autograd",
+  "tags": [
+    "tensor_layout",
+    "complex",
+    "conjugate_view"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "For A=z.conj().imag, local derivative of log|det(A)| is A^-T. Since A=-imag(z), the chained z.grad.imag is -A^-T=[[-0.3,0.2],[0.1,-0.4]], and z.grad.real=0. The materialized same-value control verifies local derivative.",
+  "bug_signature": "Required operand is a negative view, float64 shape (2,2), stride (4,2), storage_offset=1, aliasing z. Local a.grad has off-diagonal transpose error; chained z.grad.imag=[[-0.3,0.1],[0.2,-0.4]]. Full gradients checked at atol=1e-12, rtol=0; negative-view trigger distinguished from merely noncontiguous layout.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

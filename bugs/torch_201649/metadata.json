@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_201649",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/201649",
+  "target_api": "torch.compiler.nested_compile_region / saved buffers",
+  "primary_category": "graph_lifecycle",
+  "tags": [
+    "autograd",
+    "storage_aliasing"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Each region output gradient must equal 2*x+1 and 2*y+1.",
+  "bug_signature": "Compiled nested regions reuse a saved buffer, and the first input gradient instead depends on y.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

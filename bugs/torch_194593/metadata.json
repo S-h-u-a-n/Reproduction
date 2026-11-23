@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_194593",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/194593",
+  "target_api": "torch.distributions.kl_divergence / Binomial / torch.compile",
+  "primary_category": "compilation",
+  "tags": [],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Eager Binomial KL is +inf for total_count 5 versus 3. Fullgraph capture support is an inclusion-policy question, not an established numerical-result contract.",
+  "bug_signature": "With fullgraph=True, Unsupported reports Data-dependent branching in _kl_binomial_binomial. This is a support-gap reproducer; not an arbitrary compiler exception.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

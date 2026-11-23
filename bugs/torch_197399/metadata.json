@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_197399",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/197399",
+  "target_api": "torch.Tensor.set_ storage rebind / torch.compile",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "compilation",
+    "tensor_metadata"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A valid storage rebind from a zero-element tensor to a length-one view must either be modeled or graph-broken cleanly.",
+  "bug_signature": "Fake-tensor tracing fails to update the rebound size and raises IndexError when reading x[0].",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

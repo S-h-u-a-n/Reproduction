@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_199571",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/199571",
+  "target_api": "torch.linalg.solve / torch.imag / torch.compile",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "compilation",
+    "materialization"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "For right solve X A = B, B times the explicit complex128 2x2 inverse supplies the imaginary-part reference, cast to complex64 output precision. rtol=1e-5, atol=1e-6 allows solve rounding.",
+  "bug_signature": "aot_eager fails with RuntimeError containing both view_as_real and unresolved conjugated tensor.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

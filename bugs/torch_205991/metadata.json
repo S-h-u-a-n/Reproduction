@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_205991",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/205991",
+  "target_api": "torch.compile / class attribute mutation and instance read",
+  "primary_category": "graph_lifecycle",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "After assigning K.n=5, K().n must be 5, so a zero tensor plus it is 5. Preserve eager warmup and reset sequence; restore pretest class state on exit.",
+  "bug_signature": "Dynamo eager-backend output is 0 although class K.n becomes 5 when K.__module__ is an external name (isolated test_bug or project-root bugs.torch_205991.test_bug). In this build UserDefinedClassVariable.get_value_for_setattr treats torch/torch.*/torch_* names as internal; importlib --rootdir=bugs instead gives torch_205991.test_bug and correct output 5. Same-file rootdir experiments explain the apparent order sensitivity. The test checks this namespace precondition after observing the call and does not rewrite __module__, skip, or accept output 5 as reproduction. Compiler mode and collection root must be recorded. See the summary for all passing and non-reproducing modes.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

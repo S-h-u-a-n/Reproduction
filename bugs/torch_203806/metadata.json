@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_203806",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/203806",
+  "target_api": "torch.compile / torch._foreach_copy_ / swapped tensor inputs",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "optimizer_state",
+    "compilation"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Copying [b.clone(),a.clone()] into [a,b] must swap both tensors.",
+  "bug_signature": "Inductor writes the first destination early, so both destinations get the same data.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_205682",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/205682",
+  "target_api": "torch.cat / Tensor.split / torch.compile",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "tensor_layout",
+    "compilation"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Splitting a concatenation must not alias either source tensor; dtype promotion must match eager.",
+  "bug_signature": "Inductor split result aliases a source tensor and mutating the split changes its input; mixed-dtype splits also preserve incorrect dtype.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

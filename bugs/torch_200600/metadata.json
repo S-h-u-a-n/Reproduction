@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_200600",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/200600",
+  "target_api": "torch.linalg.solve / forward over reverse AD",
+  "primary_category": "autograd",
+  "tags": [
+    "graph_lifecycle"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "With A=2,B=1, the tangent d/dA(dX/dB) equals -0.25 and d/dA(dX/dA) equals 0.25.",
+  "bug_signature": "Default reverse backward silently drops or halves forward-mode tangents; create_graph=True is correct.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

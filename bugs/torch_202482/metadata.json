@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_202482",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/202482",
+  "target_api": "torch.cat / torch.nn.functional.linear / index_put",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "compilation",
+    "tensor_layout"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Index assignments must read the original Linear result. An independent float64 matrix-product reference converted to float32 establishes the complete expected tensor.",
+  "bug_signature": "The complete wrong output matches reading the Linear view after overwriting cat storage; only rows 1,5,7 differ. Preserve the fixed index order. rtol=1e-5, atol=1e-6 allows length-five float32 dot-product rounding.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

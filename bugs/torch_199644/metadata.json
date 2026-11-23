@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_199644",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/199644",
+  "target_api": "torch.compile / Tensor.item / unbacked float64 precision",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "compilation"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A captured float64 scalar 16777219 must stay exact through one-element output kernels.",
+  "bug_signature": "Captured scalar 16777219 becomes 16777220 in both float64 and int64 outputs; capture_scalar_outputs is scoped and restored after the testcase.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

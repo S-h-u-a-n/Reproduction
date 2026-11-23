@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198119",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198119",
+  "target_api": "torch.nn.functional.avg_pool1d",
+  "primary_category": "compilation",
+  "tags": [
+    "autograd"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Analytic overlapping-window gradient is [1/3,1/3,2/3,1/3,5/6,1/2]; the final partial window divides by two.",
+  "bug_signature": "Complete compiled gradient is [1/3,1/3,2/3,1/3,2/3,1/3], using the full window divisor in the final window.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

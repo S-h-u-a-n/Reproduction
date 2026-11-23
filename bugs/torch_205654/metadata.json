@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_205654",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/205654",
+  "target_api": "torch.special.log_ndtr",
+  "primary_category": "autograd",
+  "tags": [],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "For x=-u<0, the inverse Mills ratio lies between u and u+1/u; at u=2**30 and 2**35 both bounds round to u in float64. At zero the derivative is sqrt(2/pi).",
+  "bug_signature": "Forward remains finite; at -2**30 the wrong gradient matches cancellation in exp(-u*u/2-log_ndtr(-u))/sqrt(2*pi), while -2**35 gives positive infinity. This checks the error mechanism at rtol=1e-12, not a copied machine-specific 1.55e55 constant.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

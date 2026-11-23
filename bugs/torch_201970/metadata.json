@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_201970",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/201970",
+  "target_api": "torch.compile / FX graph cache / retain_graph",
+  "primary_category": "graph_lifecycle",
+  "tags": [
+    "autograd",
+    "compilation"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Repeated backward with retain_graph=True must return the same gradient, 4, on each pass.",
+  "bug_signature": "Reusing a cached compiled backward with donated buffers clobbers saved values and yields an incorrect second gradient.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

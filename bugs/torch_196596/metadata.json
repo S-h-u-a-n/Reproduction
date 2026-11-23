@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_196596",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/196596",
+  "target_api": "torch.addmm / torch.compile",
+  "primary_category": "compilation",
+  "tags": [
+    "autograd"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "With beta=0, NaNs in the addmm input must be ignored and the output must equal a @ b.",
+  "bug_signature": "Compiled addmm propagates NaNs from the ignored beta=0 input.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

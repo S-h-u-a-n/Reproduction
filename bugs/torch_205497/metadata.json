@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_205497",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/205497",
+  "target_api": "torch.optim.SGD",
+  "primary_category": "optimizer_state",
+  "tags": [
+    "tensor_layout"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A CPU SGD step with lr=1 and zero parameters must update parameters to the negative of the supplied gradient, regardless of gradient stride.",
+  "bug_signature": "For the transposed-stride gradient, fused=False gives the expected update while fused=True produces a memory-order-permuted update.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

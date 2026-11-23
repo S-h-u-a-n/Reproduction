@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198057",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198057",
+  "target_api": "torch.remainder / torch.compile",
+  "primary_category": "compilation",
+  "tags": [
+    "other"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "For the float32 input, remainders at indices 0..4 are [5.5,-5.5,0,2,2]. The large input 1e20 is first rounded to float32.",
+  "bug_signature": "CPU Inductor produces NaN at indices 0..2 and zero at indices 3..4. Remaining lanes preserve vector-loop triggering; their rounding and signed-zero policy are outside the claimed signature. Observed on AVX512 only; not generalized to other vector widths or scalar tails.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

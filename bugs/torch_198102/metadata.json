@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_198102",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/198102",
+  "target_api": "Tensor.unfold / torch.compile",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "tensor_layout"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Mutating non-overlapping unfold view must leave uncovered positions of the base tensor unchanged.",
+  "bug_signature": "AOT-compiled unfold-view update zeros positions between the touched columns.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}
