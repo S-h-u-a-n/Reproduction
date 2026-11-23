@@ -1,8 +1,0 @@
-.                                                                        [100%]
-=============================== warnings summary ===============================
-bugs/torch_199350/test_bug.py::test_issue_199350
-  /home/shuan/mirage-benchmark-playground/.venv/lib/python3.14/site-packages/torch/_inductor/lowering.py:2827: UserWarning: Torchinductor does not support code generation for complex operators. Performance may be worse than eager.
-    warnings.warn(
-
--- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-1 passed, 1 warning in 2.65s
