@@ -198,15 +198,18 @@
 .venv/bin/python -m pytest -q -p no:cacheprovider --import-mode=importlib bugs/
 ```
 
-## 舊工具相容性
+## 執行工具與文件
 
-- [run.sh](../run.sh) 仍使用 `bugs/torch_${issue}/test_bug.py` 並含歷史清單，搬移後不可當作此目錄的整批入口；本次授權不含修改它。請使用上方 pytest 命令。
-- [tools/validate_metadata.py](../tools/validate_metadata.py) 無參數時只掃一層，改用明確檔案參數如下。舊 metadata 的分類保留原 schema；新的 Cause／Observation 以 Excel 與本目錄為準。
-- [tools/run_isolated_test.sh](../tools/run_isolated_test.sh) 接收指定測試路徑，使用新路徑；它的容器／timeout 行為並非本次驗證環境。
-- [根目錄舊 README](../README.md)、[CODE_REVIEW_SUMMARY.md](../CODE_REVIEW_SUMMARY.md) 與歷史 reports 的舊路徑為歷史紀錄，本次不覆寫。請以本表找新位置；不建立可能造成重複收集的舊路徑 symlink。
+- [run.sh](../run.sh) 從 repository 根目錄執行，動態尋找現有案例；預設與 `all` 執行全套，`one ISSUE_ID` 執行單案，並保留 `--import-mode=importlib`。
+- [tools/validate_metadata.py](../tools/validate_metadata.py) 預設遞迴掃描 metadata，確認 100 個唯一案例各有測試與 metadata，再驗證 Schema v1；可透過 `./run.sh verify` 執行。原 metadata 分類不改寫，新的 Cause／Observation 以 Excel 與本目錄為準。
+- [tools/run_isolated_test.sh](../tools/run_isolated_test.sh) 保留作為選用的 bubblewrap 隔離診斷工具；其掛載路徑、匯入環境與 timeout 不同，不能代替標準驗收入口。
+- [根目錄 README](../README.md) 統一說明環境、執行方式與限制。歷史審核報告與批次產物已移除，可從 Git 歷史查閱；不建立可能造成重複收集的舊路徑 symlink。
 
 ```bash
-find bugs -name metadata.json -type f -print0 | xargs -0 .venv/bin/python tools/validate_metadata.py
+# 從 repository 根目錄執行
+./run.sh all
+./run.sh one 205134
+./run.sh verify
 ```
 
 ## 已知限制與人工決策

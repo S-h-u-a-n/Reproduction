@@ -24,7 +24,6 @@ source .venv/bin/activate   # 可選；run.sh 本身使用指定的 .venv/bin/py
 | [tools/validate_metadata.py](tools/validate_metadata.py) | 遞迴驗證既有 Schema v1；預設確認 100 個唯一案例各有測試及 metadata。 |
 | [tools/run_isolated_test.sh](tools/run_isolated_test.sh) | 保留的 bubblewrap 隔離診斷工具；不是標準驗收入口，限制見下方。 |
 | [AGENTS.md](AGENTS.md) | Agent 的資料保存與執行規範。 |
-| [CODE_REVIEW_SUMMARY.md](CODE_REVIEW_SUMMARY.md) | 既有不可修改文件的相容連結入口，不再存放審核報告。 |
 
 ## 執行全部或單一案例
 
@@ -76,4 +75,4 @@ done
 
 舊 bubblewrap 工具會把單檔掛載為 `/case/test_bug.py`、改變 cwd／匯入環境、限制執行緒並使用 60 秒 timeout；不能拿它替代上述 rootdir-sensitive 驗收。保留它是為了既有唯讀、斷網診斷用途，本次只檢查 shell 語法，未將其結果算入 100/100。
 
-歷史批次日誌、提案與 manifests 已從工作樹移除，Git 歷史仍可查閱。bugs 內文件保留原樣，其中舊 runner／validator 使用限制已由本頁取代；本次沒有建立新備份或 archive。`.agents/`、`.codex/`、`.aws/` 本次均為空目錄，保留原狀；不讀取憑證內容。忽略規則不會自動移除已被追蹤的 pyc，因此 bugs 內既有快取也保持不變。
+歷史審核報告、批次日誌、提案與 manifests 已從工作樹移除，Git 歷史仍可查閱。執行方式以本頁為準，分類與逐案說明見 [案例目錄](bugs/README.md)。文件更新不改動案例測試、metadata 或既有快取，也不建立新備份或 archive。`.agents/`、`.codex/`、`.aws/` 在清理盤點時均為空目錄，保留原狀；不讀取憑證內容。忽略規則不會自動移除已被追蹤的 pyc。
