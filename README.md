@@ -1,6 +1,6 @@
 # Mirage PyTorch Benchmark
 
-大學研究用的 PyTorch 已知錯誤 reproducer，研究 tensor representation、numerical correctness 與 training state。目前有 **100 個案例**；分類與逐案來源見 [案例目錄](bugs/README.md) 及 [Excel Catalog](Mirage_Bug_Catalog.xlsx)。
+大學研究用的 PyTorch 已知錯誤 reproducer，研究 tensor representation 與 training state。目前有 **100 個案例**；分類與逐案來源見 [案例目錄](bugs/README.md) 及 [Excel Catalog](Mirage_Bug_Catalog.xlsx)。
 
 ## 系統與環境
 
