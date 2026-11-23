@@ -14,12 +14,12 @@ Primary Cause 必須符合本類機制；觀察錯誤可以屬於不同 Observat
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**52**（不重複 Issue ID）。
+Issue 數量：**53**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
 | `wrong_gradient` | 8 |
-| `wrong_forward_value` | 18 |
+| `wrong_forward_value` | 19 |
 | `wrong_optimizer_update` | 1 |
 | `incorrect_state` | 3 |
 | `wrong_metadata` | 8 |
@@ -28,10 +28,17 @@ Issue 數量：**52**（不重複 Issue ID）。
 
 ## API 摘要（API Summary）
 
-唯一 API 數：69；Issue/API 配對數：106。
+唯一 API 數：69；Issue/API 配對數：107。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
+| `torch.compile` | 32 |
+| `torch.cat` | 3 |
+| `torch.add` | 2 |
+| `torch.any` | 2 |
+| `torch.linalg.lu_solve` | 2 |
+| `torch.linalg.pinv` | 2 |
+| `torch.softmax` | 2 |
 | `DTensor.from_local` | 1 |
 | `numpy.cumsum` | 1 |
 | `torch.SymInt.__round__` | 1 |
@@ -58,16 +65,12 @@ Issue 數量：**52**（不重複 Issue ID）。
 | `torch._foreach_copy_` | 1 |
 | `torch._subclasses.fake_tensor.FakeTensorMode` | 1 |
 | `torch._subclasses.functional_tensor.dispatch_functionalize` | 1 |
-| `torch.add` | 1 |
 | `torch.all` | 1 |
 | `torch.amax` | 1 |
-| `torch.any` | 2 |
 | `torch.autograd.Function` | 1 |
 | `torch.autograd.forward_ad.unpack_dual` | 1 |
-| `torch.cat` | 3 |
 | `torch.cdist` | 1 |
 | `torch.clamp` | 1 |
-| `torch.compile` | 32 |
 | `torch.compiler.nested_compile_region` | 1 |
 | `torch.dequantize` | 1 |
 | `torch.distributions.Wishart` | 1 |
@@ -77,8 +80,6 @@ Issue 數量：**52**（不重複 Issue ID）。
 | `torch.func.jacrev` | 1 |
 | `torch.imag` | 1 |
 | `torch.isin` | 1 |
-| `torch.linalg.lu_solve` | 2 |
-| `torch.linalg.pinv` | 2 |
 | `torch.linalg.slogdet` | 1 |
 | `torch.linalg.solve` | 1 |
 | `torch.linalg.solve_triangular` | 1 |
@@ -96,7 +97,6 @@ Issue 數量：**52**（不重複 Issue ID）。
 | `torch.save` | 1 |
 | `torch.scatter` | 1 |
 | `torch.slice_scatter` | 1 |
-| `torch.softmax` | 2 |
 | `torch.sparse_coo_tensor` | 1 |
 | `torch.sparse_csr_tensor` | 1 |
 | `torch.utils._python_dispatch.TorchDispatchMode` | 1 |
@@ -201,6 +201,7 @@ Issue 數量：**52**（不重複 Issue ID）。
 | [#204426](wrong_gradient/torch_204426/README.md) | `torch.compile`：Enters the compiled path | Compiled autograd connects a view created under no_grad back to its input, producing gradient [2,3,3,3] where eager produces [2,2,2,2]. | Compiled Autograd incorrectly connects a no_grad view to its input. | [原文](https://github.com/pytorch/pytorch/issues/204426) |
 | [#204426](wrong_gradient/torch_204426/README.md) | `torch.no_grad`：Disables gradient recording for view creation | Compiled autograd connects a view created under no_grad back to its input, producing gradient [2,3,3,3] where eager produces [2,2,2,2]. | Compiled Autograd incorrectly connects a no_grad view to its input. | [原文](https://github.com/pytorch/pytorch/issues/204426) |
 | [#204426](wrong_gradient/torch_204426/README.md) | `torch.Tensor.view`：Creates the aliased view | Compiled autograd connects a view created under no_grad back to its input, producing gradient [2,3,3,3] where eager produces [2,2,2,2]. | Compiled Autograd incorrectly connects a no_grad view to its input. | [原文](https://github.com/pytorch/pytorch/issues/204426) |
+| [#204442](wrong_forward_value/torch_204442/README.md) | `torch.add` | CSR out control equals 2*A, while CSC out equals (2*A).T instead of 2*A. | CSR 輸入搭配 CSC out 的 layout 未檢查，回傳轉置的錯誤結果。 | [原文](https://github.com/pytorch/pytorch/issues/204442) |
 | [#204446](wrong_forward_value/torch_204446/README.md) | `torch.Tensor.add_`：主要受測 API | 對 base[1] 的 contiguous 非零 offset view 加 COO時，錯改 row 2。 | 上游定位 sparse CPU kernel 重複套用 storage_offset；本地刻意只測 allocation 內的錯位寫入。 | [原文](https://github.com/pytorch/pytorch/issues/204446) |
 | [#204446](wrong_forward_value/torch_204446/README.md) | `torch.sparse_coo_tensor`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 對 base[1] 的 contiguous 非零 offset view 加 COO時，錯改 row 2。 | 上游定位 sparse CPU kernel 重複套用 storage_offset；本地刻意只測 allocation 內的錯位寫入。 | [原文](https://github.com/pytorch/pytorch/issues/204446) |
 | [#205112](wrong_gradient/torch_205112/README.md) | `torch.func.jacrev`：主要受測 API | cdist(p=1) 的 jacrev 使用 batched cotangents時，各 Jacobian slice 重複第一個 cotangent 的結果。 | 上游指出 cdist_backward batching rule 沒有傳遞僅 grad 被 vmap 的 batch 維；主要為 tensor batching 表示。 | [原文](https://github.com/pytorch/pytorch/issues/205112) |
@@ -241,3 +242,4 @@ high／medium 為分類信心，不是上游根因獨立認證。原始 metadata
 - [#205620](wrong_forward_value/torch_205620/README.md)：out=A 的支援或明確拒絕政策尚待確認；本例只證明現有靜默錯解。 
 
 - [#203866](unexpected_exception/torch_203866/README.md)：本次全套執行停在 Gloo 初始化，未執行序列化斷言。
+- [#204442](wrong_forward_value/torch_204442/README.md)：Validity on PyTorch 2.15.0+cpu requires ten independent-process passes and preservation of all comparison controls. A pytest PASS is not proof of an independent root cause.

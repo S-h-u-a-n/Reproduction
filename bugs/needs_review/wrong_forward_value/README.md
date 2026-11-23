@@ -16,40 +16,34 @@ Observation 定義：forward 或一般數值運算回傳錯誤值，包含 NaN�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**16**（不重複 Issue ID）。
+Issue 數量：**11**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `wrong_forward_value` | 16 |
+| `wrong_forward_value` | 11 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：22；Issue/API 配對數：32。
+唯一 API 數：16；Issue/API 配對數：22。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
-| `numpy.fix` | 1 |
+| `torch.compile` | 6 |
+| `torch.distributions.kl_divergence` | 2 |
 | `torch.Tensor.__add__` | 1 |
 | `torch.Tensor.__mul__` | 1 |
-| `torch.Tensor.item` | 1 |
 | `torch.acosh` | 1 |
-| `torch.compile` | 10 |
 | `torch.distributions.Normal` | 1 |
 | `torch.distributions.TransformedDistribution` | 1 |
-| `torch.distributions.kl_divergence` | 2 |
 | `torch.distributions.transforms.AbsTransform` | 1 |
 | `torch.erf` | 1 |
-| `torch.floor_divide` | 1 |
 | `torch.fx.GraphModule` | 1 |
-| `torch.fx.symbolic_trace` | 1 |
 | `torch.isin` | 1 |
 | `torch.jit.freeze` | 1 |
 | `torch.nn.BatchNorm1d` | 1 |
 | `torch.nn.Linear` | 1 |
 | `torch.prod` | 1 |
-| `torch.remainder` | 1 |
 | `torch.var` | 1 |
-| `torch.where` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
@@ -59,16 +53,6 @@ Issue 數量：**16**（不重複 Issue ID）。
 | [#197811](torch_197811/README.md) | `torch.Tensor.__mul__`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 兩個 closure 分別擷取 Tensor 的加法與乘法 descriptor時，乘法 closure 重用加法圖而回傳 9。 | 捕獲 descriptor 的 guard 不完整，屬一般 Python callable 快取語意。 | [原文](https://github.com/pytorch/pytorch/issues/197811) |
 | [#197811](torch_197811/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 兩個 closure 分別擷取 Tensor 的加法與乘法 descriptor時，乘法 closure 重用加法圖而回傳 9。 | 捕獲 descriptor 的 guard 不完整，屬一般 Python callable 快取語意。 | [原文](https://github.com/pytorch/pytorch/issues/197811) |
 | [#197894](torch_197894/README.md) | `torch.fx.GraphModule`：主要受測 API | FX graph 的 operator.pow(-2,x)，x=2時，回傳 -4。 | FX Python codegen 缺少負數底數括號，屬運算優先序問題。 | [原文](https://github.com/pytorch/pytorch/issues/197894) |
-| [#197895](torch_197895/README.md) | `torch.floor_divide`：主要受測 API | binary64 商在整數下緣的固定輸入時，回傳 [10,5,30,3]。 | lowering 對已四捨五入的商取 floor，而非正確餘數演算法。 | [原文](https://github.com/pytorch/pytorch/issues/197895) |
-| [#197895](torch_197895/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | binary64 商在整數下緣的固定輸入時，回傳 [10,5,30,3]。 | lowering 對已四捨五入的商取 floor，而非正確餘數演算法。 | [原文](https://github.com/pytorch/pytorch/issues/197895) |
-| [#198052](torch_198052/README.md) | `numpy.fix`：主要受測 API | torch.compile 處理正負半整數 float32 NumPy 輸入時，得到 [2,-2,2,-0]。 | torch._numpy 把 fix 對應到 round；不把同 Issue 其他 NumPy 症狀當成本地已測。 | [原文](https://github.com/pytorch/pytorch/issues/198052) |
-| [#198052](torch_198052/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | torch.compile 處理正負半整數 float32 NumPy 輸入時，得到 [2,-2,2,-0]。 | torch._numpy 把 fix 對應到 round；不把同 Issue 其他 NumPy 症狀當成本地已測。 | [原文](https://github.com/pytorch/pytorch/issues/198052) |
-| [#198057](torch_198057/README.md) | `torch.remainder`：主要受測 API | AVX512 CPU 向量路徑，無限除數及極大商時，前三個為 NaN、後兩個為零。 | 向量公式 a-floor(a/b)*b 的非有限值與消去問題；CPU 寬度影響觸發。 | [原文](https://github.com/pytorch/pytorch/issues/198057) |
-| [#198057](torch_198057/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | AVX512 CPU 向量路徑，無限除數及極大商時，前三個為 NaN、後兩個為零。 | 向量公式 a-floor(a/b)*b 的非有限值與消去問題；CPU 寬度影響觸發。 | [原文](https://github.com/pytorch/pytorch/issues/198057) |
-| [#198070](torch_198070/README.md) | `torch.Tensor.item`：主要受測 API | capture_scalar_outputs=True，以 v!=v 判斷 NaN時，條件被化簡而輸出 NaN。 | unbacked SymFloat 被視為有限實數，屬 symbolic 數值假設；測試中的參數名稱不構成訓練狀態證據。 | [原文](https://github.com/pytorch/pytorch/issues/198070) |
-| [#198070](torch_198070/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | capture_scalar_outputs=True，以 v!=v 判斷 NaN時，條件被化簡而輸出 NaN。 | unbacked SymFloat 被視為有限實數，屬 symbolic 數值假設；測試中的參數名稱不構成訓練狀態證據。 | [原文](https://github.com/pytorch/pytorch/issues/198070) |
-| [#198072](torch_198072/README.md) | `torch.fx.symbolic_trace`：主要受測 API | FX 函式有名為 nan 的參數並使用 NaN 常數時，NaN 常數被布林參數遮蔽。 | 生成 Python 程式的名稱衝突，非 tensor metadata。 | [原文](https://github.com/pytorch/pytorch/issues/198072) |
-| [#198072](torch_198072/README.md) | `torch.where`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | FX 函式有名為 nan 的參數並使用 NaN 常數時，NaN 常數被布林參數遮蔽。 | 生成 Python 程式的名稱衝突，非 tensor metadata。 | [原文](https://github.com/pytorch/pytorch/issues/198072) |
 | [#198134](torch_198134/README.md) | `torch.acosh`：主要受測 API | 長度八的 float64 1e200，CPU 向量路徑時，編譯結果為正無限。 | 向量 acosh 公式平方中間值溢位；一般數值穩定性問題。 | [原文](https://github.com/pytorch/pytorch/issues/198134) |
 | [#198134](torch_198134/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 長度八的 float64 1e200，CPU 向量路徑時，編譯結果為正無限。 | 向量 acosh 公式平方中間值溢位；一般數值穩定性問題。 | [原文](https://github.com/pytorch/pytorch/issues/198134) |
 | [#198183](torch_198183/README.md) | `torch.erf`：主要受測 API | AVX512、重複小數值 block 以觸發向量化時，每個 block 的 1e-8、1e-7 對應結果為零。 | erf 多項式 1-p(t)*exp(-x²) 在零附近相消。 | [原文](https://github.com/pytorch/pytorch/issues/198183) |
@@ -96,11 +80,6 @@ high／medium 為分類信心，不是上游根因獨立認證。原始 metadata
 
 - [#197811](torch_197811/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
 - [#197894](torch_197894/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
-- [#197895](torch_197895/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
-- [#198052](torch_198052/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 Issue 同時包含 fix/cbrt/clip/sign/heaviside；本地只測 numpy.fix，不將整篇 Issue 視為五個已驗證案例。
-- [#198057](torch_198057/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 前五個元素才屬聲稱的錯誤簽名，其他 lanes 用於觸發向量化；目前 AVX512，不外推 scalar tail 或其他 SIMD。
-- [#198070](torch_198070/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
-- [#198072](torch_198072/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
 - [#198134](torch_198134/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
 - [#198183](torch_198183/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 只斷言各 block 的兩個小值為零；其他值作向量化 padding，沒有宣稱整個數值區間都已驗證。
 - [#198484](torch_198484/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 

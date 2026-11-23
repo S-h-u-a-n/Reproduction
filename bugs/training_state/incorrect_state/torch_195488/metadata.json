@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_195488",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/195488",
+  "target_api": "torch.amp.autocast / torch.compile",
+  "primary_category": "graph_lifecycle",
+  "tags": [
+    "training_state",
+    "graph_lifecycle"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Autocast context and nesting are restored after an exception inside compiled region.",
+  "bug_signature": "Compiled runtime exception leaves an unmatched autocast nesting level.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

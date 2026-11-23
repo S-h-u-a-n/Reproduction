@@ -14,11 +14,11 @@ Primary Cause 必須符合本類機制；觀察錯誤可以屬於不同 Observat
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**25**（不重複 Issue ID）。
+Issue 數量：**20**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `wrong_forward_value` | 16 |
+| `wrong_forward_value` | 11 |
 | `incorrect_state` | 3 |
 | `wrong_metadata` | 1 |
 | `unexpected_exception` | 4 |
@@ -27,27 +27,23 @@ Issue 數量：**25**（不重複 Issue ID）。
 
 ## API 摘要（API Summary）
 
-唯一 API 數：28；Issue/API 配對數：47。
+唯一 API 數：22；Issue/API 配對數：37。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
+| `torch.compile` | 14 |
+| `torch.distributions.kl_divergence` | 2 |
+| `torch.fx.GraphModule` | 2 |
 | `collections.OrderedDict.move_to_end` | 1 |
-| `numpy.fix` | 1 |
 | `torch.Tensor.__add__` | 1 |
 | `torch.Tensor.__mul__` | 1 |
-| `torch.Tensor.item` | 1 |
 | `torch.Tensor.sum` | 1 |
 | `torch.acosh` | 1 |
 | `torch.argmin` | 1 |
-| `torch.compile` | 18 |
 | `torch.distributions.Normal` | 1 |
 | `torch.distributions.TransformedDistribution` | 1 |
-| `torch.distributions.kl_divergence` | 2 |
 | `torch.distributions.transforms.AbsTransform` | 1 |
 | `torch.erf` | 1 |
-| `torch.floor_divide` | 1 |
-| `torch.fx.GraphModule` | 2 |
-| `torch.fx.symbolic_trace` | 1 |
 | `torch.isin` | 1 |
 | `torch.jit.freeze` | 1 |
 | `torch.nn.BatchNorm1d` | 1 |
@@ -56,9 +52,7 @@ Issue 數量：**25**（不重複 Issue ID）。
 | `torch.nn.functional.interpolate` | 1 |
 | `torch.nn.functional.linear` | 1 |
 | `torch.prod` | 1 |
-| `torch.remainder` | 1 |
 | `torch.var` | 1 |
-| `torch.where` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
@@ -72,17 +66,7 @@ Issue 數量：**25**（不重複 Issue ID）。
 | [#197889](wrong_metadata/torch_197889/README.md) | `torch.nn.functional.interpolate`：主要受測 API | 同程序依序傳入 scale 0.9、0.5、0.25、2.0時，實際為 7、6、6、6，後兩次 shape 過期。 | 上游指向 AOT cache 省略 float specialization guards；本例沒有訓練狀態，不能因 cache 名稱而歸入 training_state。 | [原文](https://github.com/pytorch/pytorch/issues/197889) |
 | [#197889](wrong_metadata/torch_197889/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 同程序依序傳入 scale 0.9、0.5、0.25、2.0時，實際為 7、6、6、6，後兩次 shape 過期。 | 上游指向 AOT cache 省略 float specialization guards；本例沒有訓練狀態，不能因 cache 名稱而歸入 training_state。 | [原文](https://github.com/pytorch/pytorch/issues/197889) |
 | [#197894](wrong_forward_value/torch_197894/README.md) | `torch.fx.GraphModule`：主要受測 API | FX graph 的 operator.pow(-2,x)，x=2時，回傳 -4。 | FX Python codegen 缺少負數底數括號，屬運算優先序問題。 | [原文](https://github.com/pytorch/pytorch/issues/197894) |
-| [#197895](wrong_forward_value/torch_197895/README.md) | `torch.floor_divide`：主要受測 API | binary64 商在整數下緣的固定輸入時，回傳 [10,5,30,3]。 | lowering 對已四捨五入的商取 floor，而非正確餘數演算法。 | [原文](https://github.com/pytorch/pytorch/issues/197895) |
-| [#197895](wrong_forward_value/torch_197895/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | binary64 商在整數下緣的固定輸入時，回傳 [10,5,30,3]。 | lowering 對已四捨五入的商取 floor，而非正確餘數演算法。 | [原文](https://github.com/pytorch/pytorch/issues/197895) |
 | [#197896](incorrect_state/torch_197896/README.md) | `torch.compile`：主要受測 API | compiled function 內建立 local class，方法修改 closure list時，tensor 結果正常但 list 未更新。 | 上游指出 local class method 的來源追蹤遺失，屬 Python side-effect replay。 | [原文](https://github.com/pytorch/pytorch/issues/197896) |
-| [#198052](wrong_forward_value/torch_198052/README.md) | `numpy.fix`：主要受測 API | torch.compile 處理正負半整數 float32 NumPy 輸入時，得到 [2,-2,2,-0]。 | torch._numpy 把 fix 對應到 round；不把同 Issue 其他 NumPy 症狀當成本地已測。 | [原文](https://github.com/pytorch/pytorch/issues/198052) |
-| [#198052](wrong_forward_value/torch_198052/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | torch.compile 處理正負半整數 float32 NumPy 輸入時，得到 [2,-2,2,-0]。 | torch._numpy 把 fix 對應到 round；不把同 Issue 其他 NumPy 症狀當成本地已測。 | [原文](https://github.com/pytorch/pytorch/issues/198052) |
-| [#198057](wrong_forward_value/torch_198057/README.md) | `torch.remainder`：主要受測 API | AVX512 CPU 向量路徑，無限除數及極大商時，前三個為 NaN、後兩個為零。 | 向量公式 a-floor(a/b)*b 的非有限值與消去問題；CPU 寬度影響觸發。 | [原文](https://github.com/pytorch/pytorch/issues/198057) |
-| [#198057](wrong_forward_value/torch_198057/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | AVX512 CPU 向量路徑，無限除數及極大商時，前三個為 NaN、後兩個為零。 | 向量公式 a-floor(a/b)*b 的非有限值與消去問題；CPU 寬度影響觸發。 | [原文](https://github.com/pytorch/pytorch/issues/198057) |
-| [#198070](wrong_forward_value/torch_198070/README.md) | `torch.Tensor.item`：主要受測 API | capture_scalar_outputs=True，以 v!=v 判斷 NaN時，條件被化簡而輸出 NaN。 | unbacked SymFloat 被視為有限實數，屬 symbolic 數值假設；測試中的參數名稱不構成訓練狀態證據。 | [原文](https://github.com/pytorch/pytorch/issues/198070) |
-| [#198070](wrong_forward_value/torch_198070/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | capture_scalar_outputs=True，以 v!=v 判斷 NaN時，條件被化簡而輸出 NaN。 | unbacked SymFloat 被視為有限實數，屬 symbolic 數值假設；測試中的參數名稱不構成訓練狀態證據。 | [原文](https://github.com/pytorch/pytorch/issues/198070) |
-| [#198072](wrong_forward_value/torch_198072/README.md) | `torch.fx.symbolic_trace`：主要受測 API | FX 函式有名為 nan 的參數並使用 NaN 常數時，NaN 常數被布林參數遮蔽。 | 生成 Python 程式的名稱衝突，非 tensor metadata。 | [原文](https://github.com/pytorch/pytorch/issues/198072) |
-| [#198072](wrong_forward_value/torch_198072/README.md) | `torch.where`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | FX 函式有名為 nan 的參數並使用 NaN 常數時，NaN 常數被布林參數遮蔽。 | 生成 Python 程式的名稱衝突，非 tensor metadata。 | [原文](https://github.com/pytorch/pytorch/issues/198072) |
 | [#198077](incorrect_state/torch_198077/README.md) | `torch.fx.GraphModule`：主要受測 API | 含 operator.iadd 的 GraphModule 經 pickle round trip時，恢復後變成 out-of-place add，input 不變。 | FX 由程式碼重建圖時缺少 Proxy.__iadd__ 語意；未涉及 autograd graph lifecycle。 | [原文](https://github.com/pytorch/pytorch/issues/198077) |
 | [#198134](wrong_forward_value/torch_198134/README.md) | `torch.acosh`：主要受測 API | 長度八的 float64 1e200，CPU 向量路徑時，編譯結果為正無限。 | 向量 acosh 公式平方中間值溢位；一般數值穩定性問題。 | [原文](https://github.com/pytorch/pytorch/issues/198134) |
 | [#198134](wrong_forward_value/torch_198134/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 長度八的 float64 1e200，CPU 向量路徑時，編譯結果為正無限。 | 向量 acosh 公式平方中間值溢位；一般數值穩定性問題。 | [原文](https://github.com/pytorch/pytorch/issues/198134) |
@@ -122,12 +106,7 @@ high／medium 為分類信心，不是上游根因獨立認證。原始 metadata
 - [#197811](wrong_forward_value/torch_197811/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
 - [#197889](wrong_metadata/torch_197889/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 四次 scale 呼叫的程序歷史是必要條件；不得將四次拆成四個互不相關程序。
 - [#197894](wrong_forward_value/torch_197894/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
-- [#197895](wrong_forward_value/torch_197895/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
 - [#197896](incorrect_state/torch_197896/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
-- [#198052](wrong_forward_value/torch_198052/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 Issue 同時包含 fix/cbrt/clip/sign/heaviside；本地只測 numpy.fix，不將整篇 Issue 視為五個已驗證案例。
-- [#198057](wrong_forward_value/torch_198057/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 前五個元素才屬聲稱的錯誤簽名，其他 lanes 用於觸發向量化；目前 AVX512，不外推 scalar tail 或其他 SIMD。
-- [#198070](wrong_forward_value/torch_198070/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
-- [#198072](wrong_forward_value/torch_198072/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
 - [#198077](incorrect_state/torch_198077/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
 - [#198134](wrong_forward_value/torch_198134/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
 - [#198183](wrong_forward_value/torch_198183/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 只斷言各 block 的兩個小值為零；其他值作向量化 padding，沒有宣稱整個數值區間都已驗證。

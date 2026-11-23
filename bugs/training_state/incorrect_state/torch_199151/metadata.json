@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_199151",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/199151",
+  "target_api": "torch.ao.quantization.observer.PerChannelMinMaxObserver",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "training_state",
+    "tensor_metadata"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Observer reset preserves the configured float64 dtype of min_val and max_val buffers.",
+  "bug_signature": "Per-channel reset allocates fresh float32 buffer tensors.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

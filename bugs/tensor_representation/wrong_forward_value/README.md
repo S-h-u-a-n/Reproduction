@@ -16,18 +16,21 @@ Observation 定義：forward 或一般數值運算回傳錯誤值，包含 NaN�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**18**（不重複 Issue ID）。
+Issue 數量：**19**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `wrong_forward_value` | 18 |
+| `wrong_forward_value` | 19 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：23；Issue/API 配對數：31。
+唯一 API 數：23；Issue/API 配對數：32。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
+| `torch.compile` | 8 |
+| `torch.add` | 2 |
+| `torch.linalg.lu_solve` | 2 |
 | `torch.SymInt.__round__` | 1 |
 | `torch.Tensor.add_` | 1 |
 | `torch.Tensor.fill_diagonal_` | 1 |
@@ -37,14 +40,11 @@ Issue 數量：**18**（不重複 Issue ID）。
 | `torch.Tensor.scatter_reduce` | 1 |
 | `torch.Tensor.unfold` | 1 |
 | `torch._foreach_copy_` | 1 |
-| `torch.add` | 1 |
 | `torch.amax` | 1 |
 | `torch.cat` | 1 |
 | `torch.clamp` | 1 |
-| `torch.compile` | 8 |
 | `torch.distributions.Wishart` | 1 |
 | `torch.distributions.kl_divergence` | 1 |
-| `torch.linalg.lu_solve` | 2 |
 | `torch.linalg.pinv` | 1 |
 | `torch.linalg.solve_triangular` | 1 |
 | `torch.nn.functional.linear` | 1 |
@@ -82,6 +82,7 @@ Issue 數量：**18**（不重複 Issue ID）。
 | [#203806](torch_203806/README.md) | `torch._foreach_copy_`：主要受測 API | 以 [b.clone(),a.clone()] 複製回 [a,b]時，兩個 tensor 都得到原 b 的值。 | 上游重現指出編譯器在讀完 clone source 前就寫 destination，破壞 storage 資料依賴。 | [原文](https://github.com/pytorch/pytorch/issues/203806) |
 | [#203806](torch_203806/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 以 [b.clone(),a.clone()] 複製回 [a,b]時，兩個 tensor 都得到原 b 的值。 | 上游重現指出編譯器在讀完 clone source 前就寫 destination，破壞 storage 資料依賴。 | [原文](https://github.com/pytorch/pytorch/issues/203806) |
 | [#204181](torch_204181/README.md) | `torch.Tensor.fill_diagonal_`：主要受測 API | 非連續 7x2 column view，wrap=True時，寫入 view 外的第三欄，漏掉 wrapped cell。 | 上游懷疑 wrapped diagonal 索引使用 contiguous 假設；layout 觸發已知，完整根因未確認。 | [原文](https://github.com/pytorch/pytorch/issues/204181) |
+| [#204442](torch_204442/README.md) | `torch.add` | CSR out control equals 2*A, while CSC out equals (2*A).T instead of 2*A. | CSR 輸入搭配 CSC out 的 layout 未檢查，回傳轉置的錯誤結果。 | [原文](https://github.com/pytorch/pytorch/issues/204442) |
 | [#204446](torch_204446/README.md) | `torch.Tensor.add_`：主要受測 API | 對 base[1] 的 contiguous 非零 offset view 加 COO時，錯改 row 2。 | 上游定位 sparse CPU kernel 重複套用 storage_offset；本地刻意只測 allocation 內的錯位寫入。 | [原文](https://github.com/pytorch/pytorch/issues/204446) |
 | [#204446](torch_204446/README.md) | `torch.sparse_coo_tensor`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 對 base[1] 的 contiguous 非零 offset view 加 COO時，錯改 row 2。 | 上游定位 sparse CPU kernel 重複套用 storage_offset；本地刻意只測 allocation 內的錯位寫入。 | [原文](https://github.com/pytorch/pytorch/issues/204446) |
 | [#205616](torch_205616/README.md) | `torch.amax`：主要受測 API | 零維 CPU tensor x=3，out=x時，輸出與 input 都被改為 -inf。 | 上游定位 reduction 先把 out 初始化為 identity，覆蓋尚未讀取的 aliased input；是否應明確拒絕 overlap 待上游決策。 | [原文](https://github.com/pytorch/pytorch/issues/205616) |
@@ -102,3 +103,4 @@ high／medium 為分類信心，不是上游根因獨立認證。原始 metadata
 - [#204446](torch_204446/README.md)： 本地只驗證 allocation 內的錯誤 row，未執行上游 heap corruption／process crash 變體。與 #59101 的重複根因尚未確認。
 - [#205616](torch_205616/README.md)：上游傾向拒絕 input/output overlap；需區分支援 alias 的正確值與明確拒絕兩種修復契約。 本地只測 amax scalar alias，不把上游其他 reductions 都列為已測 API。
 - [#205620](torch_205620/README.md)：out=A 的支援或明確拒絕政策尚待確認；本例只證明現有靜默錯解。 
+- [#204442](torch_204442/README.md)：Validity on PyTorch 2.15.0+cpu requires ten independent-process passes and preservation of all comparison controls. A pytest PASS is not proof of an independent root cause.
