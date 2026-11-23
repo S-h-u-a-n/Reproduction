@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_203866",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/203866",
+  "target_api": "DTensor / torch.save",
+  "primary_category": "tensor_metadata",
+  "tags": [
+    "storage_aliasing",
+    "storage_offset",
+    "tensor_subclass"
+  ],
+  "bug_type": "unexpected_exception",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Tensor wrappers with nonzero storage offsets must serialize without treating placeholder storage as real backing data.",
+  "bug_signature": "Zero-offset wrapper serializes; a matching nonzero-offset DTensor raises invalid python storage RuntimeError.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

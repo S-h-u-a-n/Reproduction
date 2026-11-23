@@ -16,15 +16,15 @@ Observation 定義：forward 或一般數值運算回傳錯誤值，包含 NaN�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**17**（不重複 Issue ID）。
+Issue 數量：**18**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `wrong_forward_value` | 17 |
+| `wrong_forward_value` | 18 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：23；Issue/API 配對數：30。
+唯一 API 數：23；Issue/API 配對數：31。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
@@ -44,7 +44,7 @@ Issue 數量：**17**（不重複 Issue ID）。
 | `torch.compile` | 8 |
 | `torch.distributions.Wishart` | 1 |
 | `torch.distributions.kl_divergence` | 1 |
-| `torch.linalg.lu_solve` | 1 |
+| `torch.linalg.lu_solve` | 2 |
 | `torch.linalg.pinv` | 1 |
 | `torch.linalg.solve_triangular` | 1 |
 | `torch.nn.functional.linear` | 1 |
@@ -86,10 +86,11 @@ Issue 數量：**17**（不重複 Issue ID）。
 | [#204446](torch_204446/README.md) | `torch.sparse_coo_tensor`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 對 base[1] 的 contiguous 非零 offset view 加 COO時，錯改 row 2。 | 上游定位 sparse CPU kernel 重複套用 storage_offset；本地刻意只測 allocation 內的錯位寫入。 | [原文](https://github.com/pytorch/pytorch/issues/204446) |
 | [#205616](torch_205616/README.md) | `torch.amax`：主要受測 API | 零維 CPU tensor x=3，out=x時，輸出與 input 都被改為 -inf。 | 上游定位 reduction 先把 out 初始化為 identity，覆蓋尚未讀取的 aliased input；是否應明確拒絕 overlap 待上游決策。 | [原文](https://github.com/pytorch/pytorch/issues/205616) |
 | [#205620](torch_205620/README.md) | `torch.linalg.solve_triangular`：主要受測 API | A=diag(2,4)、B=diag(6,20)，out=A時，回傳 identity。 | 上游 source inspection 指出先把 B 複製到 out，因 out=A 覆蓋係數矩陣。 | [原文](https://github.com/pytorch/pytorch/issues/205620) |
+| [#206126](torch_206126/README.md) | `torch.linalg.lu_solve`：Solves with an output that aliases the LU factor | LU factor aliases the out argument and yields a large residual while independent/rhs output are correct. | Output aliases LU factor, overwriting data required for the solve. | [原文](https://github.com/pytorch/pytorch/issues/206126) |
 
 ## 已知限制（Known Limitations）
 
-原始整批 100 passed；暫存新結構整批 100 passed；正式搬移後 100 passed, 7 warnings。每階段一次，沿用 compiler cache，非十次隔離／冷編譯。
+歷史搬移驗證：原始整批 100 passed；暫存新結構整批 100 passed；正式搬移後 100 passed, 7 warnings。每階段一次，沿用 compiler cache，非十次隔離／冷編譯。
 
 high／medium 為分類信心，不是上游根因獨立認證。原始 metadata 可能仍標記 pending；第一個修復版本未追查。數值或 ISA 相關簽名不得外推至其他環境。
 

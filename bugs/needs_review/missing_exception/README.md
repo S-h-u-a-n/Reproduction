@@ -16,32 +16,22 @@ Observation 定義：必要的輸入驗證、dtype 契約或 autograd version co
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**1**（不重複 Issue ID）。
+Issue 數量：**0**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `missing_exception` | 1 |
+| `missing_exception` | 0 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：2；Issue/API 配對數：2。
-
-| API | 涉及 Issue 數 |
-| --- | ---: |
-| `torch.compile` | 1 |
-| `torch.nn.functional.binary_cross_entropy` | 1 |
+唯一 API 數：0；Issue/API 配對數：0。
 
 ## Issue／API 詳細說明與 GitHub 來源
 
-| Issue | API 與作用 | 觀察／範圍 | 分類依據 | GitHub |
-| --- | --- | --- | --- | --- |
-| [#193757](torch_193757/README.md) | `torch.nn.functional.binary_cross_entropy`：主要受測 API | CPU Inductor、target=1.5 超出 BCE 定義域時，仍回傳有限 loss。 | 輸入值範圍驗證被省略；沒有證據屬 tensor layout 或訓練狀態。 | [原文](https://github.com/pytorch/pytorch/issues/193757) |
-| [#193757](torch_193757/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | CPU Inductor、target=1.5 超出 BCE 定義域時，仍回傳有限 loss。 | 輸入值範圍驗證被省略；沒有證據屬 tensor layout 或訓練狀態。 | [原文](https://github.com/pytorch/pytorch/issues/193757) |
+目前無案例。
 
 ## 已知限制（Known Limitations）
 
-原始整批 100 passed；暫存新結構整批 100 passed；正式搬移後 100 passed, 7 warnings。每階段一次，沿用 compiler cache，非十次隔離／冷編譯。
+歷史搬移驗證：原始整批 100 passed；暫存新結構整批 100 passed；正式搬移後 100 passed, 7 warnings。每階段一次，沿用 compiler cache，非十次隔離／冷編譯。
 
 high／medium 為分類信心，不是上游根因獨立認證。原始 metadata 可能仍標記 pending；第一個修復版本未追查。數值或 ISA 相關簽名不得外推至其他環境。
-
-- [#193757](torch_193757/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 

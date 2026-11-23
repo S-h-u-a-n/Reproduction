@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_206126",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/206126",
+  "target_api": "torch.linalg.lu_solve",
+  "primary_category": "storage_aliasing",
+  "tags": [
+    "tensor_layout",
+    "storage_aliasing"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Aliasing out with LU must produce the same correct solution as using an independent output.",
+  "bug_signature": "LU factor aliases the out argument and yields a large residual while independent/rhs output are correct.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

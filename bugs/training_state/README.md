@@ -14,19 +14,19 @@ Primary Cause 必須符合本類機制；觀察錯誤可以屬於不同 Observat
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**21**（不重複 Issue ID）。
+Issue 數量：**23**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `wrong_gradient` | 11 |
-| `incorrect_state` | 1 |
+| `wrong_gradient` | 12 |
+| `incorrect_state` | 2 |
 | `wrong_metadata` | 1 |
 | `unexpected_exception` | 4 |
 | `missing_exception` | 4 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：29；Issue/API 配對數：40。
+唯一 API 數：32；Issue/API 配對數：44。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
@@ -39,7 +39,7 @@ Issue 數量：**21**（不重複 Issue ID）。
 | `torch.asinh` | 1 |
 | `torch.autograd.Function` | 1 |
 | `torch.autograd.forward_ad` | 1 |
-| `torch.autograd.grad` | 1 |
+| `torch.autograd.grad` | 2 |
 | `torch.compile` | 11 |
 | `torch.distributed.checkpoint.DefaultSavePlanner` | 1 |
 | `torch.distributed.checkpoint.save` | 1 |
@@ -54,6 +54,9 @@ Issue 數量：**21**（不重複 Issue ID）。
 | `torch.nn.functional.avg_pool1d` | 1 |
 | `torch.nn.functional.cosine_similarity` | 1 |
 | `torch.nn.functional.interpolate` | 1 |
+| `torch.nn.functional.layer_norm` | 1 |
+| `torch.nn.utils.clip_grad_norm_` | 1 |
+| `torch.nn.utils.get_total_norm` | 1 |
 | `torch.optim.Adam` | 1 |
 | `torch.segment_reduce` | 1 |
 | `torch.special.log_ndtr` | 1 |
@@ -94,9 +97,13 @@ Issue 數量：**21**（不重複 Issue ID）。
 | [#203946](wrong_gradient/torch_203946/README.md) | `torch.nn.functional.cosine_similarity`：主要受測 API | norm(x1)<eps<norm(x2)，float64 固定向量時，第一分量只有一半，第二分量正確。 | 上游指出 norm clamp 在 no-grad guard 下原地執行，使 autograd 圖保留應被截斷的導數項。 | [原文](https://github.com/pytorch/pytorch/issues/203946) |
 | [#204188](wrong_metadata/torch_204188/README.md) | `torch.distributed.checkpoint.save`：主要受測 API | enable_plan_caching=True，兩次 save 只有 dtype 由 bf16 變 fp16時，仍記錄 bf16，無 cache 控制組正確。 | 上游定位 class-level save plan cache 比較沒有 tensor_data.properties，屬 checkpoint state lifecycle。 | [原文](https://github.com/pytorch/pytorch/issues/204188) |
 | [#204188](wrong_metadata/torch_204188/README.md) | `torch.distributed.checkpoint.DefaultSavePlanner`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | enable_plan_caching=True，兩次 save 只有 dtype 由 bf16 變 fp16時，仍記錄 bf16，無 cache 控制組正確。 | 上游定位 class-level save plan cache 比較沒有 tensor_data.properties，屬 checkpoint state lifecycle。 | [原文](https://github.com/pytorch/pytorch/issues/204188) |
+| [#204269](incorrect_state/torch_204269/README.md) | `torch.nn.utils.clip_grad_norm_`：Public gradient-clipping entry point | A pair of gradient tensors with three nonzero elements returns a total 0-norm of two. | The 0-norm of gradients counts nonzero tensors instead of nonzero gradient elements. | [原文](https://github.com/pytorch/pytorch/issues/204269) |
+| [#204269](incorrect_state/torch_204269/README.md) | `torch.nn.utils.get_total_norm`：Computes the total gradient norm | A pair of gradient tensors with three nonzero elements returns a total 0-norm of two. | The 0-norm of gradients counts nonzero tensors instead of nonzero gradient elements. | [原文](https://github.com/pytorch/pytorch/issues/204269) |
 | [#204339](incorrect_state/torch_204339/README.md) | `torch.optim.Adam`：主要受測 API | optimizer 初始化後 graph break，保留 GraphModules 再銷毀 optimizer時，optimizer 已釋放但 Parameter 被 resumed graph 保留。 | 原文指出 optimizer-owned parameter lifetime 與 resumed graph capture 有關；完整 reference-management 根因未確認。 | [原文](https://github.com/pytorch/pytorch/issues/204339) |
 | [#204339](incorrect_state/torch_204339/README.md) | `torch._dynamo.graph_break`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | optimizer 初始化後 graph break，保留 GraphModules 再銷毀 optimizer時，optimizer 已釋放但 Parameter 被 resumed graph 保留。 | 原文指出 optimizer-owned parameter lifetime 與 resumed graph capture 有關；完整 reference-management 根因未確認。 | [原文](https://github.com/pytorch/pytorch/issues/204339) |
 | [#204339](incorrect_state/torch_204339/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | optimizer 初始化後 graph break，保留 GraphModules 再銷毀 optimizer時，optimizer 已釋放但 Parameter 被 resumed graph 保留。 | 原文指出 optimizer-owned parameter lifetime 與 resumed graph capture 有關；完整 reference-management 根因未確認。 | [原文](https://github.com/pytorch/pytorch/issues/204339) |
+| [#204478](wrong_gradient/torch_204478/README.md) | `torch.nn.functional.layer_norm`：Layer normalization under test | A parameter gradient of a loss involving second input derivatives differs from an independent formula. | Built-in layer normalization has incorrect reverse-mode third derivatives. | [原文](https://github.com/pytorch/pytorch/issues/204478) |
+| [#204478](wrong_gradient/torch_204478/README.md) | `torch.autograd.grad`：Computes higher-order derivatives | A parameter gradient of a loss involving second input derivatives differs from an independent formula. | Built-in layer normalization has incorrect reverse-mode third derivatives. | [原文](https://github.com/pytorch/pytorch/issues/204478) |
 | [#204825](wrong_gradient/torch_204825/README.md) | `torch.autograd.Function`：主要受測 API | compiled custom Function 的可微 backward，再求二階導數時，只剩普通路徑的 1。 | 上游定位 custom backward 以 grad mode 關閉追蹤，導致高階圖丟失 Function 貢獻。 | [原文](https://github.com/pytorch/pytorch/issues/204825) |
 | [#204825](wrong_gradient/torch_204825/README.md) | `torch.autograd.grad`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | compiled custom Function 的可微 backward，再求二階導數時，只剩普通路徑的 1。 | 上游定位 custom backward 以 grad mode 關閉追蹤，導致高階圖丟失 Function 貢獻。 | [原文](https://github.com/pytorch/pytorch/issues/204825) |
 | [#204825](wrong_gradient/torch_204825/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | compiled custom Function 的可微 backward，再求二階導數時，只剩普通路徑的 1。 | 上游定位 custom backward 以 grad mode 關閉追蹤，導致高階圖丟失 Function 貢獻。 | [原文](https://github.com/pytorch/pytorch/issues/204825) |
@@ -107,7 +114,7 @@ Issue 數量：**21**（不重複 Issue ID）。
 
 ## 已知限制（Known Limitations）
 
-原始整批 100 passed；暫存新結構整批 100 passed；正式搬移後 100 passed, 7 warnings。每階段一次，沿用 compiler cache，非十次隔離／冷編譯。
+歷史搬移驗證：原始整批 100 passed；暫存新結構整批 100 passed；正式搬移後 100 passed, 7 warnings。每階段一次，沿用 compiler cache，非十次隔離／冷編譯。
 
 high／medium 為分類信心，不是上游根因獨立認證。原始 metadata 可能仍標記 pending；第一個修復版本未追查。數值或 ISA 相關簽名不得外推至其他環境。
 

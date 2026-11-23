@@ -62,7 +62,7 @@ done
 
 測試的設計用途是辨識已知錯誤：PASS 代表既有斷言通過，不代表 PyTorch 正確、根因已獨立確認、每個上游變體都已測過或 Mirage 已接入。metadata 的歷史 10/10 與 review=pending 不等於新的品質認證；Issue 數也不等於獨立根因數。
 
-本次整理前後都執行指定 importlib 全套，結果均為 **100 passed、7 warnings**。100 個案例、整個 bugs 目錄的 416 個既有檔案路徑及 SHA-256 保持不變；沒有重新做全案十次復現。
+Batch 01 v4 全套驗證：99 passed、1 failed、7 warnings；#203866 在 Gloo 初始化時無法解析本機 loopback 位址。 目前仍有 100 個唯一案例。
 
 ## 特殊條件
 

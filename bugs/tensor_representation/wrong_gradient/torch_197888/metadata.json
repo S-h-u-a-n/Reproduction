@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_197888",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/197888",
+  "target_api": "aten.adaptive_max_pool3d_backward / F.adaptive_max_pool3d",
+  "primary_category": "tensor_layout",
+  "tags": [
+    "stride",
+    "noncontiguous_indices",
+    "channels_last_3d",
+    "autograd"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Backward must use logical indices and return the same gradient for contiguous or channels_last_3d indices.",
+  "bug_signature": "CPU adaptive_max_pool3d_backward reads noncontiguous indices in raw storage order, producing the exact incorrectly scattered gradient; contiguous indices agree with an independent logical scatter oracle.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

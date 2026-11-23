@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204269",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204269",
+  "target_api": "torch.nn.utils.clip_grad_norm_ / get_total_norm",
+  "primary_category": "optimizer_state",
+  "tags": [
+    "autograd",
+    "training_state"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "The vector zero-norm of gradients counts all non-zero elements, not only non-zero tensors.",
+  "bug_signature": "A pair of gradient tensors with three nonzero elements returns a total 0-norm of two.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

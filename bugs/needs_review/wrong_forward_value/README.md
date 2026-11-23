@@ -16,15 +16,15 @@ Observation 定義：forward 或一般數值運算回傳錯誤值，包含 NaN�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**20**（不重複 Issue ID）。
+Issue 數量：**16**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `wrong_forward_value` | 20 |
+| `wrong_forward_value` | 16 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：27；Issue/API 配對數：40。
+唯一 API 數：22；Issue/API 配對數：32。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
@@ -33,8 +33,7 @@ Issue 數量：**20**（不重複 Issue ID）。
 | `torch.Tensor.__mul__` | 1 |
 | `torch.Tensor.item` | 1 |
 | `torch.acosh` | 1 |
-| `torch.addmm` | 1 |
-| `torch.compile` | 13 |
+| `torch.compile` | 10 |
 | `torch.distributions.Normal` | 1 |
 | `torch.distributions.TransformedDistribution` | 1 |
 | `torch.distributions.kl_divergence` | 2 |
@@ -45,14 +44,10 @@ Issue 數量：**20**（不重複 Issue ID）。
 | `torch.fx.symbolic_trace` | 1 |
 | `torch.isin` | 1 |
 | `torch.jit.freeze` | 1 |
-| `torch.minimum` | 1 |
 | `torch.nn.BatchNorm1d` | 1 |
 | `torch.nn.Linear` | 1 |
-| `torch.nn.functional.gelu` | 1 |
 | `torch.prod` | 1 |
 | `torch.remainder` | 1 |
-| `torch.special.erfc` | 1 |
-| `torch.std` | 1 |
 | `torch.var` | 1 |
 | `torch.where` | 1 |
 
@@ -60,14 +55,6 @@ Issue 數量：**20**（不重複 Issue ID）。
 
 | Issue | API 與作用 | 觀察／範圍 | 分類依據 | GitHub |
 | --- | --- | --- | --- | --- |
-| [#187806](torch_187806/README.md) | `torch.nn.functional.gelu`：主要受測 API | 固定負值 float32 的 GELU 尾端時，內建 GELU 回傳零。 | Issue 指向 erf 公式的相消，屬數值公式問題，無 tensor 表示或訓練狀態觸發證據。 | [原文](https://github.com/pytorch/pytorch/issues/187806) |
-| [#187806](torch_187806/README.md) | `torch.special.erfc`：建立正確參考的控制 API | 固定負值 float32 的 GELU 尾端時，內建 GELU 回傳零。 | Issue 指向 erf 公式的相消，屬數值公式問題，無 tensor 表示或訓練狀態觸發證據。 | [原文](https://github.com/pytorch/pytorch/issues/187806) |
-| [#194347](torch_194347/README.md) | `torch.minimum`：主要受測 API | CPU 編譯 minimum(-0,+0)時，回傳正零。 | Issue 討論 SIMD minimum 的 tie／signed-zero 語意；屬數值契約，非 tensor 表示。 | [原文](https://github.com/pytorch/pytorch/issues/194347) |
-| [#194347](torch_194347/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | CPU 編譯 minimum(-0,+0)時，回傳正零。 | Issue 討論 SIMD minimum 的 tie／signed-zero 語意；屬數值契約，非 tensor 表示。 | [原文](https://github.com/pytorch/pytorch/issues/194347) |
-| [#196596](torch_196596/README.md) | `torch.addmm`：主要受測 API | beta=0 且被忽略的 input 含 NaN時，編譯結果含 NaN。 | 分解仍計算 0*NaN；屬代數重寫的特殊值處理。 | [原文](https://github.com/pytorch/pytorch/issues/196596) |
-| [#196596](torch_196596/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | beta=0 且被忽略的 input 含 NaN時，編譯結果含 NaN。 | 分解仍計算 0*NaN；屬代數重寫的特殊值處理。 | [原文](https://github.com/pytorch/pytorch/issues/196596) |
-| [#197089](torch_197089/README.md) | `torch.std`：主要受測 API | 固定極小 float32 輸入、Inductor reduction時，std 與梯度均變為零。 | 上游指出 float32 accumulation 的下溢；主要為數值穩定性，梯度是次要症狀。 | [原文](https://github.com/pytorch/pytorch/issues/197089) |
-| [#197089](torch_197089/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 固定極小 float32 輸入、Inductor reduction時，std 與梯度均變為零。 | 上游指出 float32 accumulation 的下溢；主要為數值穩定性，梯度是次要症狀。 | [原文](https://github.com/pytorch/pytorch/issues/197089) |
 | [#197811](torch_197811/README.md) | `torch.Tensor.__add__`：主要受測 API | 兩個 closure 分別擷取 Tensor 的加法與乘法 descriptor時，乘法 closure 重用加法圖而回傳 9。 | 捕獲 descriptor 的 guard 不完整，屬一般 Python callable 快取語意。 | [原文](https://github.com/pytorch/pytorch/issues/197811) |
 | [#197811](torch_197811/README.md) | `torch.Tensor.__mul__`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 兩個 closure 分別擷取 Tensor 的加法與乘法 descriptor時，乘法 closure 重用加法圖而回傳 9。 | 捕獲 descriptor 的 guard 不完整，屬一般 Python callable 快取語意。 | [原文](https://github.com/pytorch/pytorch/issues/197811) |
 | [#197811](torch_197811/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 兩個 closure 分別擷取 Tensor 的加法與乘法 descriptor時，乘法 closure 重用加法圖而回傳 9。 | 捕獲 descriptor 的 guard 不完整，屬一般 Python callable 快取語意。 | [原文](https://github.com/pytorch/pytorch/issues/197811) |
@@ -103,14 +90,10 @@ Issue 數量：**20**（不重複 Issue ID）。
 
 ## 已知限制（Known Limitations）
 
-原始整批 100 passed；暫存新結構整批 100 passed；正式搬移後 100 passed, 7 warnings。每階段一次，沿用 compiler cache，非十次隔離／冷編譯。
+歷史搬移驗證：原始整批 100 passed；暫存新結構整批 100 passed；正式搬移後 100 passed, 7 warnings。每階段一次，沿用 compiler cache，非十次隔離／冷編譯。
 
 high／medium 為分類信心，不是上游根因獨立認證。原始 metadata 可能仍標記 pending；第一個修復版本未追查。數值或 ISA 相關簽名不得外推至其他環境。
 
-- [#187806](torch_187806/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
-- [#194347](torch_194347/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。；signed-zero 的 eager 比較是否納入研究契約，需研究者決定。 
-- [#196596](torch_196596/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
-- [#197089](torch_197089/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
 - [#197811](torch_197811/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
 - [#197894](torch_197894/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
 - [#197895](torch_197895/README.md)：研究範圍：目前機制不宜合理歸入另兩類，保留待決定。 
