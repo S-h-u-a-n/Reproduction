@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204775",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204775",
+  "target_api": "torch.nn.BatchNorm1d / num_batches_tracked",
+  "primary_category": "batchnorm/empty-batch-running-state",
+  "tags": [
+    "training_state",
+    "batchnorm",
+    "buffer-state",
+    "running-statistics"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "An empty batch leaves num_batches_tracked unchanged; the first real batch sets running_mean=1 and running_var=0.",
+  "bug_signature": "After an empty then a real batch, num_batches_tracked=2 and running_mean=running_var=0.5 instead of counter=1, mean=1, var=0.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

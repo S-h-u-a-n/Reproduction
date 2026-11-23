@@ -14,69 +14,58 @@ Primary Cause 必須符合本類機制；觀察錯誤可以屬於不同 Observat
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**59**（不重複 Issue ID）。
+Issue 數量：**62**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
 | `wrong_gradient` | 8 |
 | `wrong_forward_value` | 23 |
 | `wrong_optimizer_update` | 1 |
-| `incorrect_state` | 4 |
+| `incorrect_state` | 6 |
 | `wrong_metadata` | 8 |
-| `unexpected_exception` | 13 |
+| `unexpected_exception` | 14 |
 | `missing_exception` | 2 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：76；Issue/API 配對數：120。
+唯一 API 數：79；Issue/API 配對數：128。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
-| `torch.compile` | 36 |
+| `torch.compile` | 38 |
 | `torch.cat` | 3 |
-| `torch.Tensor.set_` | 2 |
 | `torch.add` | 2 |
 | `torch.any` | 2 |
 | `torch.linalg.lu_solve` | 2 |
 | `torch.linalg.pinv` | 2 |
 | `torch.softmax` | 2 |
+| `torch.Tensor.add_` | 2 |
+| `torch.Tensor.conj` | 2 |
+| `torch.Tensor.imag` | 2 |
+| `torch.Tensor.set_` | 2 |
+| `torch.Tensor.unfold` | 2 |
 | `DTensor.from_local` | 1 |
 | `numpy.cumsum` | 1 |
-| `torch.SymInt.__round__` | 1 |
-| `torch.Tensor.__torch_function__` | 1 |
-| `torch.Tensor.add_` | 2 |
-| `torch.Tensor.as_strided_` | 1 |
-| `torch.Tensor.conj` | 1 |
-| `torch.Tensor.detach` | 1 |
-| `torch.Tensor.div` | 1 |
-| `torch.Tensor.fill_diagonal_` | 1 |
-| `torch.Tensor.imag` | 1 |
-| `torch.Tensor.index_add` | 1 |
-| `torch.Tensor.index_put_` | 1 |
-| `torch.Tensor.item` | 1 |
-| `torch.Tensor.real` | 1 |
-| `torch.Tensor.scatter_add` | 1 |
-| `torch.Tensor.scatter_reduce` | 1 |
-| `torch.Tensor.split` | 1 |
-| `torch.Tensor.trunc_` | 1 |
-| `torch.Tensor.unfold` | 1 |
-| `torch.Tensor.unsqueeze` | 1 |
-| `torch.Tensor.view` | 1 |
+| `StorageOverlapPartition` | 1 |
 | `torch._foreach_copy_` | 1 |
 | `torch._subclasses.fake_tensor.FakeTensorMode` | 1 |
 | `torch._subclasses.functional_tensor.dispatch_functionalize` | 1 |
 | `torch.all` | 1 |
 | `torch.amax` | 1 |
-| `torch.autograd.Function` | 1 |
 | `torch.autograd.forward_ad.unpack_dual` | 1 |
+| `torch.autograd.Function` | 1 |
+| `torch.autograd.functional.jacobian` | 1 |
 | `torch.cdist` | 1 |
 | `torch.clamp` | 1 |
 | `torch.compiler.nested_compile_region` | 1 |
+| `torch.cond` | 1 |
+| `torch.cummax(out=...)` | 1 |
 | `torch.dequantize` | 1 |
-| `torch.distributions.Wishart` | 1 |
 | `torch.distributions.kl_divergence` | 1 |
+| `torch.distributions.Wishart` | 1 |
 | `torch.div` | 1 |
 | `torch.eq` | 1 |
+| `torch.func.jacfwd` | 1 |
 | `torch.func.jacrev` | 1 |
 | `torch.imag` | 1 |
 | `torch.isin` | 1 |
@@ -100,14 +89,28 @@ Issue 數量：**59**（不重複 Issue ID）。
 | `torch.slice_scatter` | 1 |
 | `torch.sparse_coo_tensor` | 1 |
 | `torch.sparse_csr_tensor` | 1 |
-| `torch.utils._python_dispatch.TorchDispatchMode` | 1 |
-| `torch.view_as_complex_copy` | 1 |
+| `torch.SymInt.__round__` | 1 |
+| `torch.Tensor.__torch_function__` | 1 |
+| `torch.Tensor.as_strided_` | 1 |
+| `torch.Tensor.clone` | 1 |
 | `torch.Tensor.copy_` | 1 |
+| `torch.Tensor.detach` | 1 |
+| `torch.Tensor.div` | 1 |
 | `torch.Tensor.expand` | 1 |
 | `torch.Tensor.fill_` | 1 |
-| `torch.cond` | 1 |
-| `torch.cummax(out=...)` | 1 |
-| `StorageOverlapPartition` | 1 |
+| `torch.Tensor.fill_diagonal_` | 1 |
+| `torch.Tensor.index_add` | 1 |
+| `torch.Tensor.index_put_` | 1 |
+| `torch.Tensor.item` | 1 |
+| `torch.Tensor.real` | 1 |
+| `torch.Tensor.scatter_add` | 1 |
+| `torch.Tensor.scatter_reduce` | 1 |
+| `torch.Tensor.split` | 1 |
+| `torch.Tensor.trunc_` | 1 |
+| `torch.Tensor.unsqueeze` | 1 |
+| `torch.Tensor.view` | 1 |
+| `torch.utils._python_dispatch.TorchDispatchMode` | 1 |
+| `torch.view_as_complex_copy` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
@@ -175,6 +178,8 @@ Issue 數量：**59**（不重複 Issue ID）。
 | [#199644](wrong_forward_value/torch_199644/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | 擷取 float64 scalar 16777219 再傳入 CPU 編譯 kernel時，兩者皆變成 16777220。 | 上游定位 C++ kernel scalar 參數宣告為 const float，縮窄原本的 float64 表示。 | [原文](https://github.com/pytorch/pytorch/issues/199644) |
 | [#199920](wrong_metadata/torch_199920/README.md) | `torch.ops.aten._fused_moving_avg_obs_fq_helper_functional`：主要受測 API | per-channel fake quant observer 首次使用，八個 channel時，min/max 仍為零長、scale/zero-point 仍為一。 | 上游 meta function 未模擬 observer buffer resize；主要是 tensor metadata，次要涉及訓練 buffer。 | [原文](https://github.com/pytorch/pytorch/issues/199920) |
 | [#199920](wrong_metadata/torch_199920/README.md) | `torch._subclasses.fake_tensor.FakeTensorMode`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | per-channel fake quant observer 首次使用，八個 channel時，min/max 仍為零長、scale/zero-point 仍為一。 | 上游 meta function 未模擬 observer buffer resize；主要是 tensor metadata，次要涉及訓練 buffer。 | [原文](https://github.com/pytorch/pytorch/issues/199920) |
+| [#200017](unexpected_exception/torch_200017/README.md) | `torch.autograd.functional.jacobian`：Exercises the failing vectorized forward-mode path and the reverse-mode control | strategy=forward-mode, vectorize=True raises a RuntimeError about a forward gradient having different size for a 1-D input to matmul. | Root cause not confirmed. The RuntimeError reports a tangent size mismatch for the 1-D matmul output. | [原文](https://github.com/pytorch/pytorch/issues/200017) |
+| [#200017](unexpected_exception/torch_200017/README.md) | `torch.func.jacfwd`：Computes the working forward-mode reference | strategy=forward-mode, vectorize=True raises a RuntimeError about a forward gradient having different size for a 1-D input to matmul. | Root cause not confirmed. The RuntimeError reports a tangent size mismatch for the 1-D matmul output. | [原文](https://github.com/pytorch/pytorch/issues/200017) |
 | [#200572](wrong_gradient/torch_200572/README.md) | `torch.autograd.Function`：主要受測 API | custom Function 輸出為 input view，再回傳其 view時，custom backward 被跳過。 | 上游指出只檢查直接 grad_fn，額外 view 導致誤分類為 alias_of_input；主要是 alias metadata。 | [原文](https://github.com/pytorch/pytorch/issues/200572) |
 | [#200572](wrong_gradient/torch_200572/README.md) | `torch.Tensor.unsqueeze`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | custom Function 輸出為 input view，再回傳其 view時，custom backward 被跳過。 | 上游指出只檢查直接 grad_fn，額外 view 導致誤分類為 alias_of_input；主要是 alias metadata。 | [原文](https://github.com/pytorch/pytorch/issues/200572) |
 | [#200572](wrong_gradient/torch_200572/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | custom Function 輸出為 input view，再回傳其 view時，custom backward 被跳過。 | 上游指出只檢查直接 grad_fn，額外 view 導致誤分類為 alias_of_input；主要是 alias metadata。 | [原文](https://github.com/pytorch/pytorch/issues/200572) |
@@ -209,6 +214,9 @@ Issue 數量：**59**（不重複 Issue ID）。
 | [#203852](missing_exception/torch_203852/README.md) | `torch.Tensor.index_add`：主要受測 API | 整數 tensor 配 floating alpha=2.5 或 0.5時，alpha 靜默截為 2 或 0。 | 上游提議補 alpha_check，主要是 scalar-to-tensor dtype 相容契約；是否連 2.0 也拒絕仍是上游政策。 | [原文](https://github.com/pytorch/pytorch/issues/203852) |
 | [#203866](unexpected_exception/torch_203866/README.md) | `DTensor.from_local`：Wraps the local tensor as a DTensor | torch.save raises an invalid-storage RuntimeError for a DTensor with a nonzero storage offset while the zero-offset control serializes. | A nonzero storage offset makes the DTensor placeholder pointer appear nonzero during serialization. | [原文](https://github.com/pytorch/pytorch/issues/203866) |
 | [#203866](unexpected_exception/torch_203866/README.md) | `torch.save`：Serializes the wrapper | torch.save raises an invalid-storage RuntimeError for a DTensor with a nonzero storage offset while the zero-offset control serializes. | A nonzero storage offset makes the DTensor placeholder pointer appear nonzero during serialization. | [原文](https://github.com/pytorch/pytorch/issues/203866) |
+| [#204033](incorrect_state/torch_204033/README.md) | `torch.Tensor.conj`：Creates the conjugate view | Eager view.add_(100) updates base.imag from [-1,0,1,2] to [-101,-100,-99,-98]; under Inductor, returned view has separate storage and base.imag stays [-1,0,1,2]. | Root cause not confirmed. Inductor returns separate storages for the base and conjugate imaginary view. The eager mutation updates the base. | [原文](https://github.com/pytorch/pytorch/issues/204033) |
+| [#204033](incorrect_state/torch_204033/README.md) | `torch.Tensor.imag`：Selects the imaginary component and exposes the alias under test | Eager view.add_(100) updates base.imag from [-1,0,1,2] to [-101,-100,-99,-98]; under Inductor, returned view has separate storage and base.imag stays [-1,0,1,2]. | Root cause not confirmed. Inductor returns separate storages for the base and conjugate imaginary view. The eager mutation updates the base. | [原文](https://github.com/pytorch/pytorch/issues/204033) |
+| [#204033](incorrect_state/torch_204033/README.md) | `torch.compile`：Compiles the view-returning function with Inductor | Eager view.add_(100) updates base.imag from [-1,0,1,2] to [-101,-100,-99,-98]; under Inductor, returned view has separate storage and base.imag stays [-1,0,1,2]. | Root cause not confirmed. Inductor returns separate storages for the base and conjugate imaginary view. The eager mutation updates the base. | [原文](https://github.com/pytorch/pytorch/issues/204033) |
 | [#204181](wrong_forward_value/torch_204181/README.md) | `torch.Tensor.fill_diagonal_`：主要受測 API | 非連續 7x2 column view，wrap=True時，寫入 view 外的第三欄，漏掉 wrapped cell。 | 上游懷疑 wrapped diagonal 索引使用 contiguous 假設；layout 觸發已知，完整根因未確認。 | [原文](https://github.com/pytorch/pytorch/issues/204181) |
 | [#204407](wrong_gradient/torch_204407/README.md) | `torch.linalg.slogdet`：主要受測 API | A=z.conj().imag，negative view、stride=(4,2)、offset=1時，off-diagonal gradient 轉置，real gradient 仍零。 | 上游分析指出 negative fallback clone 改變 layout，forward LU 與 backward 對原 layout 的轉置判斷不一致。 | [原文](https://github.com/pytorch/pytorch/issues/204407) |
 | [#204407](wrong_gradient/torch_204407/README.md) | `torch.Tensor.conj`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | A=z.conj().imag，negative view、stride=(4,2)、offset=1時，off-diagonal gradient 轉置，real gradient 仍零。 | 上游分析指出 negative fallback clone 改變 layout，forward LU 與 backward 對原 layout 的轉置判斷不一致。 | [原文](https://github.com/pytorch/pytorch/issues/204407) |
@@ -221,6 +229,9 @@ Issue 數量：**59**（不重複 Issue ID）。
 | [#204446](wrong_forward_value/torch_204446/README.md) | `torch.sparse_coo_tensor`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | 對 base[1] 的 contiguous 非零 offset view 加 COO時，錯改 row 2。 | 上游定位 sparse CPU kernel 重複套用 storage_offset；本地刻意只測 allocation 內的錯位寫入。 | [原文](https://github.com/pytorch/pytorch/issues/204446) |
 | [#205112](wrong_gradient/torch_205112/README.md) | `torch.func.jacrev`：主要受測 API | cdist(p=1) 的 jacrev 使用 batched cotangents時，各 Jacobian slice 重複第一個 cotangent 的結果。 | 上游指出 cdist_backward batching rule 沒有傳遞僅 grad 被 vmap 的 batch 維；主要為 tensor batching 表示。 | [原文](https://github.com/pytorch/pytorch/issues/205112) |
 | [#205112](wrong_gradient/torch_205112/README.md) | `torch.cdist`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | cdist(p=1) 的 jacrev 使用 batched cotangents時，各 Jacobian slice 重複第一個 cotangent 的結果。 | 上游指出 cdist_backward batching rule 沒有傳遞僅 grad 被 vmap 的 batch 維；主要為 tensor batching 表示。 | [原文](https://github.com/pytorch/pytorch/issues/205112) |
+| [#205157](incorrect_state/torch_205157/README.md) | `torch.Tensor.unfold`：Constructs the nested view | Compiled outputs do not share untyped_storage and fill_ of the returned view leaves the compiled base all True; eager aliases. | Root cause not confirmed. The returned nested view and clone have distinct storages under Inductor. The eager mutation updates the shared base. | [原文](https://github.com/pytorch/pytorch/issues/205157) |
+| [#205157](incorrect_state/torch_205157/README.md) | `torch.compile`：Compiles the view-returning function with Inductor | Compiled outputs do not share untyped_storage and fill_ of the returned view leaves the compiled base all True; eager aliases. | Root cause not confirmed. The returned nested view and clone have distinct storages under Inductor. The eager mutation updates the shared base. | [原文](https://github.com/pytorch/pytorch/issues/205157) |
+| [#205157](incorrect_state/torch_205157/README.md) | `torch.Tensor.clone`：Creates the returned base | Compiled outputs do not share untyped_storage and fill_ of the returned view leaves the compiled base all True; eager aliases. | Root cause not confirmed. The returned nested view and clone have distinct storages under Inductor. The eager mutation updates the shared base. | [原文](https://github.com/pytorch/pytorch/issues/205157) |
 | [#205404](wrong_forward_value/torch_205404/README.md) | `torch.compile` | 完整重疊輸入暖機後，編譯的部分重疊結果符合完整重疊結果，與 eager 參考不符。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/205404) |
 | [#205404](wrong_forward_value/torch_205404/README.md) | `torch.Tensor.add_` | 完整重疊輸入暖機後，編譯的部分重疊結果符合完整重疊結果，與 eager 參考不符。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/205404) |
 | [#205404](wrong_forward_value/torch_205404/README.md) | `StorageOverlapPartition` | 完整重疊輸入暖機後，編譯的部分重疊結果符合完整重疊結果，與 eager 參考不符。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/205404) |

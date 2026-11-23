@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_205157",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/205157",
+  "target_api": "torch.Tensor.unfold / torch.compile / torch.Tensor.clone",
+  "primary_category": "alias-replay/nested-unfold-view",
+  "tags": [
+    "tensor_representation",
+    "view",
+    "aliasing",
+    "unfold",
+    "storage"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A returned nested unfold view shares storage with the returned base and writes through to alternating rows.",
+  "bug_signature": "Compiled outputs do not share untyped_storage and fill_ of the returned view leaves the compiled base all True; eager aliases.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

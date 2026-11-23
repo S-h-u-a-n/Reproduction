@@ -16,28 +16,25 @@ Observation 定義：本應成功或可由使用者 handler 處理的操作，�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**13**（不重複 Issue ID）。
+Issue 數量：**14**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `unexpected_exception` | 13 |
+| `unexpected_exception` | 14 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：21；Issue/API 配對數：30。
+唯一 API 數：23；Issue/API 配對數：32。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
 | `torch.compile` | 10 |
 | `DTensor.from_local` | 1 |
-| `torch.Tensor.__torch_function__` | 1 |
-| `torch.Tensor.detach` | 1 |
-| `torch.Tensor.real` | 1 |
-| `torch.Tensor.set_` | 1 |
-| `torch.Tensor.trunc_` | 1 |
+| `torch.autograd.functional.jacobian` | 1 |
 | `torch.dequantize` | 1 |
 | `torch.div` | 1 |
 | `torch.eq` | 1 |
+| `torch.func.jacfwd` | 1 |
 | `torch.imag` | 1 |
 | `torch.isin` | 1 |
 | `torch.linalg.solve` | 1 |
@@ -48,6 +45,11 @@ Issue 數量：**13**（不重複 Issue ID）。
 | `torch.ops.aten.unsqueeze_.default` | 1 |
 | `torch.save` | 1 |
 | `torch.softmax` | 1 |
+| `torch.Tensor.__torch_function__` | 1 |
+| `torch.Tensor.detach` | 1 |
+| `torch.Tensor.real` | 1 |
+| `torch.Tensor.set_` | 1 |
+| `torch.Tensor.trunc_` | 1 |
 | `torch.view_as_complex_copy` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
@@ -72,6 +74,8 @@ Issue 數量：**13**（不重複 Issue ID）。
 | [#199571](torch_199571/README.md) | `torch.linalg.solve`：主要受測 API | complex right solve(left=False) 的輸出取 imag時，view_as_real 不接受 unresolved conjugated tensor。 | right solve 的 lazy conjugate bit 沒有在編譯分解中妥善處理。 | [原文](https://github.com/pytorch/pytorch/issues/199571) |
 | [#199571](torch_199571/README.md) | `torch.imag`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | complex right solve(left=False) 的輸出取 imag時，view_as_real 不接受 unresolved conjugated tensor。 | right solve 的 lazy conjugate bit 沒有在編譯分解中妥善處理。 | [原文](https://github.com/pytorch/pytorch/issues/199571) |
 | [#199571](torch_199571/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | complex right solve(left=False) 的輸出取 imag時，view_as_real 不接受 unresolved conjugated tensor。 | right solve 的 lazy conjugate bit 沒有在編譯分解中妥善處理。 | [原文](https://github.com/pytorch/pytorch/issues/199571) |
+| [#200017](torch_200017/README.md) | `torch.autograd.functional.jacobian`：Exercises the failing vectorized forward-mode path and the reverse-mode control | strategy=forward-mode, vectorize=True raises a RuntimeError about a forward gradient having different size for a 1-D input to matmul. | Root cause not confirmed. The RuntimeError reports a tangent size mismatch for the 1-D matmul output. | [原文](https://github.com/pytorch/pytorch/issues/200017) |
+| [#200017](torch_200017/README.md) | `torch.func.jacfwd`：Computes the working forward-mode reference | strategy=forward-mode, vectorize=True raises a RuntimeError about a forward gradient having different size for a 1-D input to matmul. | Root cause not confirmed. The RuntimeError reports a tangent size mismatch for the 1-D matmul output. | [原文](https://github.com/pytorch/pytorch/issues/200017) |
 | [#202416](torch_202416/README.md) | `torch.compile`：Enters the compiled path | Inductor raises a ViewMeta output-shape assertion while eager works. | AOTAutograd mishandles ViewMeta replay when returning both a view and detached alias. | [原文](https://github.com/pytorch/pytorch/issues/202416) |
 | [#202416](torch_202416/README.md) | `torch.Tensor.detach`：Creates the detached alias | Inductor raises a ViewMeta output-shape assertion while eager works. | AOTAutograd mishandles ViewMeta replay when returning both a view and detached alias. | [原文](https://github.com/pytorch/pytorch/issues/202416) |
 | [#202726](torch_202726/README.md) | `torch.Tensor.real`：主要受測 API | real dtype 的 __torch_function__ subclass 在 compiled 中取 .real時，source must be None 的 AssertionError。 | 上游懷疑 real 的 identity alias 與 subclass source tracking 衝突；未確認完整根因。 | [原文](https://github.com/pytorch/pytorch/issues/202726) |

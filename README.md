@@ -67,7 +67,7 @@ Batch 01 v4 全套驗證：99 passed、1 failed、7 warnings；#203866 在 Gloo 
 ## 特殊條件
 
 - 不更動 module name、import path 或 rootdir。歷史 #205991 曾因匯入命名空間改變而改變結果，目前不在這 100 案中；其教訓仍適用。
-- #198057、#198134、#198183、#204679 有 CPU 向量化限制；尤其 #204679 的精確錯值不能外推到其他 ISA、CSR 或 float16。
+- #198057、#198134、#198183 有 CPU 向量化限制。
 - #197889、#200925、#201970、#204188 依賴案例內呼叫／cache／saved-state 歷史，不可只抽出最後一個操作或任意清 cache。
 - #205134 修改 saved tensor 後的正確契約是 version counter 衝突報錯；未修改控制的 [2,4] 不是修改後的合法梯度。
 - #204407 必須保留 negative view、stride、offset 及鏈式法則；#199350 依賴指定 build 的內部 operator identity。

@@ -16,24 +16,28 @@ Observation 定義：alias 寫入後的可觀察狀態、Python 容器副作用�
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**12**（不重複 Issue ID）。
+Issue 數量：**13**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `incorrect_state` | 12 |
+| `incorrect_state` | 13 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：19；Issue/API 配對數：21。
+唯一 API 數：21；Issue/API 配對數：23。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
 | `torch.compile` | 3 |
+| `num_batches_tracked` | 1 |
 | `torch._dynamo.graph_break` | 1 |
-| `torch.amp.GradScaler` | 1 |
 | `torch.amp.autocast` | 1 |
+| `torch.amp.GradScaler` | 1 |
 | `torch.ao.quantization.observer.PerChannelMinMaxObserver` | 1 |
 | `torch.autocast` | 1 |
+| `torch.distributed.checkpoint.state_dict.get_optimizer_state_dict` | 1 |
+| `torch.distributed.checkpoint.state_dict.set_optimizer_state_dict` | 1 |
+| `torch.nn.BatchNorm1d` | 1 |
 | `torch.nn.utils.clip_grad_norm_` | 1 |
 | `torch.nn.utils.get_total_norm` | 1 |
 | `torch.optim.Adam` | 1 |
@@ -41,12 +45,10 @@ Issue 數量：**12**（不重複 Issue ID）。
 | `torch.optim.Optimizer.state_dict` | 1 |
 | `torch.optim.SGD` | 1 |
 | `torch.optim.SGD.load_state_dict` | 1 |
-| `torch.utils.checkpoint.create_selective_checkpoint_contexts` | 1 |
+| `torch.optim.swa_utils.AveragedModel` | 1 |
 | `torch.Tensor.add_` | 1 |
 | `torch.Tensor.detach` | 1 |
-| `torch.distributed.checkpoint.state_dict.get_optimizer_state_dict` | 1 |
-| `torch.distributed.checkpoint.state_dict.set_optimizer_state_dict` | 1 |
-| `torch.optim.swa_utils.AveragedModel` | 1 |
+| `torch.utils.checkpoint.create_selective_checkpoint_contexts` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
@@ -73,6 +75,8 @@ Issue 數量：**12**（不重複 Issue ID）。
 | [#204339](torch_204339/README.md) | `torch.optim.Adam`：主要受測 API | optimizer 初始化後 graph break，保留 GraphModules 再銷毀 optimizer時，optimizer 已釋放但 Parameter 被 resumed graph 保留。 | 原文指出 optimizer-owned parameter lifetime 與 resumed graph capture 有關；完整 reference-management 根因未確認。 | [原文](https://github.com/pytorch/pytorch/issues/204339) |
 | [#204339](torch_204339/README.md) | `torch._dynamo.graph_break`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | optimizer 初始化後 graph break，保留 GraphModules 再銷毀 optimizer時，optimizer 已釋放但 Parameter 被 resumed graph 保留。 | 原文指出 optimizer-owned parameter lifetime 與 resumed graph capture 有關；完整 reference-management 根因未確認。 | [原文](https://github.com/pytorch/pytorch/issues/204339) |
 | [#204339](torch_204339/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | optimizer 初始化後 graph break，保留 GraphModules 再銷毀 optimizer時，optimizer 已釋放但 Parameter 被 resumed graph 保留。 | 原文指出 optimizer-owned parameter lifetime 與 resumed graph capture 有關；完整 reference-management 根因未確認。 | [原文](https://github.com/pytorch/pytorch/issues/204339) |
+| [#204775](torch_204775/README.md) | `torch.nn.BatchNorm1d`：Training module under test | After an empty then a real batch, num_batches_tracked=2 and running_mean=running_var=0.5 instead of counter=1, mean=1, var=0. | Root cause not confirmed. An empty training batch advances the cumulative BatchNorm counter and changes the weight of the next running-statistics update. | [原文](https://github.com/pytorch/pytorch/issues/204775) |
+| [#204775](torch_204775/README.md) | `num_batches_tracked`：Batch counter observed before and after the real batch | After an empty then a real batch, num_batches_tracked=2 and running_mean=running_var=0.5 instead of counter=1, mean=1, var=0. | Root cause not confirmed. An empty training batch advances the cumulative BatchNorm counter and changes the weight of the next running-statistics update. | [原文](https://github.com/pytorch/pytorch/issues/204775) |
 
 ## 已知限制（Known Limitations）
 

@@ -14,51 +14,59 @@ Primary Cause 必須符合本類機制；觀察錯誤可以屬於不同 Observat
 
 ## 資料夾摘要（Folder Summary）
 
-Issue 數量：**35**（不重複 Issue ID）。
+Issue 數量：**38**（不重複 Issue ID）。
 
 | Observation | Issue 數量 |
 | --- | ---: |
-| `wrong_gradient` | 12 |
-| `incorrect_state` | 12 |
+| `wrong_gradient` | 14 |
+| `incorrect_state` | 13 |
 | `wrong_metadata` | 1 |
 | `unexpected_exception` | 6 |
 | `missing_exception` | 4 |
 
 ## API 摘要（API Summary）
 
-唯一 API 數：46；Issue/API 配對數：64。
+唯一 API 數：52；Issue/API 配對數：71。
 
 | API | 涉及 Issue 數 |
 | --- | ---: |
 | `torch.compile` | 14 |
-| `torch.Tensor.backward` | 2 |
 | `torch.Tensor.detach` | 3 |
+| `torch.autograd.forward_ad` | 2 |
 | `torch.autograd.grad` | 2 |
-| `torch.Tensor.apply_` | 1 |
+| `torch.distributed.checkpoint.state_dict.get_optimizer_state_dict` | 2 |
+| `torch.Tensor.backward` | 2 |
+| `num_batches_tracked` | 1 |
 | `torch._dynamo.compiled_autograd._enable` | 1 |
 | `torch._dynamo.graph_break` | 1 |
 | `torch.acosh` | 1 |
-| `torch.amp.GradScaler` | 1 |
 | `torch.amp.autocast` | 1 |
+| `torch.amp.GradScaler` | 1 |
 | `torch.ao.quantization.observer.PerChannelMinMaxObserver` | 1 |
 | `torch.asinh` | 1 |
 | `torch.autocast` | 1 |
 | `torch.autograd.Function` | 1 |
-| `torch.autograd.forward_ad` | 1 |
 | `torch.distributed.checkpoint.DefaultSavePlanner` | 1 |
 | `torch.distributed.checkpoint.save` | 1 |
+| `torch.distributed.checkpoint.state_dict.set_optimizer_state_dict` | 1 |
+| `torch.distributed.fsdp.fully_shard` | 1 |
 | `torch.distributions.Categorical` | 1 |
 | `torch.distributions.kl_divergence` | 1 |
 | `torch.full` | 1 |
+| `torch.func.jvp` | 1 |
+| `torch.func.vjp` | 1 |
 | `torch.hypot` | 1 |
+| `torch.linalg.det` | 1 |
 | `torch.linalg.solve` | 1 |
 | `torch.linalg.vander` | 1 |
 | `torch.matmul` | 1 |
-| `torch.nn.Parameter` | 1 |
+| `torch.nn.BatchNorm1d` | 1 |
 | `torch.nn.functional.avg_pool1d` | 1 |
 | `torch.nn.functional.cosine_similarity` | 1 |
+| `torch.nn.functional.embedding` | 1 |
 | `torch.nn.functional.interpolate` | 1 |
 | `torch.nn.functional.layer_norm` | 1 |
+| `torch.nn.Parameter` | 1 |
 | `torch.nn.utils.clip_grad_norm_` | 1 |
 | `torch.nn.utils.get_total_norm` | 1 |
 | `torch.optim.Adam` | 1 |
@@ -66,16 +74,14 @@ Issue 數量：**35**（不重複 Issue ID）。
 | `torch.optim.Optimizer.state_dict` | 1 |
 | `torch.optim.SGD` | 1 |
 | `torch.optim.SGD.load_state_dict` | 1 |
+| `torch.optim.swa_utils.AveragedModel` | 1 |
 | `torch.segment_reduce` | 1 |
 | `torch.special.log_ndtr` | 1 |
+| `torch.Tensor.add_` | 1 |
+| `torch.Tensor.apply_` | 1 |
 | `torch.utils.checkpoint.checkpoint` | 1 |
 | `torch.utils.checkpoint.create_selective_checkpoint_contexts` | 1 |
 | `torch.vander` | 1 |
-| `torch.Tensor.add_` | 1 |
-| `torch.distributed.checkpoint.state_dict.get_optimizer_state_dict` | 2 |
-| `torch.distributed.checkpoint.state_dict.set_optimizer_state_dict` | 1 |
-| `torch.distributed.fsdp.fully_shard` | 1 |
-| `torch.optim.swa_utils.AveragedModel` | 1 |
 
 ## Issue／API 詳細說明與 GitHub 來源
 
@@ -121,12 +127,17 @@ Issue 數量：**35**（不重複 Issue ID）。
 | [#202706](incorrect_state/torch_202706/README.md) | `torch.autocast`：Decorates the recursively called function | Autocast starts disabled but is left enabled after a recursive call of the same decorated function. | Nested calls of an autocast decorator accidentally reuse context state, leaving autocast enabled after exit. | [原文](https://github.com/pytorch/pytorch/issues/202706) |
 | [#202806](missing_exception/torch_202806/README.md) | `torch.Tensor.detach`：主要受測 API | eager 已保存 weight，再透過 compiled detached alias 修改時，沒有版本遞增，backward 靜默使用新 weight。 | 上游明確將此歸為漏掉 version check；不存在合法的「修改後仍應得到舊梯度」契約。 | [原文](https://github.com/pytorch/pytorch/issues/202806) |
 | [#202806](missing_exception/torch_202806/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | eager 已保存 weight，再透過 compiled detached alias 修改時，沒有版本遞增，backward 靜默使用新 weight。 | 上游明確將此歸為漏掉 version check；不存在合法的「修改後仍應得到舊梯度」契約。 | [原文](https://github.com/pytorch/pytorch/issues/202806) |
+| [#202956](wrong_gradient/torch_202956/README.md) | `torch.func.jvp`：Computes the forward-mode derivative under test | JVP for padding_idx=0 copies the nonzero tangent at row 0 into two padding outputs, while VJP masks that row. | Root cause not confirmed. The padding row contributes to the forward-mode tangent but is masked by reverse-mode AD. | [原文](https://github.com/pytorch/pytorch/issues/202956) |
+| [#202956](wrong_gradient/torch_202956/README.md) | `torch.func.vjp`：Computes the reverse-mode control | JVP for padding_idx=0 copies the nonzero tangent at row 0 into two padding outputs, while VJP masks that row. | Root cause not confirmed. The padding row contributes to the forward-mode tangent but is masked by reverse-mode AD. | [原文](https://github.com/pytorch/pytorch/issues/202956) |
+| [#202956](wrong_gradient/torch_202956/README.md) | `torch.nn.functional.embedding`：Applies embedding with padding_idx=0 | JVP for padding_idx=0 copies the nonzero tangent at row 0 into two padding outputs, while VJP masks that row. | Root cause not confirmed. The padding row contributes to the forward-mode tangent but is masked by reverse-mode AD. | [原文](https://github.com/pytorch/pytorch/issues/202956) |
 | [#202965](wrong_gradient/torch_202965/README.md) | `torch.distributions.kl_divergence`：主要受測 API | p logits 含 -inf，對其求 KL gradient時，loss 正確但整列梯度 NaN。 | 上游定位 forward masking 未移除 multiplication backward 中的 0*(-inf)，再經 softmax backward 擴散。 | [原文](https://github.com/pytorch/pytorch/issues/202965) |
 | [#202965](wrong_gradient/torch_202965/README.md) | `torch.distributions.Categorical`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | p logits 含 -inf，對其求 KL gradient時，loss 正確但整列梯度 NaN。 | 上游定位 forward masking 未移除 multiplication backward 中的 0*(-inf)，再經 softmax backward 擴散。 | [原文](https://github.com/pytorch/pytorch/issues/202965) |
 | [#203487](unexpected_exception/torch_203487/README.md) | `torch.distributed.fsdp.fully_shard` | 兩個 CPU Gloo rank 在 optimizer step 後可讀取狀態，但 no-grad forward 後皆拋出 KeyError(0)。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/203487) |
 | [#203487](unexpected_exception/torch_203487/README.md) | `torch.distributed.checkpoint.state_dict.get_optimizer_state_dict` | 兩個 CPU Gloo rank 在 optimizer step 後可讀取狀態，但 no-grad forward 後皆拋出 KeyError(0)。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/203487) |
 | [#203921](incorrect_state/torch_203921/README.md) | `torch.optim.swa_utils.AveragedModel` | 兩次 EMA 更新後，浮點參數已更新，int64 buffer 仍為 1，預期為 2。 | Root cause not confirmed；分類依本地案例的觸發條件與觀察結果。 | [原文](https://github.com/pytorch/pytorch/issues/203921) |
 | [#203946](wrong_gradient/torch_203946/README.md) | `torch.nn.functional.cosine_similarity`：主要受測 API | norm(x1)<eps<norm(x2)，float64 固定向量時，第一分量只有一半，第二分量正確。 | 上游指出 norm clamp 在 no-grad guard 下原地執行，使 autograd 圖保留應被截斷的導數項。 | [原文](https://github.com/pytorch/pytorch/issues/203946) |
+| [#204024](wrong_gradient/torch_204024/README.md) | `torch.linalg.det`：Determinant differentiated at a singular matrix | Forward-mode AD returns scalar tangent 0 for det([[0]]) along [[1]]. An independent analytic oracle gives 1. | Root cause not confirmed. The forward-mode rule returns zero at the singular input. The test uses det([[x]]) = x as its analytic oracle and a nonsingular forward-mode control. | [原文](https://github.com/pytorch/pytorch/issues/204024) |
+| [#204024](wrong_gradient/torch_204024/README.md) | `torch.autograd.forward_ad`：Constructs and unpacks the dual tensors | Forward-mode AD returns scalar tangent 0 for det([[0]]) along [[1]]. An independent analytic oracle gives 1. | Root cause not confirmed. The forward-mode rule returns zero at the singular input. The test uses det([[x]]) = x as its analytic oracle and a nonsingular forward-mode control. | [原文](https://github.com/pytorch/pytorch/issues/204024) |
 | [#204188](wrong_metadata/torch_204188/README.md) | `torch.distributed.checkpoint.save`：主要受測 API | enable_plan_caching=True，兩次 save 只有 dtype 由 bf16 變 fp16時，仍記錄 bf16，無 cache 控制組正確。 | 上游定位 class-level save plan cache 比較沒有 tensor_data.properties，屬 checkpoint state lifecycle。 | [原文](https://github.com/pytorch/pytorch/issues/204188) |
 | [#204188](wrong_metadata/torch_204188/README.md) | `torch.distributed.checkpoint.DefaultSavePlanner`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | enable_plan_caching=True，兩次 save 只有 dtype 由 bf16 變 fp16時，仍記錄 bf16，無 cache 控制組正確。 | 上游定位 class-level save plan cache 比較沒有 tensor_data.properties，屬 checkpoint state lifecycle。 | [原文](https://github.com/pytorch/pytorch/issues/204188) |
 | [#204269](incorrect_state/torch_204269/README.md) | `torch.nn.utils.clip_grad_norm_`：Public gradient-clipping entry point | A pair of gradient tensors with three nonzero elements returns a total 0-norm of two. | The 0-norm of gradients counts nonzero tensors instead of nonzero gradient elements. | [原文](https://github.com/pytorch/pytorch/issues/204269) |
@@ -138,6 +149,8 @@ Issue 數量：**35**（不重複 Issue ID）。
 | [#204478](wrong_gradient/torch_204478/README.md) | `torch.autograd.grad`：Computes higher-order derivatives | A parameter gradient of a loss involving second input derivatives differs from an independent formula. | Built-in layer normalization has incorrect reverse-mode third derivatives. | [原文](https://github.com/pytorch/pytorch/issues/204478) |
 | [#204544](unexpected_exception/torch_204544/README.md) | `torch.compile` | Static backward twice succeeds, dynamic retained backward raises donated buffers error. | 動態維度編譯後的 retained backward 誤判 donated buffer 不可重複使用。 | [原文](https://github.com/pytorch/pytorch/issues/204544) |
 | [#204544](unexpected_exception/torch_204544/README.md) | `torch.Tensor.backward` | Static backward twice succeeds, dynamic retained backward raises donated buffers error. | 動態維度編譯後的 retained backward 誤判 donated buffer 不可重複使用。 | [原文](https://github.com/pytorch/pytorch/issues/204544) |
+| [#204775](incorrect_state/torch_204775/README.md) | `torch.nn.BatchNorm1d`：Training module under test | After an empty then a real batch, num_batches_tracked=2 and running_mean=running_var=0.5 instead of counter=1, mean=1, var=0. | Root cause not confirmed. An empty training batch advances the cumulative BatchNorm counter and changes the weight of the next running-statistics update. | [原文](https://github.com/pytorch/pytorch/issues/204775) |
+| [#204775](incorrect_state/torch_204775/README.md) | `num_batches_tracked`：Batch counter observed before and after the real batch | After an empty then a real batch, num_batches_tracked=2 and running_mean=running_var=0.5 instead of counter=1, mean=1, var=0. | Root cause not confirmed. An empty training batch advances the cumulative BatchNorm counter and changes the weight of the next running-statistics update. | [原文](https://github.com/pytorch/pytorch/issues/204775) |
 | [#204825](wrong_gradient/torch_204825/README.md) | `torch.autograd.Function`：主要受測 API | compiled custom Function 的可微 backward，再求二階導數時，只剩普通路徑的 1。 | 上游定位 custom backward 以 grad mode 關閉追蹤，導致高階圖丟失 Function 貢獻。 | [原文](https://github.com/pytorch/pytorch/issues/204825) |
 | [#204825](wrong_gradient/torch_204825/README.md) | `torch.autograd.grad`：共同觸發、狀態／表示操作或參考 API；範圍限於本案測試 | compiled custom Function 的可微 backward，再求二階導數時，只剩普通路徑的 1。 | 上游定位 custom backward 以 grad mode 關閉追蹤，導致高階圖丟失 Function 貢獻。 | [原文](https://github.com/pytorch/pytorch/issues/204825) |
 | [#204825](wrong_gradient/torch_204825/README.md) | `torch.compile`：觸發編譯／快取路徑的必要入口 | compiled custom Function 的可微 backward，再求二階導數時，只剩普通路徑的 1。 | 上游定位 custom backward 以 grad mode 關閉追蹤，導致高階圖丟失 Function 貢獻。 | [原文](https://github.com/pytorch/pytorch/issues/204825) |
