@@ -17,5 +17,13 @@ def test_issue_204544():
     torch._dynamo.reset()
     w_dynamic = w_base.clone().requires_grad_(True)
     dynamic_out = torch.compile(f, backend="inductor", dynamic=True)(x, w_dynamic)
-    with pytest.raises(RuntimeError, match="donated buffers|retain_graph"):
+    with pytest.raises(RuntimeError) as exc_info:
         dynamic_out.backward(retain_graph=True)
+
+    message = str(exc_info.value)
+
+    assert message.startswith(
+        "This backward function was compiled with non-empty donated buffers"
+    )
+    assert "requires create_graph=False and retain_graph=False" in message
+    assert "torch._functorch.config.donated_buffer=False" in message
