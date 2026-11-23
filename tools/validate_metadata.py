@@ -93,11 +93,21 @@ def reject_constant(value):
 def main():
     root = Path(__file__).resolve().parents[1]
     paths = ([Path(arg) for arg in sys.argv[1:]] if sys.argv[1:]
-             else sorted((root / "bugs").glob("*/metadata.json")))
+             else sorted((root / "bugs").rglob("metadata.json")))
     if not paths:
         print("FAIL: no metadata files found", file=sys.stderr)
         return 1
     failed = False
+    if not sys.argv[1:]:
+        cases = [p for p in (root / "bugs").rglob("torch_*") if p.is_dir()]
+        case_dirs = set(cases)
+        test_dirs = {p.parent for p in (root / "bugs").rglob("test_bug.py")}
+        metadata_dirs = {p.parent for p in paths}
+        if (len(cases) != 100 or len({p.name for p in cases}) != 100
+                or case_dirs != test_dirs or case_dirs != metadata_dirs):
+            print("FAIL: expected 100 unique cases, each with test_bug.py and metadata.json",
+                  file=sys.stderr)
+            failed = True
     for path in paths:
         try:
             data = json.loads(path.read_text(encoding="utf-8"),
@@ -110,6 +120,7 @@ def main():
         print(f"{'FAIL' if errors else 'OK'}: {path}")
         for error in errors:
             print(f"  {error}")
+    print(f"Validated {len(paths)} metadata files: {'FAIL' if failed else 'OK'}")
     return int(failed)
 
 
