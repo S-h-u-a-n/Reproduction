@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_204188",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/204188",
+  "target_api": "torch.distributed.checkpoint",
+  "primary_category": "graph_lifecycle",
+  "tags": [
+    "training_state",
+    "checkpoint_metadata_cache"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A second distributed checkpoint saved with a new dtype must report the new dtype in its metadata.",
+  "bug_signature": "DCP cached save plan reports stale dtype for a second state_dict with changed tensor dtype.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

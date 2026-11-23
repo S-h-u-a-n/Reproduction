@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_201089",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/201089",
+  "target_api": "torch.compile / buffer mutation",
+  "primary_category": "graph_lifecycle",
+  "tags": [
+    "training_state",
+    "forward_buffer_mutation_backward"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "Compiled backward must use the forward-time buffer value when differentiating through a buffer-dependent scale.",
+  "bug_signature": "Compiled backward recomputes scale from already-mutated forward buffer, inflating parameter gradients.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

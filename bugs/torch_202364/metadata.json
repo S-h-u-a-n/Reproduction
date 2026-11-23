@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_202364",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/202364",
+  "target_api": "torch.compile / as_strided_",
+  "primary_category": "autograd",
+  "tags": [
+    "tensor_representation",
+    "view_stride_autograd"
+  ],
+  "bug_type": "silent_wrong_gradient",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "A view metadata change followed by in-place mutation should produce the same finite gradient with and without compilation.",
+  "bug_signature": "Inductor backward assigns gradient to an element outside the as_strided_ modified view.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_201268",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/201268",
+  "target_api": "torch.sparse_csr_tensor / torch.add.out",
+  "primary_category": "tensor_layout",
+  "tags": [
+    "tensor_representation",
+    "sparse_csr_stride"
+  ],
+  "bug_type": "silent_wrong_output",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": false,
+  "expected_behavior": "CSR add(out=) must honor a noncontiguous values() stride or reject the layout without silently writing to wrong storage.",
+  "bug_signature": "MKL CSR add(out=) writes contiguous storage positions rather than logical values() stride.",
+  "verification": {
+    "runs": 10,
+    "passes": 10,
+    "review": "pending"
+  }
+}
