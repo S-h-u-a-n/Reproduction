@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_192202_1_partial_state_init",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/192202",
+  "target_api": "get_optimizer_state_dict",
+  "primary_category": "checkpoint/partial-optimizer-state",
+  "tags": [
+    "training_state",
+    "checkpoint",
+    "partial-optimizer-state"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": true,
+  "expected_behavior": "Exporting partially initialized optimizer state preserves existing state and initializes missing state for trainable parameters.",
+  "bug_signature": "Only p0 has optimizer state before being frozen. Exporting includes only 0.weight and omits state for still-trainable p1, instead of including both 0.weight and 1.weight.",
+  "verification": {
+    "runs": 0,
+    "passes": 0,
+    "review": "pending"
+  }
+}

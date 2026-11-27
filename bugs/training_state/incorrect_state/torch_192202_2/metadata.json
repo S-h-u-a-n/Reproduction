@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "bug_id": "torch_192202_2_frozen_state_load",
+  "issue_url": "https://github.com/pytorch/pytorch/issues/192202",
+  "target_api": "set_optimizer_state_dict",
+  "primary_category": "checkpoint/frozen-optimizer-state",
+  "tags": [
+    "training_state",
+    "checkpoint",
+    "frozen-optimizer-state"
+  ],
+  "bug_type": "incorrect_state",
+  "environment": {
+    "torch": "2.15.0+cpu",
+    "python": "3.14.10",
+    "platform": "linux_x86_64",
+    "device": "cpu"
+  },
+  "randomness": true,
+  "expected_behavior": "Loading restores saved optimizer state for both parameters, including the parameter frozen at load time.",
+  "bug_signature": "The checkpoint contains state for both 0.weight and 1.weight, but loading into a fresh optimizer drops frozen p0's state, producing state keys {1} instead of {0, 1}.",
+  "verification": {
+    "runs": 0,
+    "passes": 0,
+    "review": "pending"
+  }
+}
