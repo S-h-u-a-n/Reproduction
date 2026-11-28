@@ -18,11 +18,11 @@ def test_issue_201158():
 
     with inductor_config.patch(memory_planning=True, memory_pool="combined"):
         compiled = torch.compile(fn, backend="inductor", fullgraph=True)
-        forward, replay = create_selective_checkpoint_contexts([op])
+        forward, _ = create_selective_checkpoint_contexts([op])
         with forward:
             got = compiled(x, weight)
         torch.testing.assert_close(got, expected_output, rtol=1e-5, atol=1e-5)
         cached = forward.storage[op][0].val
         assert cached.shape == expected_saved.shape
-        assert torch.isfinite(cached.real).all().item()
+        assert torch.isfinite(cached).all().item()
         assert not torch.allclose(cached, expected_saved, rtol=1e-5, atol=1e-5), "Saved checkpoint activation should be overwritten by buffer reuse"
