@@ -27,3 +27,4 @@ def test_known_bug_signature():
     torch.testing.assert_close(expected, reference, rtol=1e-10, atol=1e-10)
     torch.testing.assert_close(actual, missing_conjugate, rtol=1e-10, atol=1e-10)
     assert not torch.allclose(actual, reference, rtol=1e-10, atol=1e-10)
+    assert not torch.allclose(a @ actual @ a, a, rtol=1e-8, atol=1e-8)
