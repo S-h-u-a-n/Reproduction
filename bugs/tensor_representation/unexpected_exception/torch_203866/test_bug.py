@@ -7,7 +7,9 @@ from torch.distributed.tensor import DTensor, Shard
 
 
 def test_issue_203866():
-    # A single-process CPU Gloo group: no CUDA, network, or randomness needed.
+    # A single-process CPU Gloo group: no CUDA or randomness needed.
+    # HashStore avoids a TCP rendezvous server, but Gloo still requires
+    # a usable local network interface.
     assert not dist.is_initialized(), "This isolated test requires a fresh process group"
     dist.init_process_group("gloo", store=dist.HashStore(), rank=0, world_size=1)
     try:
