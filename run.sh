@@ -13,7 +13,7 @@ case "${1:-all}" in
     exec timeout --kill-after=10s 1200s "$python" -m pytest -q -p no:cacheprovider --import-mode=importlib bugs/
     ;;
   one)
-    [[ $# == 2 && "$2" =~ ^[1-9][0-9]*$ ]] || { usage; exit 2; }
+    [[ $# == 2 && "$2" =~ ^[1-9][0-9]*(_[0-9]+)?$ ]] || { usage; exit 2; }
     mapfile -d '' -t matches < <(find bugs -type f -path "*/torch_${2}/test_bug.py" -print0)
     [[ ${#matches[@]} == 1 ]] || { echo "Expected exactly one test for Issue $2; found ${#matches[@]}." >&2; exit 2; }
     exec timeout --kill-after=10s 240s "$python" -m pytest -q -p no:cacheprovider --import-mode=importlib "${matches[0]}"
